@@ -5,6 +5,7 @@ import Login from  '../views/Login/Login.vue'
 import TrademarkBuy from '../views/TrademarkBuy/TrademarkBuy.vue'
 import TrademarkCategory from '../views/TrademarkCategory/TrademarkCategory.vue'
 import TrademarkRegister from '../views/TrademarkRegister/TrademarkRegister.vue'
+import TrademarkList from '../views/TrademarkList/TrademarkList.vue'
 
 
 Vue.use(Router)
@@ -34,6 +35,11 @@ const routes = [
        name:'trademarkRegister',
        component:TrademarkRegister
     },
+     {
+         path: '/trademarkList',
+         name: 'trademarkList',
+         component: TrademarkList
+     },
     {
         path:'/login',
         name:'login',

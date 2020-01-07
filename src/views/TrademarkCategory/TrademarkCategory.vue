@@ -1,10 +1,11 @@
 <template>
   <div>
+    <trademark-category-search :searchTitle="searchTitle" :searchTitleResult="searchTitleResult"/>
     <div class="category">
       <div class="category-part1">覆盖全行业&nbsp;&nbsp;热门商标推荐</div>
       <div class="category-part2">海量资源&nbsp;&nbsp;即买即用</div>
       <div class="category-part3">
-        <div class="category-part3-item" v-for="(item,index) in category" :key="index">
+        <div class="category-part3-item" @click='toTrademarkList()' v-for="(item,index) in category" :key="index">
           <img class="category-part3-item-img" :src="item.src" />
           <span style="margin-left:15px;">{{item.name}}</span>
         </div>
@@ -17,12 +18,16 @@
 </template>
 
 <script>
-// import TrademarkCateGoryIconMixin from '../../mixin/trademarkCategoryIconMixin'
+import TrademarkCategorySearch from '../../components/TrademarkCategorySearch'
 export default {
   name: "TrademarkCategory",
-  //  mixins:[TrademarkCateGoryIconMixin],
+   components:{
+    TrademarkCategorySearch
+  },
   data() {
     return {
+      searchTitle:'知识产权服务',
+      searchTitleResult:'商标优选',
       category: [
         {
           id: "1",
@@ -251,6 +256,11 @@ export default {
         }
       ]
     };
+  },
+  methods:{
+    toTrademarkList(){
+      this.$router.push({path:'/TrademarkList'})
+    }
   }
 };
 </script>
@@ -275,13 +285,21 @@ export default {
   flex-wrap: wrap;
 }
 .category-part3-item {
+  box-sizing: border-box;
   width: 20%;
-  height: 20px;
-  line-height: 20px;
-  text-align: left;
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
   font-size: 16px;
   color: #181818;
   margin-top: 24px;
+   /* border:1px solid rgba(0, 0, 0, 0.1); */
+}
+.category-part3-item:hover {
+  color:#ff6a00;
+  cursor: pointer;
+ border:1px solid rgba(0, 0, 0, 0.1);
+ box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.1);
 }
 .category-part3-item-img {
   width: 20px;
