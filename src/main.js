@@ -6,10 +6,12 @@ import router from './router'
 import store from './store'
 import VueRouter from 'vue-router'
 import Vuex from 'vuex'
+import common from './components/common'
 
 Vue.use(VueRouter)
 Vue.use(Vuex)
 Vue.use(Antd)
+Vue.use(common)
 Vue.config.productionTip = false
 
 new Vue({

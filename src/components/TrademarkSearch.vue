@@ -1,7 +1,5 @@
 <template>
   <div class="search">
-    <div class="search-part1">知识产权服务</div>
-    <div class="search-part2">商标注册/软件著作/正版图片，开启一站式专业服务</div>
     <div class="search-part3">
       <a-select size='large' defaultValue="lucy" style="width: 160px;height:50px">
         <a-select-option value="trademarkName">商标名</a-select-option>
@@ -28,10 +26,10 @@ export default {
   width: 100%;
   min-width:1400px;
   height: 400px;
-  background: url("../assets/banner.jpg") no-repeat center;
+  background: url("../bannerAndIcon/home-bg.png") no-repeat center;
   background-size: cover;
 }
-.search-part1 {
+/* .search-part1 {
   color: #dcdee6;
   font-size: 48px;
   width: 300px;
@@ -46,12 +44,12 @@ export default {
   height: 30px;
   line-height: 30px;
   margin: 20px auto 0px;
-}
+} */
 .search-part3 {
   width: 950px;
   height: 72px;
   padding: 15px 10px 15px 10px;
-  margin: 50px auto 0px;
+  margin:261px auto 0px;
   background-color: hsla(0, 0%, 100%, 0.2);
   box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.1);
   display: flex;
