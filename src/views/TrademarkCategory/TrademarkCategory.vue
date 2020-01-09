@@ -1,11 +1,16 @@
 <template>
   <div>
-    <trademark-category-search :searchTitle="searchTitle" :searchTitleResult="searchTitleResult"/>
+    <trademark-category-search :searchTitle="searchTitle" :searchTitleResult="searchTitleResult" />
     <div class="category">
       <div class="category-part1">覆盖全行业&nbsp;&nbsp;热门商标推荐</div>
       <div class="category-part2">海量资源&nbsp;&nbsp;即买即用</div>
       <div class="category-part3">
-        <div class="category-part3-item" @click='toTrademarkList()' v-for="(item,index) in category" :key="index">
+        <div
+          class="category-part3-item"
+          @click="toTrademarkList()"
+          v-for="(item,index) in category"
+          :key="index"
+        >
           <img class="category-part3-item-img" :src="item.src" />
           <span style="margin-left:15px;">{{item.name}}</span>
         </div>
@@ -13,21 +18,35 @@
     </div>
     <div class="category-part4"></div>
     <div class="category-part5"></div>
-    <div class="category-part6"></div>
+    <div class="category-part6">
+      <div class="category-part6-title">填写商标需求，即刻享受专属服务</div>
+      <div class="category-part6-des">万尚倾尽全力&nbsp;为您保驾护航</div>
+      <div class="category-part6-form">
+          <div class="category-part6-form-part1">
+             <div>需要服务:</div>
+             <a-input class='category-part6-form-part1-input'></a-input>
+          </div>
+          <div class="category-part6-form-part2">
+            <div>联系方式:</div>
+             <a-input class='category-part6-form-part2-input'></a-input>
+          </div>
+          <a-button class='category-part6-form-button'>提交需求</a-button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import TrademarkCategorySearch from '../../components/TrademarkCategorySearch'
+import TrademarkCategorySearch from "../../components/TrademarkCategorySearch";
 export default {
   name: "TrademarkCategory",
-   components:{
+  components: {
     TrademarkCategorySearch
   },
   data() {
     return {
-      searchTitle:'知识产权服务',
-      searchTitleResult:'商标优选',
+      searchTitle: "知识产权服务",
+      searchTitleResult: "商标优选",
       category: [
         {
           id: "1",
@@ -257,9 +276,9 @@ export default {
       ]
     };
   },
-  methods:{
-    toTrademarkList(){
-      this.$router.push({path:'/TrademarkList'})
+  methods: {
+    toTrademarkList() {
+      this.$router.push({ path: "/TrademarkList" });
     }
   }
 };
@@ -293,13 +312,13 @@ export default {
   font-size: 16px;
   color: #181818;
   margin-top: 24px;
-   /* border:1px solid rgba(0, 0, 0, 0.1); */
+  /* border:1px solid rgba(0, 0, 0, 0.1); */
 }
 .category-part3-item:hover {
-  color:#ff6a00;
+  color: #ff6a00;
   cursor: pointer;
- border:1px solid rgba(0, 0, 0, 0.1);
- box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.1);
 }
 .category-part3-item-img {
   width: 20px;
@@ -312,18 +331,78 @@ export default {
   min-width: 1400px;
 }
 .category-part4 {
-  height:400px;
+  height: 400px;
   background: url("../../assets/category-bg1.jpg") no-repeat center;
   background-size: cover;
 }
 .category-part5 {
-   height:400px;
+  height: 400px;
   background: url("../../assets/category-bg2.jpg") no-repeat center;
   background-size: cover;
 }
 .category-part6 {
-   height:400px;
-  background: url("../../assets/category-bg3.jpg") no-repeat center;
+  padding-top: 1px;
+  text-align: center;
+  height: 400px;
+  background: url("../../bannerAndIcon/category-bg3.png") no-repeat center;
   background-size: cover;
+}
+.category-part6-title {
+  font-size: 28px;
+  font-family: Source Han Sans CN;
+  font-weight: 500;
+  color: rgba(51, 51, 51, 1);
+  opacity: 1;
+  margin-top: 20px;
+}
+.category-part6-des {
+  margin-top: 10px;
+  height: 14px;
+  font-size: 14px;
+  font-family: Source Han Sans CN;
+  font-weight: 400;
+  color: rgba(102, 102, 102, 1);
+  opacity: 1;
+}
+.category-part6-form {
+  padding:30px,30px,30px,30px;
+  width: 28%;
+  height: 240px;
+  margin: 10px auto 0px;
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+  opacity: 1;
+  position:relative;
+}
+.category-part6-form-part1,.category-part6-form-part2{
+  width:88%;
+  display: flex;
+  justify-content: space-between;
+}
+ .category-part6-form-part1{
+   position:absolute;
+   top:35px;
+   left:30px;
+  height:80px;
+  
+} 
+.category-part6-form-part2{
+   position:absolute;
+  height:35px;
+  left:35px;
+  top:145px;
+ 
+} 
+.category-part6-form-part1-input,.category-part6-form-part2-input{
+  width:80%;
+
+}
+.category-part6-form-part1-input{
+  height:80px;
+}
+.category-part6-form-button{
+  position: absolute;
+  left:100px;
+  top:200px;
 }
 </style>

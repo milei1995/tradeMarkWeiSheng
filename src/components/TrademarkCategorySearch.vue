@@ -1,6 +1,6 @@
 <template>
    <div class="list-search">
-      <div class="list-search-part1">
+      <!-- <div class="list-search-part1">
         <span class="list-search-part1-1" @click="changeRouter(now)">{{searchTitle}}&nbsp;>&nbsp;</span>
         <span style="color:#9b9ea0;">{{searchTitleResult}}</span>
       </div>
@@ -8,7 +8,7 @@
         <div class="list-search-part2-1">商标优选</div>
         <a-input placeholder="输入您想检索的商标名,注册号或者申请人" class="list-search-part2-2"  size="large" />
         <a-button size="large" icon="search"  class='list-search-part2-3'>搜索</a-button>
-      </div>
+      </div> -->
     </div>
 </template>
 
@@ -45,9 +45,9 @@ export default {
  .list-search {
   padding: 20px 26% 20px 18%;
   width: 100%;
-  height: 130px;
+  height: 350px;
   min-width: 1400px;
-  background: url("../assets/listSearch-bg.jpg") no-repeat center;
+  background: url("../bannerAndIcon/category-bg.png") no-repeat center;
   background-size: cover;
 }
 .list-search-part1-1 {
