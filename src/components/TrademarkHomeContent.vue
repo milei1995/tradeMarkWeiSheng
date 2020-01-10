@@ -59,8 +59,32 @@
                <div class='content-4-step-item-des2'>专家一对一评估分析</div>
                <div class='content-4-step-item-des3'>制定全面保护方案</div>
            </div>
-           <div class='content-4-step-item-icon'></div>
+           <div class='content-4-step-item-icon'>
+              <img class='content-4-step-item-icon-pic' src='../bannerAndIcon/sept-to.png'> 
+           </div>
+            <div class='content-4-step-item'>
+               <div class='content-4-step-item-des1'>核准材料</div>
+               <div class='content-4-step-item-des2'>专家审取、校对</div>
+               <div class='content-4-step-item-des3'>确定申报材料</div>
+           </div>
+           <div class='content-4-step-item-icon'>
+              <img class='content-4-step-item-icon-pic' src='../bannerAndIcon/sept-to.png'> 
+           </div>
+            <div class='content-4-step-item'>
+               <div class='content-4-step-item-des1'>递交商标局</div>
+               <div class='content-4-step-item-des2'>专家一对一评估分析</div>
+               <div class='content-4-step-item-des3'>制定全面保护方案</div>
+           </div>
+           <div class='content-4-step-item-icon'>
+              <img class='content-4-step-item-icon-pic' src='../bannerAndIcon/sept-to.png'> 
+           </div>
+            <div class='content-4-step-item'>
+               <div class='content-4-step-item-des1'>获得证书</div>
+               <div class='content-4-step-item-des2'>国家商标局核发证书</div>
+               <div class='content-4-step-item-des3'>免费持续售后服务</div>
+           </div>
        </div>
+       
     </div>
   </div>
 </template>
@@ -290,9 +314,14 @@ opacity:1;
 .content-4-step{
   margin-left:20%;
   margin-right:20%;
+  margin-top:20px;
   width:60%;
   min-width: 840px;
   display: flex;
+  justify-content: space-around;
+}
+.content-4-step-item{
+ margin-left:30px;
 }
 .content-4-step-item-des1{
  border:1px solid rgba(255,255,255,1);
@@ -318,5 +347,15 @@ text-align: center;
 }
 .content-4-step-item-des3{
   margin-top:10px;
+}
+.content-4-step-item-icon{
+  margin-top:30px;
+  width:40px;
+  height:35px;
+  margin-left:40px;
+}
+.content-4-step-item-icon-pic{
+  width:100%;
+  height:100%;
 }
 </style>

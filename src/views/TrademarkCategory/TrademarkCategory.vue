@@ -23,11 +23,11 @@
       <div class="category-part6-des">万尚倾尽全力&nbsp;为您保驾护航</div>
       <div class="category-part6-form">
           <div class="category-part6-form-part1">
-             <div>需要服务:</div>
-             <a-input class='category-part6-form-part1-input'></a-input>
+             <div class='category-part6-form-part1-label'>需要服务:</div>
+             <a-textarea class='category-part6-form-part1-input'></a-textarea>
           </div>
           <div class="category-part6-form-part2">
-            <div>联系方式:</div>
+            <div class="category-part6-form-part2-label">联系方式:</div>
              <a-input class='category-part6-form-part2-input'></a-input>
           </div>
           <a-button class='category-part6-form-button'>提交需求</a-button>
@@ -384,11 +384,13 @@ export default {
    top:35px;
    left:30px;
   height:80px;
+  line-height:80px;
   
 } 
 .category-part6-form-part2{
    position:absolute;
   height:35px;
+  line-height:35px;
   left:35px;
   top:145px;
  
@@ -397,12 +399,22 @@ export default {
   width:80%;
 
 }
+.category-part6-form-part1-label{
+
+}
 .category-part6-form-part1-input{
   height:80px;
 }
 .category-part6-form-button{
   position: absolute;
-  left:100px;
+  left:150px;
   top:200px;
+  background:rgba(253,114,55,1);
+ opacity:1;
+ border-radius:5px;
+ font-family:Source Han Sans CN;
+font-weight:400;
+line-height:24px;
+color:rgba(255,255,255,1);
 }
 </style>

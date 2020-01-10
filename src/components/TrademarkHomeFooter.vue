@@ -1,8 +1,7 @@
 <template>
-  <div class="home-bg" style='margin-top:50px;'>
+  <div class="home-bg" style='margin-top:20px;'>
     <div class="home-bg1"></div>
-    <div class="home-bg2"></div>
-    <div class="home-bg3"></div>
+   
   </div>
 </template>
 
@@ -14,13 +13,15 @@ export default {
 
 <style scoped>
 .home-bg1 {
-  width: 100%;
+  width: 70%;
+  margin-left:15%;
   height: 520px;
-  min-width: 1400px;
-  background: url("../assets/home-bg1.jpg") no-repeat center;
+  min-width: 1250px;
+  background: url("../assets/common-problem-bg.jpg") no-repeat center;
   background-size: cover;
+  margin-bottom:20px;
 }
-.home-bg2 {
+/* .home-bg2 {
   width: 100%;
   height: 520px;
   min-width: 1400px;
@@ -33,5 +34,5 @@ export default {
   height: 520px;
   background: url("../assets/home-bg3.jpg") no-repeat center;
   background-size: cover;
-}
+} */
 </style>
