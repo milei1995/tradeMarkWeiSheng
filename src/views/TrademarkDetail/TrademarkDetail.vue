@@ -47,6 +47,12 @@
       <p>过户资料</p>
       <div class="transfer-info"></div>
       <p>服务承诺</p>
+      <div class="serve">
+        <div class="serve-item" v-for="(item,index) in serveIconArray" :key="index">
+          <img :src="item.src" class="serve-item-icon" />
+          <span class='serve-item-text'>{{item.text}}</span>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -67,6 +73,24 @@ export default {
         { title: "商标类型", value: "R型" },
         { title: "是否永久转让", value: "是" },
         { title: "专用权期限", value: "2019-08-21至2029-08-20" }
+      ],
+      serveIconArray: [
+        {
+          src: require("../../bannerAndIcon/serve-icon1.png"),
+          text: "品种齐全，快速响应"
+        },
+        {
+          src: require("../../bannerAndIcon/serve-icon2.png"),
+          text: "一对一交易经纪人"
+        },
+        {
+          src: require("../../bannerAndIcon/serve-icon3.png"),
+          text: "交易安全保障"
+        },
+        {
+          src: require("../../bannerAndIcon/serve-icon4.png"),
+          text: "专家服务团队"
+        }
       ]
     };
   }
@@ -218,6 +242,7 @@ export default {
       font-size: 24px;
       font-family: Source Han Sans CN;
       font-weight: 500;
+      margin-top:10px;
       line-height: 41px;
       color: rgba(51, 51, 51, 1);
       opacity: 1;
@@ -258,6 +283,35 @@ export default {
       border-bottom: 1px solid rgba(232, 232, 232, 1);
       background: url("../../assets/detail-transfer.jpg") no-repeat center;
       background-size: cover;
+    }
+    .serve {
+      width: 100%;
+      height: 92px;
+      line-height: 92px;
+      background:#f3f3f3;
+      opacity: 1;
+      display: flex;
+      font-size: 16px;
+      font-family: Source Han Sans CN;
+      font-weight: bold;
+      color: rgba(51, 51, 51, 1);
+      justify-content: space-between;
+      vertical-align: middle;
+      .serve-item {
+        height: 100%;
+        width: 25%;
+        // padding: 10px 10px 10px 10px;
+        .serve-item-icon {
+          width: 54px;
+          height: 54px;
+          border: 2px solid rgba(253, 114, 55, 1);
+          border-radius: 50%;
+          opacity: 1;
+        }
+        .serve-item-text{
+            margin-left:10px;
+        }
+      }
     }
   }
 }

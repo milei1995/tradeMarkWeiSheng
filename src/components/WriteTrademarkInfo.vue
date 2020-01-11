@@ -1,0 +1,185 @@
+<template>
+  <div class="info">
+    <a-form :form="form">
+      <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="商标类型">
+        <a-radio-group
+          :options="plainOptions"
+          :defaultValue="plainOptions[0]"
+          v-decorator="['type',validatorRules.type]"
+        />
+      </a-form-item>
+      <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="商标名称">
+        <a-input placeholder="请输入商标名称" v-decorator="[ 'name', validatorRules.name]" />
+      </a-form-item>
+      <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="商标说明">
+        <a-textarea placeholder="请输入商标说明" v-decorator="[ 'explain', validatorRules.explain]" />
+      </a-form-item>
+      <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="商标图样">
+        <a-radio-group
+          :options="picOptions"
+          :defaultValue="picOptions[0]"
+          v-decorator="[ 'pic', validatorRules.pic]"
+        />
+        <div class="creatpicture">
+          <upload-pic />
+          <a-button>生成图片</a-button>
+        </div>
+        <div class="tips">
+          <p class="tips-1">
+            <a-icon type="info-circle" />商标含有文字不应过多，文字过多易造成商标显著性不强而被驳回。
+          </p>
+          <p class="tips-2">申请商标应符合法律规定，请勿模仿或复制他人已经注册的商标，以免因犯他人的合法权益。</p>
+        </div>
+      </a-form-item>
+    </a-form>
+    <div class="info-table">
+      <div class="info-table-part1">
+        <div class="info-table-part1-1">选择推荐方案</div>
+        <a-select placeholder="请选择领域">
+          <a-select-option value="jack">领域1</a-select-option>
+          <a-select-option value="lucy">领域2</a-select-option>
+        </a-select>
+        <a-button>添加所选方案</a-button>
+      </div>
+      <div class="info-table-part2">
+        <div class="info-table-part2-1">常用商标类别</div>
+        <div class="info-table-part2-2">暂无商标类别</div>
+      </div>
+      <div class='info-table-part3'>
+          <div class=info-table-part3-1>
+             <div class='info-table-part3-1-left'></div>
+          </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import UploadPic from "./UploadPic";
+export default {
+  name: "info",
+  components: {
+    UploadPic
+  },
+  data() {
+    return {
+      form: this.$form.createForm(this),
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 2 }
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 12 }
+      },
+      validatorRules: {
+        type: {
+          rules: [{ required: true, message: "请选择类型!" }]
+        },
+        name: { rules: [{ required: true, message: "请输入商标名称!" }] },
+        explain: {},
+        pic: { rules: [{ required: true, message: "请上传商标图样!" }] }
+      },
+      plainOptions: ["文字商标", "图形商标", "文字图形组合商标"],
+      picOptions: ["自动生成", "手动上传"]
+    };
+  }
+};
+</script>
+
+<style lang="scss" scoped>
+.info {
+  width: 100%;
+  padding: 15px 15px 15px 15px;
+  /deep/ .ant-form-item {
+    .ant-form-item-label {
+      margin-right: 20px;
+    }
+    .creatpicture {
+      display: flex;
+      .ant-btn {
+        margin-top: 70px;
+        background: rgba(41, 158, 249, 1);
+        color: #ffffff;
+      }
+    }
+    .tips {
+      font-size: 12px;
+      font-family: Source Han Sans CN;
+      font-weight: 400;
+      line-height: 15px;
+      color: rgba(153, 153, 153, 1);
+      opacity: 1;
+      .tips-2 {
+        padding-left: 8px;
+      }
+    }
+  }
+  .info-table {
+    padding: 15px 10px 15px 10px;
+    width: 100%;
+    height: 652px;
+    border: 1px solid rgba(245, 245, 245, 1);
+    opacity: 1;
+    /deep/.info-table-part1 {
+      height: 36px;
+      line-height: 36px;
+      display: flex;
+      .info-table-part1-1 {
+        font-size: 16px;
+        font-family: Source Han Sans CN;
+        font-weight: 400;
+        color: rgba(51, 51, 51, 1);
+        opacity: 1;
+      }
+      .ant-select {
+        width: 280px;
+        height: 36px;
+        margin-left: 20px;
+      }
+      .ant-btn {
+        width: 137px;
+        height: 33px;
+        background: rgba(247, 247, 247, 1);
+        border: 1px solid rgba(232, 232, 232, 1);
+        opacity: 1;
+        margin-left: 20px;
+        color: rgba(153, 153, 153, 1);
+      }
+    }
+    .info-table-part2 {
+      width: 100%;
+      height: 36px;
+      margin-top:20px;
+      line-height: 36px;
+      display: flex;
+      padding-left: 15px;
+      border: 1px solid rgba(232, 232, 232, 1);
+      .info-table-part2-1 {
+        font-size: 14px;
+        font-family: Source Han Sans CN;
+        font-weight: 400;
+        color: rgba(51, 51, 51, 1);
+        opacity: 1;
+      }
+      .info-table-part2-2 {
+        font-size: 14px;
+        font-family: Source Han Sans CN;
+        font-weight: 400;
+        color: rgba(153, 153, 153, 1);
+        opacity: 1;
+        margin-left:30px;
+      }
+    }
+   .info-table-part3{
+      margin-top:30px;
+      width:100%;
+      height:480px;
+      border:1px solid rgba(245,245,245,1);
+      .info-table-part3-1{
+         display:flex;
+      }
+   }
+  }
+}
+</style>

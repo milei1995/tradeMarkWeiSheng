@@ -4,10 +4,13 @@ import Home from '../views/Home/Home.vue'
 import Login from  '../views/Login/Login.vue'
 import TrademarkBuy from '../views/TrademarkBuy/TrademarkBuy.vue'
 import TrademarkCategory from '../views/TrademarkCategory/TrademarkCategory.vue'
-import TrademarkRegister from '../views/TrademarkRegister/TrademarkRegister.vue'
+import UserRegister from '../views/UserRegister/UserRegister.vue'
 import TrademarkList from '../views/TrademarkList/TrademarkList.vue'
-import TrademarkDetail from '../views/TrademarkDetail/TrademarkDetail'
-
+import TrademarkDetail from '../views/TrademarkDetail/TrademarkDetail.vue'
+import WriteTrademarkInfo from '../components/WriteTrademarkInfo.vue'
+import ChooseApplicant from '../components/ChooseApplicant.vue'
+import PayOrder from '../components/PayOrder.vue'
+import CommitTradermark from '../components/CommitTrademark.vue'
 
 Vue.use(Router)
 
@@ -24,7 +27,29 @@ const routes = [
     {
        path:'/trademarkBuy',
        name:'trademarkBuy',
-       component:TrademarkBuy
+       component:TrademarkBuy,
+       children:[
+           {
+               path:'/trademarkBuy/writeTrademarkInfo',
+               name:'writeTrademarkInfo',
+               component:WriteTrademarkInfo
+           },
+           {
+             path:'/trademarkBuy/chooseApplicant',
+             name:'chooseApplicant',
+             component:ChooseApplicant
+           },
+           {
+               path:'/trademarkBuy/payOrder',
+               name:'payOrder',
+               component:PayOrder
+           },
+           {
+               path:'/trademarkBuy/commitTrademark',
+               name:'commitTrademark',
+               component:CommitTradermark
+           }
+       ]
     },
     {
        path:'/trademarkCategory',
@@ -32,9 +57,9 @@ const routes = [
        component:TrademarkCategory
     },
     {
-       path:'/trademarkRegister',
-       name:'trademarkRegister',
-       component:TrademarkRegister
+       path:'/userRegister',
+       name:'userRegister',
+       component:UserRegister
     },
      {
          path: '/trademarkList',
