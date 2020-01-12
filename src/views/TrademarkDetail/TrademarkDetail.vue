@@ -54,12 +54,23 @@
         </div>
       </div>
     </div>
+    <trademark-modal1 />
+    <trademark-modal2 />
+    <trademark-modal3 />
   </div>
 </template>
 
 <script>
+import TrademarkModal1 from '../../components/TrademarkModal1'
+import TrademarkModal2 from '../../components/TrademarkModal2'
+import TrademarkModal3 from '../../components/TrademarkModal3'
 export default {
   name: "TrademarkDetail",
+  components:{
+   TrademarkModal1,
+   TrademarkModal2,
+   TrademarkModal3
+  },
   data() {
     return {
       detailAray: [

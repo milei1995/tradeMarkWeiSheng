@@ -45,10 +45,34 @@
         <div class="info-table-part2-1">常用商标类别</div>
         <div class="info-table-part2-2">暂无商标类别</div>
       </div>
-      <div class='info-table-part3'>
-          <div class=info-table-part3-1>
-             <div class='info-table-part3-1-left'></div>
+      <div class="info-table-part3">
+        <div class="info-table-part3-1">
+          <div class="info-table-part3-1-left">
+            <a-input-search placeholder="请输入搜索关键字，如:针筒" />
+            <span class="cancel">取消</span>
           </div>
+          <div class="info-table-part3-1-right">
+            <span class="choose">已经选择的商标类型</span>
+            <a-button class="save-btn">保存当前类别</a-button>
+            <a-button class="clear-btn">清除全部</a-button>
+          </div>
+        </div>
+        <div class="info-table-part3-2">
+          <div class="info-table-part3-2-left">
+            <trademark-tree />
+          </div>
+          <div class="info-table-part3-2-right">
+            <div class="info-table-part3-2-right-item" v-for="i in 50" :key='i'>
+              <span class="info-table-part3-2-right-item1">第01类&nbsp;&nbsp;&nbsp;&nbsp;化学药剂、肥料</span>
+              <span class="info-table-part3-2-right-item2">(共1项，还可以选择9项,10项以内300元)</span>
+              <span class="info-table-part3-2-right-item3">￥&nbsp;&nbsp;&nbsp;300</span>
+              <span class="info-table-part3-2-right-item4">
+                &nbsp;&nbsp;&nbsp;
+                <a-icon type="close" />
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -56,10 +80,12 @@
 
 <script>
 import UploadPic from "./UploadPic";
+import TrademarkTree from "./TrademarkTree";
 export default {
   name: "info",
   components: {
-    UploadPic
+    UploadPic,
+    TrademarkTree
   },
   data() {
     return {
@@ -90,6 +116,7 @@ export default {
 <style lang="scss" scoped>
 .info {
   width: 100%;
+  min-width: 1400px;
   padding: 15px 15px 15px 15px;
   /deep/ .ant-form-item {
     .ant-form-item-label {
@@ -150,7 +177,7 @@ export default {
     .info-table-part2 {
       width: 100%;
       height: 36px;
-      margin-top:20px;
+      margin-top: 20px;
       line-height: 36px;
       display: flex;
       padding-left: 15px;
@@ -168,18 +195,135 @@ export default {
         font-weight: 400;
         color: rgba(153, 153, 153, 1);
         opacity: 1;
-        margin-left:30px;
+        margin-left: 30px;
       }
     }
-   .info-table-part3{
-      margin-top:30px;
-      width:100%;
-      height:480px;
-      border:1px solid rgba(245,245,245,1);
-      .info-table-part3-1{
-         display:flex;
+    .info-table-part3 {
+      margin-top: 30px;
+      width: 100%;
+      height: 480px;
+      border: 1px solid rgba(245, 245, 245, 1);
+      .info-table-part3-1 {
+        display: flex;
+        height: 50px;
+        line-height: 50px;
+        width: 100%;
+        /deep/ .info-table-part3-1-left {
+          border: 1px solid rgba(245, 245, 245, 1);
+          box-sizing: border-box;
+          width: 30%;
+          padding: 5px 10px 5px 10px;
+          display: flex;
+          .ant-input-affix-wrapper {
+            width: 80%;
+          }
+          .cancel {
+            margin-left: 20px;
+            font-size: 12px;
+            font-family: Source Han Sans CN;
+            font-weight: 400;
+            line-height: 40px;
+            color: rgba(102, 102, 102, 1);
+            opacity: 1;
+          }
+        }
+        /deep/ .info-table-part3-1-right {
+          width: 70%;
+          height: 50px;
+          box-sizing: border-box;
+          padding: 8px 20px 8px 20px;
+          display: flex;
+          background: rgba(245, 246, 250, 1);
+          border: 1px solid rgba(232, 232, 232, 1);
+          opacity: 1;
+          .choose {
+            font-size: 14px;
+            font-family: Source Han Sans CN;
+            font-weight: 400;
+            line-height: 34px;
+            color: rgba(51, 51, 51, 1);
+            opacity: 1;
+          }
+          .save-btn {
+            margin-left: 60%;
+            background: rgba(41, 158, 249, 1);
+            opacity: 1;
+            font-size: 12px;
+            font-family: Source Han Sans CN;
+            font-weight: 400;
+            line-height: 20px;
+            color: rgba(255, 255, 255, 1);
+          }
+          .clear-btn {
+            margin-left: 30px;
+            background: rgba(255, 255, 255, 1);
+            font-size: 12px;
+            font-family: Source Han Sans CN;
+            font-weight: 400;
+            color: rgba(102, 102, 102, 1);
+            opacity: 1;
+          }
+        }
       }
-   }
+      .info-table-part3-2 {
+        width: 100%;
+        height: 430px;
+        display: flex;
+        box-sizing: border-box;
+        border: 1px solid rgba(232, 232, 232, 1);
+        .info-table-part3-2-left {
+          box-sizing: border-box;
+          border: 1px solid rgba(221, 221, 221, 1);
+          width: 30%;
+          height: 100%;
+          padding: 10px 10px 10px 10px;
+          overflow-y: auto;
+        }
+        .info-table-part3-2-right {
+          padding: 10px 10px 10px 10px;
+          box-sizing: border-box;
+          border: 1px solid rgba(221, 221, 221, 1);
+          width: 70%;
+          height: 100%;
+          padding: 10px 30px 10px 30px;
+          overflow-y: auto;
+          .info-table-part3-2-right-item {
+            width: 80%;
+            height: 24px;
+            font-family: Source Han Sans CN;
+            font-weight: 400;
+            line-height: 24px;
+            opacity: 1;
+            .info-table-part3-2-right-item1 {
+              font-size: 14px;
+              height: 24px;
+              font-weight: 500;
+              color: #333333;
+            }
+            .info-table-part3-2-right-item2 {
+              font-size: 12px;
+              height: 24px;
+              color: #999999;
+              margin-left: 20px;
+            }
+            .info-table-part3-2-right-item3 {
+              font-size: 14px;
+              height: 24px;
+              font-weight: 500;
+              color: #fd7237;
+              margin-left: 23%;
+            }
+            .info-table-part3-2-right-item4 {
+              font-size: 14px;
+              height: 24px;
+              font-weight: 500;
+              color: #999999;
+              margin-left: 10px;
+            }
+          }
+        }
+      }
+    }
   }
 }
 </style>
