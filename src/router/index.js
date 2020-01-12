@@ -11,6 +11,7 @@ import WriteTrademarkInfo from '../components/WriteTrademarkInfo.vue'
 import ChooseApplicant from '../components/ChooseApplicant.vue'
 import PayOrder from '../components/PayOrder.vue'
 import CommitTradermark from '../components/CommitTrademark.vue'
+import ExpertApplication from '../views/ExpertApplication/ExpertApplication.vue'
 
 Vue.use(Router)
 
@@ -50,6 +51,11 @@ const routes = [
                component:CommitTradermark
            }
        ]
+    },
+    {
+       path:'/expertapplication',
+       name:'expertApplication',
+       component:ExpertApplication
     },
     {
        path:'/trademarkCategory',
