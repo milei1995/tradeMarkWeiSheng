@@ -1,5 +1,5 @@
 <template>
-  <div class="globalFooter">
+  <div v-if='isShow' class="globalFooter">
     <div class="globalFooter-part1">
       <img src="../bannerAndIcon/global-logo.png" class="globalFooter-part1-img" />
     </div>
@@ -33,9 +33,21 @@ export default {
           icon: "address"
         },
         { title: "技术支持", value: "嘉兴微胜科技有限公司", icon: "desktop" }
-      ]
+      ],
+      isShow:true
     };
-  }
+  },
+   watch:{
+    $route(to,from){
+         console.log(to,from)
+         console.log(to.name)
+         if(to.name==='login'||to.name==='userRegister'){
+           this.isShow=false
+         }else{
+           this.isShow=true
+         }
+    }
+   },
 };
 </script>
  

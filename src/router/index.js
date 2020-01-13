@@ -31,6 +31,11 @@ const routes = [
        component:TrademarkBuy,
        children:[
            {
+               path:'/trademarkBuy',
+               name:'trademarkBuy',
+               redirect:'/trademarkBuy/writeTrademarkInfo'
+           },
+           {
                path:'/trademarkBuy/writeTrademarkInfo',
                name:'writeTrademarkInfo',
                component:WriteTrademarkInfo
@@ -53,7 +58,7 @@ const routes = [
        ]
     },
     {
-       path:'/expertapplication',
+       path:'/expertApplication',
        name:'expertApplication',
        component:ExpertApplication
     },

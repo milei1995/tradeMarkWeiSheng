@@ -11,14 +11,24 @@
       <a-icon type="lock" class="login-content-possword-icon" />
       <div class="login-content-tip">忘记密码？</div>
       <a-button class='login-button'>登录</a-button>
-      <div class='toregister'>立即免费注册>>></div>
+      <div class='toregister' @click='toUserRegister'>立即免费注册>>></div>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: "login"
+  name: "login",
+  data(){
+    return{
+
+    }
+  },
+  methods:{
+    toUserRegister(){
+      this.$router.push({path:'/userRegister'})
+    }
+  }
 };
 </script>
 

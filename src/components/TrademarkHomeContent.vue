@@ -9,7 +9,7 @@
         >快速购买已注商标</div>
         <div class="content-1-item-3" style="font-size:14px;margin-top:20px;margin-left:50px;">安全有保障</div>
       </div>
-      <div class="content-1-item2">
+      <div class="content-1-item2" @click='toTrademarkBuy()'>
         <div class="content-1-item-1" style="font-size:20px;margin-top:40px;margin-left:50px;">商标注册</div>
         <div
           class="content-1-item-2"
@@ -17,7 +17,7 @@
         >快速网上申报</div>
         <div class="content-1-item-3" style="font-size:14px;margin-top:20px;margin-left:50px;">全流程掌控</div>
       </div>
-      <div class="content-1-item3">
+      <div class="content-1-item3" @click='toExpertApplication()'>
         <div class="content-1-item-1" style="font-size:20px;margin-top:40px;margin-left:50px;">专家申请</div>
         <div
           class="content-1-item-2"
@@ -132,6 +132,12 @@ export default {
   methods: {
     toTrademarkCategory() {
       this.$router.push({ path: "/trademarkCategory" });
+    },
+    toTrademarkBuy(){
+       this.$router.push({ path: "/trademarkBuy" });
+    },
+    toExpertApplication(){
+        this.$router.push({ path: "/expertapplication" });
     }
   }
 };
