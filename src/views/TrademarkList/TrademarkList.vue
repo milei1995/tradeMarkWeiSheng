@@ -30,6 +30,7 @@
 
 <script>
 import SearchCategoryCondition from "../../components/SearchCategoryCondition";
+// import {TradeMarkSearch} from '../../api/api'
 export default {
   name: "TrademarkList",
   components: {
@@ -41,7 +42,11 @@ export default {
       searchTitleResult: "商标优选结果"
     };
   },
-  methods: {}
+  methods: {
+    getTradeMarkListData(){
+     
+    }
+  }
 };
 </script>
 

@@ -278,7 +278,7 @@ export default {
   },
   methods: {
     toTrademarkList() {
-      this.$router.push({ path: "/TrademarkList" });
+      this.$router.push({ path: "/trademarkList" });
     }
   }
 };

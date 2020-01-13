@@ -4,21 +4,21 @@
       <img class="register-logo-img" src="../../bannerAndIcon/login-logo2.png" />
     </div>
     <div class="register-content">
-      <div class="register-content-title">手机号注册</div>
+      <div class="register-content-title" >手机号注册</div>
       <div class="register-content-tip1">
         <span>已有账号？</span>&nbsp;&nbsp;
-        <span style="color:rgba(255,106,7,1);cursor:pointer;">登录</span>
+        <span style="color:rgba(255,106,7,1);cursor:pointer;" @click='goLogin'>登录</span>
       </div>
       <div class="register-content-phone">
         <a-select defaultValue="lucy" class='register-content-phone-part1'>
           <a-select-option value="jack">+86</a-select-option>
           <a-select-option value="lucy">+99</a-select-option>
         </a-select>
-        <a-input placeholder="请输入机号" class='register-content-phone-part2'></a-input>
+        <a-input placeholder="请输入机号" class='register-content-phone-part2' v-model='phoneNumber'></a-input>
       </div>
       <div class='register-content-vcode'>
         <a-input placeholder="请输入验证码" style='width:40%;' class='register-content-vcode-part1'></a-input>
-        <a-button  style='width:55%;' class='register-content-vcode-part2'>发送验证码</a-button>
+        <a-button  style='width:55%;' class='register-content-vcode-part2' @click="sendVerificationCode" >发送验证码</a-button>
       </div>
       <div class='register-content-password'>
         <a-input style='width：100%;' placeholder='设置密码'></a-input>
@@ -32,8 +32,37 @@
 </template>
 
 <script>
+// import {SendSmsCode} from '../../api/api'
+import axios from 'axios'
 export default {
-  name: "TrademarkRegister"
+  name: "TrademarkRegister",
+  data(){
+    return{
+       phoneNumber:''
+    }
+  },
+  methods:{
+    goLogin(){//去登录
+      this.$router.push({path:"/login"})
+    },
+    sendVerificationCode(){//发送验证码
+      const phoneNumber=this.phoneNumber
+      const url= "http://trademark.hnmykj.vip/trademark/sms/sendSmsCode"
+      let params={
+          phone:phoneNumber,
+          type:2
+      }
+      let JsonParams=JSON.stringify(params)
+      console.log(JsonParams)
+      if(phoneNumber){
+        axios.post(url,JsonParams).then(res=>{
+          console.log(res)
+        }).catch(error=>{
+          console.log(error)
+        })
+      }
+    }
+  }
 };
 </script>
 

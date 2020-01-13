@@ -55,7 +55,7 @@ export default {
    watch:{
     $route(to,from){
          console.log(to,from)
-         console.log(to.name)
+         console.log(to.path)
          if(to.name==='login'||to.name==='userRegister'){
            this.isShow=false
          }else{
