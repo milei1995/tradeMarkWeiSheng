@@ -33,7 +33,7 @@
 
 <script>
 // import {SendSmsCode} from '../../api/api'
-import axios from 'axios'
+// import axios from 'axios'
 export default {
   name: "TrademarkRegister",
   data(){
@@ -47,7 +47,7 @@ export default {
     },
     sendVerificationCode(){//发送验证码
       const phoneNumber=this.phoneNumber
-      const url= "http://trademark.hnmykj.vip/trademark/sms/sendSmsCode"
+      const url= "api/trademark/sms/sendSmsCode"
       let params={
           phone:phoneNumber,
           type:2
@@ -55,11 +55,15 @@ export default {
       let JsonParams=JSON.stringify(params)
       console.log(JsonParams)
       if(phoneNumber){
-        axios.post(url,JsonParams).then(res=>{
-          console.log(res)
-        }).catch(error=>{
-          console.log(error)
-        })
+         this.$axios({
+           methods:'post',
+           url:url,
+           data:JsonParams
+         }).then(res=>{
+           console.log(res)
+         }).catch(error=>{
+           console.log(error)
+         })
       }
     }
   }
