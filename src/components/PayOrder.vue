@@ -29,7 +29,7 @@
     <div class="topay">
       <span class="topay1">应付金额</span>
       <span class="topay2">￥&nbsp;300</span>
-      <a-button>下一步</a-button>
+      <a-button @click="toNext">下一步</a-button>
     </div>
   </div>
 </template>
@@ -52,6 +52,9 @@ export default {
           if(e.target.value==='微信'){
               this.isPayTypeChange=false
           }
+      },
+      toNext(){
+        this.$router.push({path:'/trademarkBuy/commitTrademark'})
       }
   }
 };

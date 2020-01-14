@@ -53,7 +53,10 @@
             placeholder="请填写营业执照地址"
             v-decorator="[ 'licenseAddress', validatorRules.licenseAddress]"
           />
-          <span style='font-size:12px;'><span style='color:#999999;'>填写营业执照的完整地址;</span><span style='color:#FD7237;'>如果地址不包含省市区，请补足。</span></span>
+          <span style="font-size:12px;">
+            <span style="color:#999999;">填写营业执照的完整地址;</span>
+            <span style="color:#FD7237;">如果地址不包含省市区，请补足。</span>
+          </span>
         </a-form-item>
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="联系人">
           <a-input placeholder="请填写联系人" v-decorator="[ 'contacts', validatorRules.contacts]" />
@@ -124,7 +127,10 @@
             placeholder="请填写身份证地址"
             v-decorator="[ 'idcardAddress', validatorRules.idcardAddress]"
           />
-          <span style='font-size:12px;'><span style='color:#999999'>填写身份证件的完整地址;</span><span style='color:#FD7237;'>如果地址不含省市区,请补足</span></span>
+          <span style="font-size:12px;">
+            <span style="color:#999999">填写身份证件的完整地址;</span>
+            <span style="color:#FD7237;">如果地址不含省市区,请补足</span>
+          </span>
         </a-form-item>
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="联系人">
           <a-input placeholder="请填写联系人" v-decorator="[ 'contacts', validatorRules.contacts]" />
@@ -143,8 +149,8 @@
     </a-form>
     <div class="topay">
       <span class="topay1">应付金额</span>
-      <span class="topay2">￥&nbsp;300</span>
-      <a-button>下一步</a-button>
+      <span class="topay2">￥300</span>
+      <a-button @click="toNext">下一步</a-button>
     </div>
   </div>
 </template>
@@ -167,7 +173,7 @@ export default {
       form: this.$form.createForm(this),
       labelCol: {
         xs: { span: 24 },
-        sm: { span: 2 }
+        sm: { span: 3 }
       },
       wrapperCol: {
         xs: { span: 24 },
@@ -244,6 +250,9 @@ export default {
       if (e.target.value === "自然人") {
         this.istypeChange = false;
       }
+    },
+    toNext(){
+      this.$router.push({path:'/trademarkBuy/payOrder'})
     }
   }
 };
@@ -275,32 +284,31 @@ export default {
     padding-right: 50px;
     width: 60%;
     margin-top: 10px;
-    line-height: 70px;
     height: 70px;
-   align-items: center;
+    align-items: center;
+    justify-content: space-between;
     background: rgba(245, 246, 250, 1);
     opacity: 1;
     display: flex;
     .topay1 {
-       display: table-cell;
+      width:20%;
+      min-width:100px;
       font-size: 14px;
       font-family: Source Han Sans CN;
       font-weight: 400;
       color: rgba(102, 102, 102, 1);
-      opacity: 1;
+      opacity: 1; 
     }
     .topay2 {
-       display: table-cell;
       margin-left: 50px;
-      font-size: 24px;
+      font-size: 18px;
       font-family: Source Han Sans CN;
       font-weight: 500;
-      line-height: 41px;
       color: rgba(253, 114, 55, 1);
       opacity: 1;
     }
     .ant-btn {
-       display: table-cell;
+      display: table-cell;
       width: 98px;
       height: 29px;
       line-height: 29px;
@@ -310,7 +318,7 @@ export default {
       font-family: Source Han Sans CN;
       font-weight: 400;
       color: rgba(255, 255, 255, 1);
-      margin-left:60%;
+      margin-left: 40%;
     }
   }
 }

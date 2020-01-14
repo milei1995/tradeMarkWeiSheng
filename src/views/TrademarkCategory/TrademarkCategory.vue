@@ -7,7 +7,7 @@
       <div class="category-part3">
         <div
           class="category-part3-item"
-          @click="toTrademarkList()"
+          @click="toTrademarkList(item.id)"
           v-for="(item,index) in category"
           :key="index"
         >
@@ -277,8 +277,10 @@ export default {
     };
   },
   methods: {
-    toTrademarkList() {
-      this.$router.push({ path: "/trademarkList" });
+    toTrademarkList(id) {
+      const keyword=this.$store.state.keyword
+      const searchType=this.$store.state.searchType
+      this.$router.push({ path: "/trademarkList" ,query:{id:id,keyword:keyword,searchType:searchType}});
     }
   }
 };

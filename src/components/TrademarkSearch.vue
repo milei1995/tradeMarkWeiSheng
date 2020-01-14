@@ -1,22 +1,40 @@
 <template>
   <div class="search">
     <div class="search-part3">
-      <a-select size='large' defaultValue="lucy" style="width: 160px;height:50px">
-        <a-select-option value="trademarkName">商标名</a-select-option>
-        <a-select-option value="registerNumber">注册号</a-select-option>
-        <a-select-option value="applicant">申请人</a-select-option>
+      <a-select size='large'   style="width: 160px;height:50px" @change="handleChange">
+        <a-select-option value="1">商标名</a-select-option>
+        <a-select-option value="2">注册号</a-select-option>
+        <a-select-option value="3">申请人</a-select-option>
       </a-select>
-      <a-input placeholder="输入您想检索的商标名,注册号或者申请人" style="width:650px;"  size='large'/>
-      <a-button size='large' icon="search" type='primary'>搜索</a-button>
+      <a-input placeholder="输入您想检索的商标名,注册号或者申请人" v-model="keyword" style="width:650px;"  size='large'/>
+      <a-button size='large' icon="search" type='primary' @click="TrademarkSearch">搜索</a-button>
     </div>
   </div>
 </template>
 
 <script>
 
-
+// import qs from 'qs'
 export default {
-  name: "TrademarkSearch"
+  name: "TrademarkSearch",
+  data(){
+    return{
+        keyword:"",
+        searchType:'4',
+        intCls:'0'
+    }
+  },
+  methods:{
+    handleChange(value){
+      console.log(value)
+      this.searchType=value
+    },
+    TrademarkSearch(){
+      this.$router.push({path:'/trademarkList',query:{id:this.intCls,keyword:this.keyword,searchType:this.searchType}})
+      this.$store.commit('updataKeyword',this.keyword)
+      this.$store.commit('updataSearchType',this.searchType)
+    }
+  }
 };
 </script>
 

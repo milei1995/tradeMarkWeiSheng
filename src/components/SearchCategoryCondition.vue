@@ -29,6 +29,7 @@ export default {
       categoryIndex: 0
     };
   },
+  props:["currentId"],
   created() {
     this.category.forEach(item => {
       const categoryNameItem = item.name.substr(1);
@@ -39,10 +40,21 @@ export default {
       this.categoryList.push(obj);
     });
   },
+ watch:{
+  currentId(newId,oldId){
+    console.log(newId,oldId)
+    this.categoryIndex=newId
+  }
+ },
+ mounted(){
+   
+ },
   methods: {
     chooseCategory(index) {
+      console.log(this.currentId)
       console.log(index);
       this.categoryIndex = index;
+      this.$emit('getCategoryId',index)
     }
   }
 };

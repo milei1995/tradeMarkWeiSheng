@@ -9,6 +9,7 @@ import Vuex from 'vuex'
 import common from './components/common'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+// import qs from 'qs'
 
 
 Vue.use(VueRouter)

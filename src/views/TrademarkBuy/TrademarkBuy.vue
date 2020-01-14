@@ -5,8 +5,8 @@
         class="buy-steps-item"
         v-for="(item,index) in stepsArray"
         :key="index"
-        :class="stepIndex==index ? 'active':'unactive'"
-        @click="chooseSteps(index)"
+        :class="item.path===$route.path ? 'active':'unactive'"
+        @click="chooseSteps(item.path)"
       >
         <div class="triangle1"></div>
         <div class="triangle2"></div>
@@ -15,10 +15,10 @@
       </div>
     </div>
     <div class="buy-steps-tips">
-      <span class='tip1'>自助商标申请存在较高的失败风险</span>，
-      <span class='tip2'>建议无商标申请经验的用户使用</span>
-      <span class='tip3'>&nbsp;&nbsp;"专家辅助申请"&nbsp;&nbsp;</span>
-      <span class='tip4'>提高商标通过率</span>
+      <span class="tip1">自助商标申请存在较高的失败风险</span>，
+      <span class="tip2">建议无商标申请经验的用户使用</span>
+      <span class="tip3">&nbsp;&nbsp;"专家辅助申请"&nbsp;&nbsp;</span>
+      <span class="tip4">提高商标通过率</span>
     </div>
     <router-view></router-view>
   </div>
@@ -30,19 +30,18 @@ export default {
   data() {
     return {
       stepsArray: [
-        { title: "填写商标信息" },
-        { title: "选择新申请人" },
-        { title: "订单支付" },
-        { title: "提交商标局" }
+        { title: "填写商标信息",path:"/trademarkBuy/writeTrademarkInfo"},
+        { title: "选择新申请人",path:"/trademarkBuy/chooseApplicant"},
+        { title: "订单支付",path:"/trademarkBuy/payOrder"},
+        { title: "提交商标局",path:"/trademarkBuy/commitTrademark" }
       ],
       stepIndex: 0
     };
   },
   computed: {},
   methods: {
-    chooseSteps(index) {
-      console.log(index);
-      this.stepIndex = index;
+    chooseSteps(path) {
+       this.$router.push({path:path})
     }
   }
 };
@@ -51,11 +50,11 @@ export default {
 <style lang="scss" scoped>
 .buy {
   width: 100%;
-  min-width:1400px;
+  min-width: 1400px;
   padding: 15px 20% 15px 20%;
   .buy-steps {
     width: 100%;
-    min-width:840px;
+    min-width: 840px;
     height: 32px;
     line-height: 32px;
     display: flex;
@@ -110,7 +109,7 @@ export default {
   .buy-steps-tips {
     width: 100%;
     height: 32px;
-    padding-top:6px;
+    padding-top: 6px;
     background: rgba(41, 158, 249, 0.2);
     // opacity: 0.2;
     margin-top: 10px;
@@ -120,17 +119,21 @@ export default {
     line-height: 20px;
 
     // text-align: center;
-    .tip1,.tip2,.tip3,.tip4{
+    .tip1,
+    .tip2,
+    .tip3,
+    .tip4 {
       opacity: 1;
     }
-    .tip1{
-      color:#FC6A23
+    .tip1 {
+      color: #fc6a23;
     }
-    .tip3{
-      color:#299EF9;
+    .tip3 {
+      color: #299ef9;
     }
-    .tip2,.tip4{
-      color:#999999;
+    .tip2,
+    .tip4 {
+      color: #999999;
     }
   }
 }

@@ -36,12 +36,12 @@
           <div class="content-2-list-item-1">{{item.title}}</div>
           <div class="content-2-list-item-2">{{item.content}}</div>
           <div class="content-2-list-item-3">{{item.code}}</div>
-          <a-button class="content-2-list-button">查看商标</a-button>
+          <a-button class="content-2-list-button" @click="handleTradeMarkSearch(item.code)">查看商标</a-button>
         </div>
       </div>
     </div>
     <div class="content-3">
-      <div class="content-3-item" v-for="(item,index) in iconList" :key="index">
+      <div class="content-3-item" v-for="(item,index) in iconList" :key="index" >
         <img class="content-3-item-icon" :src="item.src" />
         <div class="content-3-item-text">
           <div class="content-3-item-text-1">{{item.des1}}</div>
@@ -99,7 +99,7 @@ export default {
         { title: "日化用品", content: "儿童洗护 化妆品 洗衣液", code: "03" },
         { title: "医疗器械", content: "按摩器械 口罩 医疗器械", code: "10" },
         { title: "食品商标", content: "大米 茶叶 咖啡 面包", code: "30" },
-        { title: "餐饮住宿", content: "酒店旅游 咖啡馆 快餐馆", code: "30" }
+        { title: "餐饮住宿", content: "酒店旅游 咖啡馆 快餐馆", code: "43" }
       ],
       iconList: [
         {
@@ -137,8 +137,14 @@ export default {
        this.$router.push({ path: "/trademarkBuy" });
     },
     toExpertApplication(){
-        this.$router.push({ path: "/expertapplication" });
+        this.$router.push({ path: "/expertApplication" });
+    },
+    handleTradeMarkSearch(id){
+      const keyword=this.$store.state.keyword
+      const searchType=this.$store.state.searchType
+       this.$router.push({path:'/trademarkList',query:{id:id,keyword:keyword,searchType:searchType}})
     }
+
   }
 };
 </script>
@@ -231,6 +237,9 @@ export default {
 }
 .content-2-list-item-2 {
   font-size: 16px;
+  height:28px;
+  width:100%;
+  overflow: hidden;
   font-family: Source Han Sans CN;
   font-weight: 400;
   margin-top: 17px;

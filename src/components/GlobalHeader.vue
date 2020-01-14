@@ -1,5 +1,5 @@
 <template>
-  <div v-if='isShow' class="globalHeader">
+  <div v-if="isShow" class="globalHeader">
     <img src="../bannerAndIcon/login-logo2.png" class="globalHeader-logo" />
     <div class="globalHearder-nav">
       <div
@@ -21,54 +21,50 @@ export default {
       nav: [
         {
           name: "首页",
-          path: "/home",
+          path: "/home"
         },
         {
-          name:'商标分类',
-          path:'/trademarkCategory'
+          name: "商标分类",
+          path: "/trademarkCategory"
         },
         {
-          name: "商标转让",
-          path: "/trademarkList",
+          name: "商标列表",
+          path: "/trademarkList"
         },
         {
           name: "商标注册",
-          path: "/trademarkBuy/writeTrademarkInfo",
+          path: "/trademarkBuy/writeTrademarkInfo"
         },
         {
           name: "专家申请",
-          path: "/expertApplication",
+          path: "/expertApplication"
         },
         {
           name: "登录",
-          path: "/login",
+          path: "/login"
         },
         {
           name: "免费注册",
-          path: "/userRegister",
+          path: "/userRegister"
         }
       ],
-      isShow:true,
+      isShow: true,
       categoryIndex: 0
     };
   },
-   watch:{
-    $route(to,from){
-         console.log(to,from)
-         console.log(to.path)
-         if(to.name==='login'||to.name==='userRegister'){
-           this.isShow=false
-         }else{
-           this.isShow=true
-         }
+  watch: {
+    $route(to, from) {
+      console.log(to, from);
+      if (to.name === "login" || to.name === "userRegister") {
+        this.isShow = false;
+      } else {
+        this.isShow = true;
+      }
     }
-   },
+  },
   methods: {
     chooseCategory(path) {
-      // console.log(index);
-      console.log(path)
-      // this.categoryIndex = index;
-      this.$router.push({path:path})
+      this.$router.push({ path: path });
     }
   }
 };
@@ -79,12 +75,11 @@ export default {
   display: flex;
   flex-wrap: nowrap;
   width: 100%;
- 
+
   background: rgba(255, 255, 255, 1);
   opacity: 1;
   min-width: 1400px;
   height: 70px;
-  
 }
 .globalHeader-logo {
   margin-top: 10px;
@@ -101,7 +96,7 @@ export default {
   margin-left: 13%;
 }
 .globalHeader-nav-item {
-    cursor:pointer;
+  cursor: pointer;
   margin-left: 20px;
   font-size: 16px;
   font-family: Source Han Sans CN;

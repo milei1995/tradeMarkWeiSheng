@@ -1,5 +1,5 @@
 <template>
-  <div v-if='isShow' class="globalFooter">
+  <div v-if="isShow" class="globalFooter">
     <div class="globalFooter-part1">
       <img src="../bannerAndIcon/global-logo.png" class="globalFooter-part1-img" />
     </div>
@@ -12,7 +12,7 @@
     </div>
     <div class="globalFooter-part3">
       <div class="globalFooter-part3-tip">添加微信</div>
-      <div class='globalFooter-part3-wx'>
+      <div class="globalFooter-part3-wx">
         <img src="../bannerAndIcon/boss-code.jpg" />
       </div>
     </div>
@@ -34,20 +34,33 @@ export default {
         },
         { title: "技术支持", value: "嘉兴微胜科技有限公司", icon: "desktop" }
       ],
-      isShow:true
+      isShow: true
     };
   },
-   watch:{
-    $route(to,from){
-         console.log(to,from)
-         console.log(to.name)
-         if(to.name==='login'||to.name==='userRegister'){
-           this.isShow=false
-         }else{
-           this.isShow=true
-         }
+  watch: {
+    $route(to, from) {
+      console.log(from);
+      if (
+        to.name === "login" ||
+        to.name === "userRegister" ||
+        to.name === "writeTrademarkInfo" ||
+        to.name === "chooseApplicant" ||
+        to.name === "payOrder" ||
+        to.name === "commitTrademark"
+      ) {
+        this.isShow = false;
+      } else {
+        this.isShow = true;
+      }
     }
-   },
+  },
+  mounted(){
+    const currentRoute=this.$router.path
+     console.log(currentRoute)
+     if(currentRoute==undefined){
+       this.isShow=false
+     }
+  }
 };
 </script>
  
@@ -99,13 +112,13 @@ export default {
   color: rgba(255, 255, 255, 1);
   opacity: 1;
 }
-.globalFooter-part3-wx{
-    margin-top:8px;
-    width:100px;
-    height:100px;
+.globalFooter-part3-wx {
+  margin-top: 8px;
+  width: 100px;
+  height: 100px;
 }
-.globalFooter-part3-wx img{
-    width:100%;
-    height:100%;
+.globalFooter-part3-wx img {
+  width: 100%;
+  height: 100%;
 }
 </style>

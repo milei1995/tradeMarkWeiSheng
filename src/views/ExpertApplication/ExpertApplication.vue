@@ -3,16 +3,16 @@
     <div class="expert-part1">
       <a-form :form="form" @submit="handleSubmit">
         <a-form-item label="需要服务" :label-col="{ span: 7 }" :wrapper-col="{ span: 12 }">
-          <a-input></a-input>
+          <a-input v-decorator="[ 'needs', validatorRules.needs]"></a-input>
         </a-form-item>
         <a-form-item label="联系方式" :label-col="{ span: 7 }" :wrapper-col="{ span: 12 }">
           <div class="contentType">
-            <a-input></a-input>
-            <a-button>获取验证码</a-button>
+            <a-input v-decorator="[ 'phoneNumber', validatorRules.phoneNumber]"></a-input>
+            <a-button @click="getVerificationCode">获取验证码</a-button>
           </div>
         </a-form-item>
         <a-form-item label="验证码" :label-col="{ span: 7 }" :wrapper-col="{ span: 12 }">
-          <a-input></a-input>
+          <a-input v-decorator="[ 'verificationCode', validatorRules.verificationCode]"></a-input>
           <div class="tips">在您提交商标申请咨询单后，工作日期间专业顾问会在1小时内与您联系，非工作日时间会在下一个工作日与您取得联系。</div>
           <div class="tips">万尚会保护您的商标及个人信息，仅有指定的服务商能看到您的商标及联系方式，请您放心提供。</div>
         </a-form-item>
@@ -33,7 +33,16 @@ export default {
   data() {
     return {
       formLayout: "horizontal",
-      form: this.$form.createForm(this)
+      form: this.$form.createForm(this),
+      validatorRules: {
+        phoneNumber: {
+          rules: [{ required: true, message: "请输入手机号!" }]
+        },
+        verificationCode: {
+          rules: [{ required: true, message: "请输入验证码!" }]
+        },
+        needs:{}
+      }
     };
   },
   methods: {
@@ -42,8 +51,33 @@ export default {
       this.form.validateFields((err, values) => {
         if (!err) {
           console.log("Received values of form: ", values);
+            this.$message.info('提交成功');
         }
       });
+       
+    },
+    getVerificationCode() {
+      const phoneNumber = this.phoneNumber;
+      const url = "/api/trademark/sms/sendSmsCode";
+      let params = {
+        phone: phoneNumber,
+        type: 1
+      };
+      let JsonParams = JSON.stringify(params);
+      console.log(JsonParams);
+      if (phoneNumber) {
+        this.$axios({
+          method: "post",
+          url: url,
+          data: JsonParams
+        })
+          .then(res => {
+            console.log(res);
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      }
     }
   }
 };

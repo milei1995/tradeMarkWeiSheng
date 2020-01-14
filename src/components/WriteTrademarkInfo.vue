@@ -62,7 +62,7 @@
             <trademark-tree />
           </div>
           <div class="info-table-part3-2-right">
-            <div class="info-table-part3-2-right-item" v-for="i in 50" :key='i'>
+            <div class="info-table-part3-2-right-item" v-for="i in 50" :key="i">
               <span class="info-table-part3-2-right-item1">第01类&nbsp;&nbsp;&nbsp;&nbsp;化学药剂、肥料</span>
               <span class="info-table-part3-2-right-item2">(共1项，还可以选择9项,10项以内300元)</span>
               <span class="info-table-part3-2-right-item3">￥&nbsp;&nbsp;&nbsp;300</span>
@@ -74,6 +74,11 @@
           </div>
         </div>
       </div>
+    </div>
+    <div class="footer">
+      <div class="footer-part1">应付金额</div>
+      <div class="footer-part2">￥300</div>
+      <a-button class="footer-part3" @click="toNext">下一步</a-button>
     </div>
   </div>
 </template>
@@ -109,6 +114,11 @@ export default {
       plainOptions: ["文字商标", "图形商标", "文字图形组合商标"],
       picOptions: ["自动生成", "手动上传"]
     };
+  },
+  methods:{
+    toNext(){
+      this.$router.push({path:'/trademarkBuy/chooseApplicant'})
+    }
   }
 };
 </script>
@@ -323,6 +333,45 @@ export default {
           }
         }
       }
+    }
+  }
+  .footer {
+    width: 100%;
+    height: 70px;
+    background: rgba(245, 246, 250, 1);
+    opacity: 1;
+    display: flex;
+    align-items: center;
+    padding-left:50px;
+    padding-right:50px;
+    .footer-part1 {
+      font-size: 14px;
+      font-family: Source Han Sans CN;
+      font-weight: 400;
+      line-height: 24px;
+      color: rgba(102, 102, 102, 1);
+      opacity: 1;
+    }
+    .footer-part2 {
+      font-size: 24px;
+      font-family: Source Han Sans CN;
+      font-weight: 500;
+      line-height: 41px;
+      color: rgba(253, 114, 55, 1);
+      opacity: 1;
+      margin-left:80px;
+    }
+    .footer-part3 {
+      width: 98px;
+      height: 29px;
+      background: rgba(253, 114, 55, 1);
+      opacity: 1;
+      font-size: 12px;
+      font-family: Source Han Sans CN;
+      font-weight: 400;
+      line-height: 20px;
+      color: rgba(255, 255, 255, 1);
+      margin-left:50%;
     }
   }
 }

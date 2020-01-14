@@ -17,7 +17,7 @@
         <a-input placeholder="请输入机号" class='register-content-phone-part2' v-model='phoneNumber'></a-input>
       </div>
       <div class='register-content-vcode'>
-        <a-input placeholder="请输入验证码" style='width:40%;' class='register-content-vcode-part1'></a-input>
+        <a-input placeholder="请输入验证码" style='width:40%;' class='register-content-vcode-part1' v-model="verificationCode"></a-input>
         <a-button  style='width:55%;' class='register-content-vcode-part2' @click="sendVerificationCode" >发送验证码</a-button>
       </div>
       <div class='register-content-password'>
@@ -25,7 +25,7 @@
         <a-icon type="eye" class="register-content-password-icon" />
       </div>
       <div class='register-content-to'>
-        <a-button class='register-content-to-button'>立即注册</a-button>
+        <a-button class='register-content-to-button' @click='ImmediateRegistration()'>立即注册</a-button>
       </div>
     </div>
   </div>
@@ -34,11 +34,13 @@
 <script>
 // import {SendSmsCode} from '../../api/api'
 // import axios from 'axios'
+// import qs from 'qs'
 export default {
   name: "TrademarkRegister",
   data(){
     return{
-       phoneNumber:''
+       phoneNumber:'',//手机号码
+       verificationCode:''//验证码
     }
   },
   methods:{
@@ -47,7 +49,7 @@ export default {
     },
     sendVerificationCode(){//发送验证码
       const phoneNumber=this.phoneNumber
-      const url= "api/trademark/sms/sendSmsCode"
+      const url= "/api/trademark/sms/sendSmsCode"
       let params={
           phone:phoneNumber,
           type:2
@@ -56,7 +58,7 @@ export default {
       console.log(JsonParams)
       if(phoneNumber){
          this.$axios({
-           methods:'post',
+           method:'post',
            url:url,
            data:JsonParams
          }).then(res=>{
@@ -65,7 +67,33 @@ export default {
            console.log(error)
          })
       }
+    },
+    ImmediateRegistration(){
+      const that=this
+      const phoneNumber=this.phoneNumber
+      const verificationCode=this.verificationCode
+      const url="/api/trademark/user/login"
+      let params={
+        phone:phoneNumber,
+        smsCode:verificationCode
+      }
+       let JsonParams=JSON.stringify(params)
+       if(phoneNumber){
+         this.$axios({
+           method:'post',
+           url:url,
+           data:JsonParams
+         }).then(res=>{
+           console.log(res)
+            if(res.data.success){   
+             that.$message.info("注册成功")
+          }
+         }).catch(error=>{
+           console.log(error)
+         })
+      }
     }
+
   }
 };
 </script>
