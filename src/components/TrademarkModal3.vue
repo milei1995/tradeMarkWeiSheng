@@ -2,12 +2,14 @@
   <div class="modal1">
     <a-modal
       :visible="visible"
+      title='提交成功'
       @ok="handleOk"
       @cancel="handleCancel"
       okText='确定'
       cancelText='取消'
     >
-      <p>请耐心等待，马上会有客服联系您！</p>
+      <p>已经收到您的询价留言，正在为您派遣商标顾问，
+请耐心等待！</p>
     </a-modal>
   </div>
 </template>
@@ -26,6 +28,7 @@ export default {
     },
     handleOk() {
       this.visible = false
+      this.$emit('toNextModal2')
     },
     handleCancel() {
       this.visible = false

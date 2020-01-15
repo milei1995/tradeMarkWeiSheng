@@ -14,7 +14,7 @@
           <div class="result-item-des">
             <span class='result-item-des1'>第{{item.intCls}}类</span>&nbsp;
             <span class='result-item-des2'>{{item.tmName}}</span>&nbsp;
-            <a-button class="result-item-button">认证</a-button>
+            <a-button class="result-item-button" @click="toDetail(item.regNo,item.intCls)">认证</a-button>
           </div>
           <div class="result-item-describe">{{item.applicantCn}}</div>
         </div>
@@ -69,10 +69,19 @@ export default {
   mounted() {
     const queryData=this.$router.history.current.query
     console.log(queryData)
+    if(Object.keys(queryData).length==0){
+        const originKeyword=this.$store.state.keyword
+        const originSearchType=this.$store.state.searchType
+        console.log(originKeyword)
+        this.categoryId="0"
+        this.getTradeMarkListData(0,1,originKeyword,originSearchType)
+    }
+    if(Object.keys(queryData).length>0){
     this.keyword=queryData.keyword
     this.searchType=queryData.searchType
     this.categoryId = this.$router.history.current.query.id;
     this.getTradeMarkListData(0,1,this.keyword,this.searchType)
+    }
   },
   methods: {
     getTradeMarkListData(id,pageNum,key,type) {
@@ -120,7 +129,10 @@ export default {
       this.categoryId=id
       // this.currentPage=1
       // console.log(id)
-      // this.getTradeMarkListData(this.categoryId,this.currentPage)
+      // this.getTradeMarkListData(this.categoryId,this.currentPage,this.keyword,this.searchType)
+    },
+    toDetail(regNo,id){
+      this.$router.push({path:'/detail',query:{regNo:regNo,id:id}})
     }
   }
 };

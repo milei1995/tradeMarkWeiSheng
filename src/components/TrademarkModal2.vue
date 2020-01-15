@@ -6,12 +6,7 @@
         <div class="modal-des">填写您的联系方式，即可掌握心仪商标价格！</div>
         <a-form :form="form" @submit="handleSubmit">
           <a-form-item label="商标" :label-col="{ span: 7 }" :wrapper-col="{ span: 12 }">
-            <a-input
-              v-decorator="[
-          'trademark',
-          {rules: [{ required: false, message: '请输入您要咨询的商标!' }]}
-        ]"
-            >
+            <a-input v-model="tradeMarkName">
               <a-icon slot="prefix" type="trademark" />
             </a-input>
           </a-form-item>
@@ -38,7 +33,7 @@
             </a-input>
           </a-form-item>
           <a-form-item :wrapper-col="{ span: 12, offset: 7 }">
-            <a-button html-type="submit" class="modal-btn">Submit</a-button>
+            <a-button html-type="submit" class="modal-btn">提交</a-button>
           </a-form-item>
         </a-form>
       </div>
@@ -56,12 +51,13 @@ export default {
       form: this.$form.createForm(this)
     };
   },
+  props:['tradeMarkName'],
   methods: {
     showModal() {
       this.visible = true;
     },
     handleOk() {
-      this.visible = false;
+       this.handleSubmit()
     },
     handleCancel() {
       this.visible = false;
@@ -71,6 +67,8 @@ export default {
       this.form.validateFields((err, values) => {
         if (!err) {
           console.log("Received values of form: ", values);
+          this.visible=false
+          this.$emit('toNextModal')
         }
       });
     }

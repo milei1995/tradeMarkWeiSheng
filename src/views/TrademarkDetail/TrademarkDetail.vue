@@ -3,32 +3,32 @@
     <div class="detail-banner">
       <div class="detail-banner-part1">
         <div class="detail-banner-part1-1">
-          <img src="../../bannerAndIcon/detail-img.png" class="detail-banner-part1-1-bg" />
+          <img :src="'http://tmpic.tmkoo.com/'+tradeMarkContent.tmImg" class="detail-banner-part1-1-bg" />
         </div>
         <div class="detail-banner-part1-2">
           <div class="detail-banner-part1-2-des1">
-            <span class="des1-1">韩庭</span>
+            <span class="des1-1">{{tradeMarkContent.tmName}}</span>
             <span class="des1-2">多类别</span>
             <span class="des1-3">交易类型:转让</span>
           </div>
           <div class="detail-banner-part1-2-des2">
-            <span>类别:&nbsp;&nbsp;第36类&nbsp;</span>
-            <span style="margin-left:15px;">注册号:&nbsp;&nbsp;22335651</span>
+            <span>类别:&nbsp;&nbsp;第{{tradeMarkContent.intCls}}类&nbsp;</span>
+            <span style="margin-left:15px;">注册号:&nbsp;&nbsp;{{tradeMarkContent.regNo}}</span>
           </div>
           <div class="detail-banner-part1-2-des3">
             <div class="des3-1">同名多类:&nbsp;&nbsp;45类;&nbsp;&nbsp;44类;&nbsp;&nbsp;21类</div>
-            <div class="des3-2">有效期限:&nbsp;&nbsp;2019-08-21至2029-08-20</div>
+            <div class="des3-2">有效期限:&nbsp;&nbsp;{{tradeMarkContent.privateDate}}</div>
             <div
               class="des3-3"
-            >类似群组:&nbsp;&nbsp;3602;&nbsp;&nbsp;3601;&nbsp;&nbsp;3603;&nbsp;&nbsp;3604;</div>
+            >类似群组:&nbsp;&nbsp;{{tradeMarkContent.announcementIssue}};</div>
             <div class="des3-4">使用范围:&nbsp;&nbsp;1111111111111111111111111111111111111111111</div>
           </div>
         </div>
         <div class="detail-banner-part1-3">
-          <a-button class="btn1">
-            <a-icon type="mobile" />输入联系方式
-          </a-button>
-          <a-button type="primary" class="btn2">
+          <a-input class="btn1" placeholder="输入您的手机号" >
+            <a-icon slot="prefix" type="mobile" />
+          </a-input>
+          <a-button type="primary" class="btn2" @click='searchTradeMark'>
             <a-icon type="search" />点击帮你找标
           </a-button>
         </div>
@@ -54,9 +54,9 @@
         </div>
       </div>
     </div>
-    <trademark-modal1 />
-    <trademark-modal2 />
-    <trademark-modal3 />
+    <trademark-modal1  ref='modal1'/>
+    <trademark-modal2  ref='modal2' :tradeMarkName="tradeMarkContent.tmName" @toNextModal='Consulteok'/>
+    <trademark-modal3  ref='modal3' @toNextModal2="toNextModal2"/>
   </div>
 </template>
 
@@ -102,8 +102,61 @@ export default {
           src: require("../../bannerAndIcon/serve-icon4.png"),
           text: "专家服务团队"
         }
-      ]
+      ],
+      currentRegNo:'',//当前商标序号
+      categoryId:'',//当前分类id
+      tradeMarkContent:{}//商标内容
     };
+  },
+  mounted(){
+    console.log(this.$route.query)
+    this.currentRegNo=this.$route.query.regNo
+    this.categoryId=this.$route.query.id
+    this.getDetail(this.currentRegNo,this.categoryId)
+  },
+  watch:{
+    //  currentRegNo(newNo,oldNo){
+
+    //  }
+  },
+  methods:{
+    getDetail(regNo,id){
+      const url="/api/trademark/main/trademarkDetail"
+      const params={
+         regNo:regNo,
+         intCls:id
+      }
+      this.$axios({
+        method:'get',
+        url:url,
+        params:params
+      }).then(res=>{
+        if(res.data.success){
+          console.log(res.data.data)
+         this.tradeMarkContent=res.data.data.trademarkDetail
+         this.detailAray[0].value=res.data.data.trademarkDetail.tmName
+         this.detailAray[1].value=res.data.data.trademarkDetail.regNo
+         this.detailAray[2].value='第'+res.data.data.trademarkDetail.intCls+'类'
+         this.detailAray[3].value=res.data.data.trademarkDetail.announcementDate
+         this.detailAray[4].value=res.data.data.trademarkDetail.appDate
+         this.detailAray[5].value=res.data.data.trademarkDetail.announcementIssue
+         this.detailAray[6].value=res.data.data.trademarkDetail.agent
+         this.detailAray[7].value=res.data.data.trademarkDetail.category
+         this.detailAray[9].value=res.data.data.trademarkDetail.privateDate
+        }
+      }).catch(error=>{
+        console.log(error)
+      })
+    },
+    searchTradeMark(){
+      this.$refs.modal2.showModal()
+    },
+    Consulteok(){
+      this.$refs.modal3.showModal()
+    },
+    toNextModal2(){
+      this.$refs.modal1.showModal()
+    }
   }
 };
 </script>
@@ -149,6 +202,8 @@ export default {
           background: rgba(243, 243, 243, 1);
           vertical-align: middle;
           .des1-1 {
+            width:50%;
+            overflow: hidden;
             font-size: 24px;
             font-family: Source Han Sans CN;
             font-weight: 400;
@@ -173,6 +228,8 @@ export default {
             color: rgba(255, 255, 255, 1);
           }
           .des1-3 {
+            width:30%;
+            overflow: hidden;
             margin-left: 60px;
             height: 24px;
             line-height: 24px;
@@ -235,6 +292,7 @@ export default {
         background-size: cover;
         text-align: center;
         .btn1 {
+          width:140px;
           margin-top: 180px;
         }
         .btn2 {
@@ -268,15 +326,20 @@ export default {
         flex-wrap: nowrap;
         margin-top: 15px;
         width: 33%;
+        min-width:325px;
         height: 20px;
         .detail-item-1 {
+          overflow: hidden;
           width: 30%;
+          min-width: 100px;
           height: 20px;
           text-align: left;
         }
         .detail-item-2 {
           width: 70%;
+          overflow: hidden;
           height: 20px;
+          min-width:100px;
           text-align: left;
         }
       }
