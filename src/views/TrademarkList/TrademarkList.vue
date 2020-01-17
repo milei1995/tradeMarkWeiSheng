@@ -9,7 +9,7 @@
       <div class="list-content-result">
         <div class="result-item" v-for="(item,index) in categoryList" :key="index">
           <div class="result-item-img">
-            <img :src="item.src1" />
+            <img :src="item.tmImg" />
           </div>
           <div class="result-item-des">
             <span class='result-item-des1'>第{{item.intCls}}类</span>&nbsp;

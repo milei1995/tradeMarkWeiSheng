@@ -4,7 +4,6 @@
       <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="商标类型">
         <a-radio-group
           :options="plainOptions"
-          :defaultValue="plainOptions[0]"
           v-decorator="['type',validatorRules.type]"
         />
       </a-form-item>
@@ -17,12 +16,17 @@
       <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="商标图样">
         <a-radio-group
           :options="picOptions"
-          :defaultValue="picOptions[0]"
+          @change="picTypeChange"
           v-decorator="[ 'pic', validatorRules.pic]"
         />
-        <div class="creatpicture">
-          <upload-pic />
+          <!-- 自动生成 -->
+        <div v-if="isAutoPic" class="creatpicture">
+          <div class='pic-area'></div>
           <a-button>生成图片</a-button>
+        </div>
+        <!-- 手动生成 -->
+        <div v-else class='pic-area-manual'>
+             <upload-pic />
         </div>
         <div class="tips">
           <p class="tips-1">
@@ -59,7 +63,7 @@
         </div>
         <div class="info-table-part3-2">
           <div class="info-table-part3-2-left">
-            <trademark-tree />
+            <trademark-tree  @onExpandItem="getExpandItem" @onCheckItem="getCheckItem"/>
           </div>
           <div class="info-table-part3-2-right">
             <div class="info-table-part3-2-right-item" v-for="i in 50" :key="i">
@@ -105,21 +109,60 @@ export default {
       },
       validatorRules: {
         type: {
-          rules: [{ required: true, message: "请选择类型!" }]
+          rules: [{ required: true, message: "请选择类型!" }],
+          initialValue:""
         },
         name: { rules: [{ required: true, message: "请输入商标名称!" }] },
         explain: {},
         pic: { rules: [{ required: true, message: "请上传商标图样!" }] }
       },
       plainOptions: ["文字商标", "图形商标", "文字图形组合商标"],
-      picOptions: ["自动生成", "手动上传"]
+      picOptions: ["自动生成", "手动上传"],
+      isAutoPic:true,//自动生成图片or手动生成图片
+      selectedTradeMark:[]
     };
+  },
+  mounted(){
+    // this.getClassifyGoods()
+  },
+  watch:{
+    selectedTradeMark(newMark,oldMark){
+      console.log(newMark,oldMark)
+    }
   },
   methods:{
     toNext(){
       this.$router.push({path:'/trademarkBuy/chooseApplicant'})
+    },   
+    picTypeChange(e){
+      console.log(e)
+      if(e.target.value==="自动生成"){
+        this.isAutoPic=true
+      }
+      if(e.target.value==='手动上传'){
+        this.isAutoPic=false
+      }
+    },
+    getExpandItem(value){
+       const selectedTradeMark=[]
+      value.forEach(item=>{
+        const obj={
+          selectClass:item
+        }
+        selectedTradeMark.push(obj)
+      })
+      console.log(selectedTradeMark)
+
+    },
+    getCheckItem(value){
+      console.log(value)
+      this.selectedTradeMark.forEach(item=>{
+        item.selectItem=value
+      })
     }
+
   }
+
 };
 </script>
 
@@ -140,7 +183,13 @@ export default {
         color: #ffffff;
       }
     }
+    .pic-area{
+        width: 104px;
+        height: 104px;
+        border: 1px dashed #d9d9d9;
+    }
     .tips {
+      margin-top:2px;
       font-size: 12px;
       font-family: Source Han Sans CN;
       font-weight: 400;

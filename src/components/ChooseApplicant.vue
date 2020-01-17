@@ -1,10 +1,9 @@
 <template>
   <div class="chooseApplicant">
-    <a-form :form="form">
+    <a-form :form="form" @submit="handleSave">
       <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="商标类型">
         <a-radio-group
           :options="plainOptions"
-          :defaultValue="plainOptions[0]"
           v-decorator="['type',validatorRules.type]"
           @change="handleTypeChange"
         />
@@ -28,25 +27,17 @@
           </a-select>
         </a-form-item>
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="营业执照">
-          <upload-pic />
-          <a-input
-            v-decorator="[ 'license', validatorRules.license]"
-            disabled
-            placeholder="请上传公司营业执照"
-            style="width:150px;"
-          ></a-input>
+          <upload-pic v-decorator="['license',validatorRules.license]" />
+          <div style="color:rgb(253, 114, 55);">请上传公司营业执照！</div>
         </a-form-item>
-        <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="申请人行政区划">
-          <a-select
-            :defaultValue="provinceData[0]"
-            style="width: 120px;margin-left:10px"
+        <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="申请企业行政区划">
+          <a-cascader
+            placeholder="请选择地区"
+            :props="{ expandTrigger: 'hover' }"
+            :options="areaData"
+            @change="onChange1"
             v-decorator="[ 'licenseArea', validatorRules.licenseArea]"
-          >
-            <a-select-option v-for="province in provinceData" :key="province">{{province}}</a-select-option>
-          </a-select>
-          <a-select v-model="secondCity" style="width: 120px;margin-left:10px;">
-            <a-select-option v-for="city in cities" :key="city">{{city}}</a-select-option>
-          </a-select>
+          ></a-cascader>
         </a-form-item>
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="营业执照地址">
           <a-input
@@ -84,22 +75,24 @@
           <a-input v-decorator="[ 'personId', validatorRules.personId]" placeholder="请填写身份证号码"></a-input>
         </a-form-item>
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="身份证正面">
-          <upload-pic />
-          <a-input
+          <upload-pic v-decorator="[ 'idcardFront', validatorRules.idcardFront]" />
+          <div style="color:rgb(253, 114, 55);">请上传身份证正面！</div>
+          <!-- <a-input
             v-decorator="[ 'idcardFront', validatorRules.idcardFront]"
             disabled
             placeholder="请上传省份证正面"
             style="width:150px;"
-          ></a-input>
+          ></a-input>-->
         </a-form-item>
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="身份证反面">
-          <upload-pic />
-          <a-input
+          <upload-pic v-decorator="[ 'idcardBack', validatorRules.idcardBack]" />
+          <div style="color:rgb(253, 114, 55);">请上传身份证反面！</div>
+          <!-- <a-input
             v-decorator="[ 'idcardBack', validatorRules.idcardBack]"
             disabled
             placeholder="请上传身份证背面"
             style="width:150px;"
-          ></a-input>
+          ></a-input>-->
         </a-form-item>
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="资格证明文件">
           <upload-pic />
@@ -111,16 +104,13 @@
           ></a-input>
         </a-form-item>
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="申请人行政区划">
-          <a-select
-            :defaultValue="provinceData[0]"
-            style="width: 120px;margin-left:10px"
+          <a-cascader
+            placeholder="请选择地区"
+            :props="{ expandTrigger: 'hover' }"
+            @change="onChange2"
+            :options="areaData"
             v-decorator="[ 'personArea', validatorRules.personArea]"
-          >
-            <a-select-option v-for="province in provinceData" :key="province">{{province}}</a-select-option>
-          </a-select>
-          <a-select v-model="secondCity" style="width: 120px;margin-left:10px;">
-            <a-select-option v-for="city in cities" :key="city">{{city}}</a-select-option>
-          </a-select>
+          ></a-cascader>
         </a-form-item>
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="身份证地址">
           <a-input
@@ -145,7 +135,7 @@
       <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="联系人邮件">
         <a-input placeholder="请填写联系人邮件" v-decorator="[ 'mail', validatorRules.mail]" />
       </a-form-item>
-      <a-button>保存</a-button>
+      <a-button html-type="submit">保存</a-button>
     </a-form>
     <div class="topay">
       <span class="topay1">应付金额</span>
@@ -156,14 +146,11 @@
 </template>
 
 <script>
-const provinceData = ["Zhejiang", "Jiangsu"];
-const cityData = {
-  Zhejiang: ["Hangzhou", "Ningbo", "Wenzhou"],
-  Jiangsu: ["Nanjing", "Suzhou", "Zhenjiang"]
-};
 import UploadPic from "./UploadPic";
+import AreaMixin from "../mixin/areaMixin";
 export default {
   name: "chooseApplicant",
+  mixins: [AreaMixin],
   components: {
     UploadPic
   },
@@ -190,10 +177,10 @@ export default {
           rules: [{ required: true, message: "请填写申请人类型!" }]
         },
         license: {
-          rules: [{ required: true, message: "请上传营业执照!" }]
+          rules: [{ required: false, message: "请上传营业执照!" }]
         },
         licenseArea: {
-          rules: [{ required: true, message: "请填写申请人行政区域!" }]
+          rules: [{ required: true, message: "请填写申请企业行政区域!" }]
         },
         licenseAddress: {
           rules: [{ required: true, message: "请填写营业执照地址!" }]
@@ -218,13 +205,13 @@ export default {
           rules: [{ required: true, message: "请输入身份证号码!" }]
         },
         idcardFront: {
-          rules: [{ required: true, message: "请上传身份证正面信息!" }]
+          rules: [{ required: false, message: "请上传身份证正面信息!" }]
         },
         idcardBack: {
-          rules: [{ required: true, message: "请上传身份证背面信息!" }]
+          rules: [{ required: false, message: "请上传身份证背面信息!" }]
         },
         individual: {
-          rules: [{ required: true, message: "请上传个体工商户执照!" }]
+          rules: [{ required: false, message: "请上传个体工商户执照!" }]
         },
         personArea: {
           rules: [{ required: true, message: "请填写申请人行政区划" }]
@@ -235,15 +222,25 @@ export default {
       },
       plainOptions: ["企业单位", "自然人"],
       picOptions: ["自动生成", "手动上传"],
-      provinceData,
-      cityData,
-      cities: cityData[provinceData[0]],
-      secondCity: cityData[provinceData[0]][0]
+      isErr: true,
+      currentType: "", //当前类型
+      writeInfo:[]//当前填写的信息
     };
+  },
+  created() {
+    for (var i = 0; i < this.areaData.length; i++) {
+      if (this.areaData[i].children.length == 0) {
+        delete this.areaData[i].children; //解决因为省级区域没有下级市的BUG
+      }
+    }
+  },
+  mounted(){
+   this.validatorRules.type.initialValue=this.plainOptions[0]
   },
   methods: {
     handleTypeChange(e) {
       console.log(e);
+      this.currentType = e.target.value;
       if (e.target.value === "企业单位") {
         this.istypeChange = true;
       }
@@ -251,8 +248,36 @@ export default {
         this.istypeChange = false;
       }
     },
-    toNext(){
-      this.$router.push({path:'/trademarkBuy/payOrder'})
+    toNext() {
+      const isErr = this.isErr;
+      if (isErr) {
+        this.$message.error("请填写全信息");
+      } else {
+        const currentType = this.currentType;
+        if(currentType==="企业单位"){
+          // const url="/api/trademark/configApply/addConfigCompanyApply"
+          // const params={
+
+          // }
+        }
+        this.$router.push({ path: "/trademarkBuy/payOrder" });
+      }
+    },
+    onChange1(value) {
+      console.log(value);
+    },
+    onChange2(value) {
+      console.log(value);
+    },
+    handleSave(e) {
+      e.preventDefault();
+      this.form.validateFields((err, values) => {
+        if (!err) {
+          console.log("Received values of form: ", values);
+          this.writeInfo=values
+          this.isErr = false;
+        }
+      });
     }
   }
 };
@@ -291,13 +316,13 @@ export default {
     opacity: 1;
     display: flex;
     .topay1 {
-      width:20%;
-      min-width:100px;
+      width: 20%;
+      min-width: 100px;
       font-size: 14px;
       font-family: Source Han Sans CN;
       font-weight: 400;
       color: rgba(102, 102, 102, 1);
-      opacity: 1; 
+      opacity: 1;
     }
     .topay2 {
       margin-left: 50px;

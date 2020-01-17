@@ -12,49 +12,49 @@
 </template>
 
 <script>
-const treeData = [
-  {
-    title: "0-0",
-    key: "0-0",
-    children: [
-      {
-        title: "0-0-0",
-        key: "0-0-0",
-        children: [
-          { title: "0-0-0-0", key: "0-0-0-0" },
-          { title: "0-0-0-1", key: "0-0-0-1" },
-          { title: "0-0-0-2", key: "0-0-0-2" }
-        ]
-      },
-      {
-        title: "0-0-1",
-        key: "0-0-1",
-        children: [
-          { title: "0-0-1-0", key: "0-0-1-0" },
-          { title: "0-0-1-1", key: "0-0-1-1" },
-          { title: "0-0-1-2", key: "0-0-1-2" }
-        ]
-      },
-      {
-        title: "0-0-2",
-        key: "0-0-2"
-      }
-    ]
-  },
-  {
-    title: "0-1",
-    key: "0-1",
-    children: [
-      { title: "0-1-0-0", key: "0-1-0-0" },
-      { title: "0-1-0-1", key: "0-1-0-1" },
-      { title: "0-1-0-2", key: "0-1-0-2" }
-    ]
-  },
-  {
-    title: "0-2",
-    key: "0-2"
-  }
-];
+// const treeData = [
+  // {
+  //   title: "0-0",
+  //   key: "0-0",
+  //   children: [
+  //     {
+  //       title: "0-0-0",
+  //       key: "0-0-0",
+  //       children: [
+  //         { title: "0-0-0-0", key: "0-0-0-0" },
+  //         { title: "0-0-0-1", key: "0-0-0-1" },
+  //         { title: "0-0-0-2", key: "0-0-0-2" }
+  //       ]
+  //     },
+  //     {
+  //       title: "0-0-1",
+  //       key: "0-0-1",
+  //       children: [
+  //         { title: "0-0-1-0", key: "0-0-1-0" },
+  //         { title: "0-0-1-1", key: "0-0-1-1" },
+  //         { title: "0-0-1-2", key: "0-0-1-2" }
+  //       ]
+  //     },
+  //     {
+  //       title: "0-0-2",
+  //       key: "0-0-2"
+  //     }
+  //   ]
+  // },
+  // {
+  //   title: "0-1",
+  //   key: "0-1",
+  //   children: [
+  //     { title: "0-1-0-0", key: "0-1-0-0" },
+  //     { title: "0-1-0-1", key: "0-1-0-1" },
+  //     { title: "0-1-0-2", key: "0-1-0-2" }
+  //   ]
+  // },
+  // {
+  //   title: "0-2",
+  //   key: "0-2"
+  // }
+// ];
 
 export default {
   name: "TrademarkTree",
@@ -64,13 +64,16 @@ export default {
       autoExpandParent: true,
       checkedKeys: ["0-0-0"],
       selectedKeys: [],
-      treeData
+      treeData:[]
     };
   },
   watch: {
     checkedKeys(val) {
       console.log("onCheck", val);
     }
+  },
+  mounted(){
+    this.getClassifyGoods()
   },
   methods: {
     onExpand(expandedKeys) {
@@ -79,14 +82,52 @@ export default {
       // or, you can remove all expanded children keys.
       this.expandedKeys = expandedKeys;
       this.autoExpandParent = false;
+      this.$emit("onExpandItem",expandedKeys)
     },
     onCheck(checkedKeys) {
       console.log("onCheck", checkedKeys);
       this.checkedKeys = checkedKeys;
+      this.$emit("onCheckItem",checkedKeys)
     },
     onSelect(selectedKeys, info) {
       console.log("onSelect", info);
       this.selectedKeys = selectedKeys;
+    },
+     getClassifyGoods(){
+      const params={
+        queryType:2
+      }
+      const url='/api/trademark/trademarkClassifyGoods/selectTrademarkClassifyGoodsList'
+      this.$axios({
+        method:'get',
+        url:url,
+        params:params
+      }).then(res=>{
+        console.log(res)
+        if(res.data.success){
+          const treeData=[]
+          res.data.data.list.forEach(item=>{
+            const children=[]
+            item.classifyGroups.forEach(item2=>{
+              const obj2={
+                title:item2.groupsId+' '+item2.groupsName,
+                key:item2.groupsId+' '+item2.groupsName,
+                id:item2.groupsId
+              }
+              children.push(obj2)
+            })
+            const obj1={
+              title:'第'+item.classifyNum+'类'+' '+item.classifyName,
+              key:'第'+item.classifyNum+'类'+' '+item.classifyName,
+              id:item.classifyId,
+              children:children
+            }
+            treeData.push(obj1)
+          })
+          console.log(treeData)
+          this.treeData=treeData
+        }
+      })
     }
   }
 };
