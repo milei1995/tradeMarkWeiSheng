@@ -22,12 +22,11 @@
             v-decorator="[ 'applyType', validatorRules.applyType]"
             style="width:150px;"
           >
-            <a-select-option value="jack">中国大陆</a-select-option>
-            <a-select-option value="lucy">海外</a-select-option>
+            <a-select-option value="1">中国大陆</a-select-option>
           </a-select>
         </a-form-item>
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="营业执照">
-          <upload-pic v-decorator="['license',validatorRules.license]" />
+          <upload-pic :type="'企业营业执照'" @getImageUrl1="getImageUrl1" />
           <div style="color:rgb(253, 114, 55);">请上传公司营业执照！</div>
         </a-form-item>
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="申请企业行政区划">
@@ -67,41 +66,23 @@
             v-decorator="[ 'certificatesType', validatorRules.certificatesType]"
             style="width:150px;"
           >
-            <a-select-option value="jack">身份证</a-select-option>
-            <a-select-option value="lucy">军官证</a-select-option>
+            <a-select-option value="1">身份证</a-select-option>
           </a-select>
         </a-form-item>
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="身份证号码">
           <a-input v-decorator="[ 'personId', validatorRules.personId]" placeholder="请填写身份证号码"></a-input>
         </a-form-item>
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="身份证正面">
-          <upload-pic v-decorator="[ 'idcardFront', validatorRules.idcardFront]" />
+          <upload-pic :type="'身份证正面'" @getImageUrl2="getImageUrl2" />
           <div style="color:rgb(253, 114, 55);">请上传身份证正面！</div>
-          <!-- <a-input
-            v-decorator="[ 'idcardFront', validatorRules.idcardFront]"
-            disabled
-            placeholder="请上传省份证正面"
-            style="width:150px;"
-          ></a-input>-->
         </a-form-item>
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="身份证反面">
-          <upload-pic v-decorator="[ 'idcardBack', validatorRules.idcardBack]" />
+          <upload-pic :type="'身份证反面'" @getImageUrl3="getImageUrl3" />
           <div style="color:rgb(253, 114, 55);">请上传身份证反面！</div>
-          <!-- <a-input
-            v-decorator="[ 'idcardBack', validatorRules.idcardBack]"
-            disabled
-            placeholder="请上传身份证背面"
-            style="width:150px;"
-          ></a-input>-->
         </a-form-item>
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="资格证明文件">
-          <upload-pic />
-          <a-input
-            v-decorator="[ 'individual', validatorRules.individual]"
-            disabled
-            placeholder="请上传个体工商户执照"
-            style="width:150px;"
-          ></a-input>
+          <upload-pic :type="'个体户证明资料'" @getImageUrl4="getImageUrl4" />
+          <div style="color:rgb(253, 114, 55);">请上传个体工商户证明资料！</div>
         </a-form-item>
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="申请人行政区划">
           <a-cascader
@@ -148,6 +129,7 @@
 <script>
 import UploadPic from "./UploadPic";
 import AreaMixin from "../mixin/areaMixin";
+import { getStorage } from "../mixin/storage";
 export default {
   name: "chooseApplicant",
   mixins: [AreaMixin],
@@ -171,7 +153,8 @@ export default {
           rules: [{ required: true, message: "请选择类型!" }]
         },
         bussinessName: {
-          rules: [{ required: true, message: "请填写企业名称!" }]
+          rules: [{ required: true, message: "请填写企业名称!" }],
+          initialValue: ""
         },
         applyType: {
           rules: [{ required: true, message: "请填写申请人类型!" }]
@@ -224,7 +207,11 @@ export default {
       picOptions: ["自动生成", "手动上传"],
       isErr: true,
       currentType: "", //当前类型
-      writeInfo:[]//当前填写的信息
+      writeInfo: [], //当前填写的信息
+      imgUrl1: "", //企业营业执照
+      imgUrl2: "", //身份证正面
+      imgUrl3: "", //身份证反面
+      imgUrl4: "" //个体户证明资料
     };
   },
   created() {
@@ -234,8 +221,8 @@ export default {
       }
     }
   },
-  mounted(){
-   this.validatorRules.type.initialValue=this.plainOptions[0]
+  mounted() {
+    this.validatorRules.type.initialValue = this.plainOptions[0];
   },
   methods: {
     handleTypeChange(e) {
@@ -253,15 +240,20 @@ export default {
       if (isErr) {
         this.$message.error("请填写全信息");
       } else {
-        const currentType = this.currentType;
-        if(currentType==="企业单位"){
-          // const url="/api/trademark/configApply/addConfigCompanyApply"
-          // const params={
-
-          // }
-        }
         this.$router.push({ path: "/trademarkBuy/payOrder" });
       }
+    },
+    getImageUrl1(imageUrl) {
+      this.imgUrl1 = imageUrl;
+    },
+    getImageUrl2(imageUrl) {
+      this.imgUrl2 = imageUrl;
+    },
+    getImageUrl3(imageUrl) {
+      this.imgUrl3 = imageUrl;
+    },
+    getImageUrl4(imageUrl) {
+      this.imgUrl4 = imageUrl;
     },
     onChange1(value) {
       console.log(value);
@@ -274,10 +266,104 @@ export default {
       this.form.validateFields((err, values) => {
         if (!err) {
           console.log("Received values of form: ", values);
-          this.writeInfo=values
+          this.writeInfo = values;
           this.isErr = false;
         }
       });
+       const accessToken=  getStorage('AccessToken')
+      if(accessToken){
+       const currentType = this.currentType;
+        if (currentType === "企业单位" ) {
+          console.log(this.writeInfo)
+          const url="/api/trademark/configApply/addConfigCompanyApply"
+          const applyType=this.writeInfo.applyType
+          const  companyName=this.writeInfo.bussinessName
+          const  companyProveImage=this.imgUrl1
+          const province=this.writeInfo.licenseArea[0]
+          const city=this.writeInfo.licenseArea[1]
+          const district=this.writeInfo.licenseArea[2]
+          const businessLicenseAddress=this.writeInfo.licenseAddress
+          const contacts=this.writeInfo.contacts
+          const contactsPhone=this.writeInfo.phone
+          const contactFax=this.writeInfo.fax
+          const contactEmail=this.writeInfo.mail
+          const params={
+              applyType:applyType,
+              companyName:companyName,
+              companyProveImage:companyProveImage,
+              province:province,
+              city:city,
+              district:district,
+              businessLicenseAddress:businessLicenseAddress,
+              contacts:contacts,
+              contactsPhone:contactsPhone,
+              contactFax:contactFax,
+              contactEmail:contactEmail
+          }
+          const headers={
+             'token':accessToken
+          }
+          const jsonparams=JSON.stringify(params)
+          console.log(jsonparams)
+          this.$axios({
+            method:'post',
+            url:url,
+            data:jsonparams,
+            headers:headers
+          }).then(res=>{
+            console.log(res)
+          }).catch(err=>{
+            console.log(err)
+          })
+        }
+        if(currentType==="自然人"){
+            console.log(this.writeInfo)
+          const url="/api/trademark/configApply/addConfigUserApply"
+          const applyUserName=this.writeInfo.applyPersonName
+          const credentialsType=this.writeInfo.certificatesType
+          const idCard=this.writeInfo.personId
+          const idCardFront=this.imgUrl2
+          const idCardReverse=this.imgUrl3
+          const  companyProveImage=this.imgUrl4
+          const province=this.writeInfo.personArea[0]
+          const city=this.writeInfo.personArea[1]
+          const district=this.writeInfo.personArea[2]
+          const idCardAddress=this.writeInfo.idcardAddress
+          const contactsPhone=this.writeInfo.phone
+          const contacts=this.writeInfo.contacts
+          const contactEmail=this.writeInfo.mail
+          const contactFax=this.writeInfo.contactFax
+          let jsonparams=JSON.stringify(params)
+          const params={
+              accessToken:accessToken,
+              applyUserName:applyUserName,
+              credentialsType:credentialsType,
+              idCard:idCard,
+              idCardFront:idCardFront,
+              idCardReverse:idCardReverse,
+              companyProveImage:companyProveImage,
+              province:province,
+              city:city,
+              district:district,
+              idCardAddress:idCardAddress,
+              contacts:contacts,
+              contactsPhone:contactsPhone,
+              contactFax:contactFax,
+              contactEmail:contactEmail
+          }
+          this.$axios({
+            method:'post',
+            url:url,
+            data:jsonparams
+          }).then(res=>{
+            console.log(res)
+          }).catch(err=>{
+            console.log(err)
+          })
+        }
+      }else{
+        this.$message.warning("请先登录！")
+      }
     }
   }
 };

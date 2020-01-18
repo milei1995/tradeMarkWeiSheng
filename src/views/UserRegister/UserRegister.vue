@@ -123,10 +123,10 @@ export default {
             console.log(res);
             if (res.data.success) {
               that.$message.info("注册成功");
-              that.$store.commit("updataAssessToken", res.data.data.token);
+              that.$store.commit("updataAccessToken", res.data.data.token);
               that.$store.commit("updataUserName", res.data.data.userName);
               that.$store.commit("updataUserId", res.data.data.userId);
-              setStorage("AssessToken", res.data.data.token);
+              setStorage("AccessToken", res.data.data.token);
               setStorage("UserName", res.data.data.userName);
               setStorage("UserId", res.data.data.userId);
               setTimeout(() => {

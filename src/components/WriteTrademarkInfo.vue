@@ -21,8 +21,10 @@
         />
           <!-- 自动生成 -->
         <div v-if="isAutoPic" class="creatpicture">
-          <div class='pic-area'></div>
-          <a-button>生成图片</a-button>
+          <div class='pic-area'>
+            <img :src='autoImgUrl'/>
+          </div>
+          <a-button @click="autoCreatePic">生成图片</a-button>
         </div>
         <!-- 手动生成 -->
         <div v-else class='pic-area-manual'>
@@ -119,7 +121,8 @@ export default {
       plainOptions: ["文字商标", "图形商标", "文字图形组合商标"],
       picOptions: ["自动生成", "手动上传"],
       isAutoPic:true,//自动生成图片or手动生成图片
-      selectedTradeMark:[]
+      selectedTradeMark:[],
+      autoImgUrl:''//自动生成图片url
     };
   },
   mounted(){
@@ -143,21 +146,48 @@ export default {
         this.isAutoPic=false
       }
     },
-    getExpandItem(value){
-       const selectedTradeMark=[]
-      value.forEach(item=>{
-        const obj={
-          selectClass:item
+    autoCreatePic(){
+      const tradeMarkname= this.form.getFieldValue(['name']).me
+      console.log(tradeMarkname)
+      const url='/api/trademark/image/returnTrademarkImageByStr'
+      const params={
+        str:tradeMarkname
+      }
+      if(tradeMarkname!==undefined){
+      this.$axios({
+        method:'get',
+        url:url,
+        params:params
+      }).then(res=>{
+        if(res.data.success){
+           const imgbase64=res.data.data.imageBase64
+           console.log(imgbase64)
+           this.autoImgUrl="data:image/jpeg;base64,"+imgbase64
         }
-        selectedTradeMark.push(obj)
+      }).catch(err=>{
+        console.log(err)
       })
-      console.log(selectedTradeMark)
-
+      }else{
+        this.$message.warning('请输入要填写的商标名称')
+      }
+    },//
+    getExpandItem(value){
+     console.log(value)
     },
     getCheckItem(value){
       console.log(value)
-      this.selectedTradeMark.forEach(item=>{
-        item.selectItem=value
+      const url="/api/trademark/trademarkClassifyGoods/selectTrademarkClassifyByGroupId"
+      const params={
+        trademarkGroupIds:value
+      }
+      this.$axios({
+        method:'post',
+        url:url,
+        data:params
+      }).then(res=>{
+        console.log(res)
+      }).catch(err=>{
+        console.log(err)
       })
     }
 
@@ -187,6 +217,10 @@ export default {
         width: 104px;
         height: 104px;
         border: 1px dashed #d9d9d9;
+        img{
+          width:100%;
+          height:100%;
+        }
     }
     .tips {
       margin-top:2px;

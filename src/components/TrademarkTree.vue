@@ -70,6 +70,7 @@ export default {
   watch: {
     checkedKeys(val) {
       console.log("onCheck", val);
+        this.$emit("onCheckItem",val)
     }
   },
   mounted(){
@@ -87,7 +88,6 @@ export default {
     onCheck(checkedKeys) {
       console.log("onCheck", checkedKeys);
       this.checkedKeys = checkedKeys;
-      this.$emit("onCheckItem",checkedKeys)
     },
     onSelect(selectedKeys, info) {
       console.log("onSelect", info);
@@ -111,14 +111,14 @@ export default {
             item.classifyGroups.forEach(item2=>{
               const obj2={
                 title:item2.groupsId+' '+item2.groupsName,
-                key:item2.groupsId+' '+item2.groupsName,
+                key:item2.groupsId,
                 id:item2.groupsId
               }
               children.push(obj2)
             })
             const obj1={
               title:'第'+item.classifyNum+'类'+' '+item.classifyName,
-              key:'第'+item.classifyNum+'类'+' '+item.classifyName,
+              key:item.classifyNum,
               id:item.classifyId,
               children:children
             }

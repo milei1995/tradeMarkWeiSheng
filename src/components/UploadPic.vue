@@ -29,6 +29,12 @@ export default {
       imageUrl: ""
     };
   },
+  props:{
+    type:{
+      type:String,
+      dafault:''
+    }
+  },
   methods: {
     handleChange(info) {
       if (info.file.status === "uploading") {
@@ -40,6 +46,7 @@ export default {
         getBase64(info.file.originFileObj, imageUrl => {
           this.imageUrl = imageUrl;
           this.loading = false;
+          console.log(this.imageUrl)
         });
       }
     },
@@ -53,13 +60,9 @@ export default {
         this.$message.error("图片大小需小于2MB");
       }
       if (isJPG && isLt2M) {
-        console.log(file)
         const fd =new FormData()
         fd.append('file',file)
         const url = '/api/trademark/image/uploadImage';
-        // const params = {
-        //   file: file
-        // };
         this.$axios({
           method: 'post',
           url: url,
@@ -69,6 +72,23 @@ export default {
             console.log(res);
             if(res.data.success){
               this.imageUrl=res.data.data.imagePath
+              console.log(this.imageUrl)
+              console.log(this.type);
+              switch(this.type){
+                case '企业营业执照':
+                   this.$emit("getImageUrl1",this.imageUrl)
+                   break
+                case '身份证正面':
+                  this.$emit("getImageUrl2",this.imageUrl)
+                  break
+                case '身份证反面':
+                  this.$emit("getImageUrl3",this.imageUrl)
+                  break
+                case '个体户证明资料':
+                  this.$emit("getImageUrl4",this.imageUrl)
+                  break
+              }
+             
             }
           })
           .catch(error => {

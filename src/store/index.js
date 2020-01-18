@@ -17,7 +17,7 @@ export default new Vuex.Store({
         updataSearchType(state,newType){
           state.searchType=newType
         },
-        updataAssessToken(state,newToken){
+        updataAccessToken(state,newToken){
           state.accessToken=newToken
         },
         updataUserName(state,newName){
