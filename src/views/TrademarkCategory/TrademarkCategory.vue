@@ -24,13 +24,13 @@
       <div class="category-part6-form">
           <div class="category-part6-form-part1">
              <div class='category-part6-form-part1-label'>需要服务:</div>
-             <a-textarea class='category-part6-form-part1-input'></a-textarea>
+             <a-textarea class='category-part6-form-part1-input' v-model="needServe"></a-textarea>
           </div>
           <div class="category-part6-form-part2">
             <div class="category-part6-form-part2-label">联系方式:</div>
-             <a-input class='category-part6-form-part2-input'></a-input>
+             <a-input v-model="mobilePhone" class='category-part6-form-part2-input'></a-input>
           </div>
-          <a-button class='category-part6-form-button'>提交需求</a-button>
+          <a-button class='category-part6-form-button' @click="commitNeeds">提交需求</a-button>
       </div>
     </div>
   </div>
@@ -47,6 +47,8 @@ export default {
     return {
       searchTitle: "知识产权服务",
       searchTitleResult: "商标优选",
+      needServe:'',
+      mobilePhone:'',
       category: [
         {
           id: "1",
@@ -281,6 +283,13 @@ export default {
       const keyword=this.$store.state.keyword
       const searchType=this.$store.state.searchType
       this.$router.push({ path: "/trademarkList" ,query:{id:id,keyword:keyword,searchType:searchType}});
+    },
+    commitNeeds(){
+      if(this.mobilePhone==='' ||this.needServe===''){
+        this.$message.warning('输入内容不能为空')
+      }else{
+        this.$message.success('商标需求提交成功')
+      }
     }
   }
 };
@@ -288,6 +297,7 @@ export default {
 
 <style scoped>
 .category {
+  min-width: 1200px;
   padding: 50px 18% 50px 18%;
 }
 .category-part1 {

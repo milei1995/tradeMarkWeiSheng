@@ -288,20 +288,20 @@ export default {
           const contactFax=this.writeInfo.fax
           const contactEmail=this.writeInfo.mail
           const params={
-              applyType:applyType,
-              companyName:companyName,
-              companyProveImage:companyProveImage,
-              province:province,
-              city:city,
-              district:district,
-              businessLicenseAddress:businessLicenseAddress,
-              contacts:contacts,
-              contactsPhone:contactsPhone,
-              contactFax:contactFax,
-              contactEmail:contactEmail
+              "applyType":applyType,
+              "companyName":companyName,
+              "companyProveImage":companyProveImage,
+              "province":province,
+              "city":city,
+              "district":district,
+              "businessLicenseAddress":businessLicenseAddress,
+              "contacts":contacts,
+              "contactsPhone":contactsPhone,
+              "contactFax":contactFax,
+              "contactEmail":contactEmail
           }
           const headers={
-             'token':accessToken
+             'accessToken':accessToken
           }
           const jsonparams=JSON.stringify(params)
           console.log(jsonparams)
@@ -312,6 +312,9 @@ export default {
             headers:headers
           }).then(res=>{
             console.log(res)
+            if(res.data.success){
+               this.$message.success('保存成功')
+            }
           }).catch(err=>{
             console.log(err)
           })
@@ -319,6 +322,9 @@ export default {
         if(currentType==="自然人"){
             console.log(this.writeInfo)
           const url="/api/trademark/configApply/addConfigUserApply"
+          const headers={
+             'accessToken':accessToken
+          }
           const applyUserName=this.writeInfo.applyPersonName
           const credentialsType=this.writeInfo.certificatesType
           const idCard=this.writeInfo.personId
@@ -332,10 +338,8 @@ export default {
           const contactsPhone=this.writeInfo.phone
           const contacts=this.writeInfo.contacts
           const contactEmail=this.writeInfo.mail
-          const contactFax=this.writeInfo.contactFax
-          let jsonparams=JSON.stringify(params)
+          // const contactFax=this.writeInfo.contactFax
           const params={
-              accessToken:accessToken,
               applyUserName:applyUserName,
               credentialsType:credentialsType,
               idCard:idCard,
@@ -348,15 +352,20 @@ export default {
               idCardAddress:idCardAddress,
               contacts:contacts,
               contactsPhone:contactsPhone,
-              contactFax:contactFax,
               contactEmail:contactEmail
           }
+           const  jsonparams=JSON.stringify(params)
+          console.log(params)
           this.$axios({
             method:'post',
             url:url,
-            data:jsonparams
+            headers:headers,
+            data:jsonparams,
           }).then(res=>{
             console.log(res)
+             if(res.data.success){
+               this.$message.success('保存成功')
+            }
           }).catch(err=>{
             console.log(err)
           })

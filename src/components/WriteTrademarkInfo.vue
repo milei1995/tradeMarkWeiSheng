@@ -2,10 +2,7 @@
   <div class="info">
     <a-form :form="form">
       <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="商标类型">
-        <a-radio-group
-          :options="plainOptions"
-          v-decorator="['type',validatorRules.type]"
-        />
+        <a-radio-group :options="plainOptions" v-decorator="['type',validatorRules.type]" />
       </a-form-item>
       <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="商标名称">
         <a-input placeholder="请输入商标名称" v-decorator="[ 'name', validatorRules.name]" />
@@ -19,16 +16,16 @@
           @change="picTypeChange"
           v-decorator="[ 'pic', validatorRules.pic]"
         />
-          <!-- 自动生成 -->
+        <!-- 自动生成 -->
         <div v-if="isAutoPic" class="creatpicture">
-          <div class='pic-area'>
-            <img :src='autoImgUrl'/>
+          <div class="pic-area">
+            <img :src="autoImgUrl" />
           </div>
           <a-button @click="autoCreatePic">生成图片</a-button>
         </div>
         <!-- 手动生成 -->
-        <div v-else class='pic-area-manual'>
-             <upload-pic />
+        <div v-else class="pic-area-manual">
+          <upload-pic />
         </div>
         <div class="tips">
           <p class="tips-1">
@@ -65,17 +62,21 @@
         </div>
         <div class="info-table-part3-2">
           <div class="info-table-part3-2-left">
-            <trademark-tree  @onExpandItem="getExpandItem" @onCheckItem="getCheckItem"/>
+            <trademark-tree @onExpandItem="getExpandItem" @onCheckItem="getCheckItem" />
           </div>
           <div class="info-table-part3-2-right">
-            <div class="info-table-part3-2-right-item" v-for="i in 50" :key="i">
-              <span class="info-table-part3-2-right-item1">第01类&nbsp;&nbsp;&nbsp;&nbsp;化学药剂、肥料</span>
-              <span class="info-table-part3-2-right-item2">(共1项，还可以选择9项,10项以内300元)</span>
-              <span class="info-table-part3-2-right-item3">￥&nbsp;&nbsp;&nbsp;300</span>
-              <span class="info-table-part3-2-right-item4">
-                &nbsp;&nbsp;&nbsp;
-                <a-icon type="close" />
-              </span>
+            <div
+              class="info-table-part3-2-right-item"
+              v-for="(item,index) in CheckedItem"
+              :key="index"
+            >
+              <div class="info-table-part3-2-right-item-isShow" v-if="item.selectChild.length>0">
+                <div class="info-table-part3-2-right-item-title">{{item.title}}</div>
+                <div class="info-table-part3-2-right-item-price">￥{{item.price}}</div>
+                <div>
+                  <a-tag v-for="(item2,index2) in item.selectChild" :key="index2" >{{item2.title}}</a-tag>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -83,15 +84,17 @@
     </div>
     <div class="footer">
       <div class="footer-part1">应付金额</div>
-      <div class="footer-part2">￥300</div>
+      <div class="footer-part2">￥{{totalPrice}}</div>
       <a-button class="footer-part3" @click="toNext">下一步</a-button>
     </div>
   </div>
 </template>
 
 <script>
+import { getStorage } from "../mixin/storage";
 import UploadPic from "./UploadPic";
 import TrademarkTree from "./TrademarkTree";
+import { filterUnderfind } from "../untils/filterUnderfind";
 export default {
   name: "info",
   components: {
@@ -112,7 +115,7 @@ export default {
       validatorRules: {
         type: {
           rules: [{ required: true, message: "请选择类型!" }],
-          initialValue:""
+          initialValue: ""
         },
         name: { rules: [{ required: true, message: "请输入商标名称!" }] },
         explain: {},
@@ -120,79 +123,118 @@ export default {
       },
       plainOptions: ["文字商标", "图形商标", "文字图形组合商标"],
       picOptions: ["自动生成", "手动上传"],
-      isAutoPic:true,//自动生成图片or手动生成图片
-      selectedTradeMark:[],
-      autoImgUrl:''//自动生成图片url
+      isAutoPic: true, //自动生成图片or手动生成图片
+      selectedTradeMark: [],
+      autoImgUrl: "", //自动生成图片url
+      onExpected: [], //已经展开的树结构
+      onChecked: [], //已经选择的树结构
+      CheckedItem: [] //已经选中的商标
     };
   },
-  mounted(){
+  mounted() {
     // this.getClassifyGoods()
   },
-  watch:{
-    selectedTradeMark(newMark,oldMark){
-      console.log(newMark,oldMark)
+  computed: {
+    totalPrice() {
+      const CheckedItem = this.CheckedItem;
+      let total = null;
+      CheckedItem.forEach(item => {
+        total += Number(item.price);
+      });
+      return total;
     }
   },
-  methods:{
-    toNext(){
-      this.$router.push({path:'/trademarkBuy/chooseApplicant'})
-    },   
-    picTypeChange(e){
-      console.log(e)
-      if(e.target.value==="自动生成"){
-        this.isAutoPic=true
-      }
-      if(e.target.value==='手动上传'){
-        this.isAutoPic=false
-      }
+  watch: {
+    selectedTradeMark(newMark, oldMark) {
+      console.log(newMark, oldMark);
     },
-    autoCreatePic(){
-      const tradeMarkname= this.form.getFieldValue(['name']).me
-      console.log(tradeMarkname)
-      const url='/api/trademark/image/returnTrademarkImageByStr'
-      const params={
-        str:tradeMarkname
-      }
-      if(tradeMarkname!==undefined){
-      this.$axios({
-        method:'get',
-        url:url,
-        params:params
-      }).then(res=>{
-        if(res.data.success){
-           const imgbase64=res.data.data.imageBase64
-           console.log(imgbase64)
-           this.autoImgUrl="data:image/jpeg;base64,"+imgbase64
-        }
-      }).catch(err=>{
-        console.log(err)
-      })
-      }else{
-        this.$message.warning('请输入要填写的商标名称')
-      }
-    },//
-    getExpandItem(value){
-     console.log(value)
-    },
-    getCheckItem(value){
-      console.log(value)
-      const url="/api/trademark/trademarkClassifyGoods/selectTrademarkClassifyByGroupId"
-      const params={
-        trademarkGroupIds:value
-      }
-      this.$axios({
-        method:'post',
-        url:url,
-        data:params
-      }).then(res=>{
-        console.log(res)
-      }).catch(err=>{
-        console.log(err)
-      })
+    CheckedItem(newChecked, oldChecked) {
+      console.log(newChecked, oldChecked);
     }
-
+  },
+  methods: {
+    toNext() {
+      this.$router.push({ path: "/trademarkBuy/chooseApplicant" });
+    },
+    picTypeChange(e) {
+      console.log(e);
+      if (e.target.value === "自动生成") {
+        this.isAutoPic = true;
+      }
+      if (e.target.value === "手动上传") {
+        this.isAutoPic = false;
+      }
+    },
+    autoCreatePic() {
+      const tradeMarkname = this.form.getFieldValue(["name"]).me;
+      console.log(tradeMarkname);
+      const url = "/api/trademark/image/returnTrademarkImageByStr";
+      const params = {
+        str: tradeMarkname
+      };
+      if (tradeMarkname !== undefined) {
+        this.$axios({
+          method: "get",
+          url: url,
+          params: params
+        })
+          .then(res => {
+            if (res.data.success) {
+              const imgbase64 = res.data.data.imageBase64;
+              console.log(imgbase64);
+              this.autoImgUrl = "data:image/jpeg;base64," + imgbase64;
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      } else {
+        this.$message.warning("请输入要填写的商标名称");
+      }
+    }, //
+    getExpandItem(value) {
+      console.log(value);
+      const originTreeData = getStorage("treeData");
+      const onExpandArray = [];
+      console.log(originTreeData);
+      value.forEach(item => {
+        const onExpandItem = originTreeData.filter(treeDataItem => {
+          return treeDataItem.key === item;
+        });
+        onExpandArray.push(onExpandItem[0]);
+      });
+      console.log(onExpandArray);
+      this.onExpected = onExpandArray;
+    },
+    getCheckItem(value) {
+      const onExpected = this.onExpected;
+      const checkedArray = [];
+      value.forEach(item => {
+        onExpected.forEach(item2 => {
+          const onCheckItem = item2.children.filter(item3 => {
+            return item3.key === item;
+          });
+          checkedArray.push(onCheckItem[0]);
+        });
+      });
+      filterUnderfind(checkedArray);
+      console.log(checkedArray);
+      this.onChecked = checkedArray;
+      onExpected.forEach(item => {
+        const selectChild = [];
+        if (checkedArray.length > 0) {
+          checkedArray.forEach(item2 => {
+            if (item2.fatherId === item.id) {
+              selectChild.push(item2);
+            }
+            this.$set(item, "selectChild", selectChild);
+          });
+        }
+      });
+      this.CheckedItem = onExpected;
+      console.log(this.CheckedItem);
+    }
   }
-
 };
 </script>
 
@@ -213,17 +255,17 @@ export default {
         color: #ffffff;
       }
     }
-    .pic-area{
-        width: 104px;
-        height: 104px;
-        border: 1px dashed #d9d9d9;
-        img{
-          width:100%;
-          height:100%;
-        }
+    .pic-area {
+      width: 104px;
+      height: 104px;
+      border: 1px dashed #d9d9d9;
+      img {
+        width: 100%;
+        height: 100%;
+      }
     }
     .tips {
-      margin-top:2px;
+      margin-top: 2px;
       font-size: 12px;
       font-family: Source Han Sans CN;
       font-weight: 400;
@@ -381,37 +423,20 @@ export default {
           padding: 10px 30px 10px 30px;
           overflow-y: auto;
           .info-table-part3-2-right-item {
-            width: 80%;
-            height: 24px;
-            font-family: Source Han Sans CN;
-            font-weight: 400;
-            line-height: 24px;
-            opacity: 1;
-            .info-table-part3-2-right-item1 {
-              font-size: 14px;
-              height: 24px;
-              font-weight: 500;
-              color: #333333;
-            }
-            .info-table-part3-2-right-item2 {
-              font-size: 12px;
-              height: 24px;
-              color: #999999;
-              margin-left: 20px;
-            }
-            .info-table-part3-2-right-item3 {
-              font-size: 14px;
-              height: 24px;
-              font-weight: 500;
-              color: #fd7237;
-              margin-left: 23%;
-            }
-            .info-table-part3-2-right-item4 {
-              font-size: 14px;
-              height: 24px;
-              font-weight: 500;
-              color: #999999;
-              margin-left: 10px;
+            .info-table-part3-2-right-item-isShow {
+              margin-top:5px;
+              width: 100%;
+              height: 80px;
+              overflow-y: auto;
+              position: relative;
+              border-bottom: 1px solid rgba(221, 221, 221, 1);
+              .info-table-part3-2-right-item-price {
+                position: absolute;
+                top: 2px;
+                font-size: 16px;
+                right: 2px;
+                color: #ff8a00;
+              }
             }
           }
         }
@@ -425,8 +450,8 @@ export default {
     opacity: 1;
     display: flex;
     align-items: center;
-    padding-left:50px;
-    padding-right:50px;
+    padding-left: 50px;
+    padding-right: 50px;
     .footer-part1 {
       font-size: 14px;
       font-family: Source Han Sans CN;
@@ -442,7 +467,7 @@ export default {
       line-height: 41px;
       color: rgba(253, 114, 55, 1);
       opacity: 1;
-      margin-left:80px;
+      margin-left: 80px;
     }
     .footer-part3 {
       width: 98px;
@@ -454,7 +479,7 @@ export default {
       font-weight: 400;
       line-height: 20px;
       color: rgba(255, 255, 255, 1);
-      margin-left:50%;
+      margin-left: 50%;
     }
   }
 }

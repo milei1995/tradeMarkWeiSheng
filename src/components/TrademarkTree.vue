@@ -55,7 +55,7 @@
   //   key: "0-2"
   // }
 // ];
-
+import { setStorage, getStorage } from '../mixin/storage'
 export default {
   name: "TrademarkTree",
   data() {
@@ -69,12 +69,16 @@ export default {
   },
   watch: {
     checkedKeys(val) {
-      console.log("onCheck", val);
-        this.$emit("onCheckItem",val)
+       this.$emit("onCheckItem",val)
     }
   },
   mounted(){
+    const originTreeData=getStorage('treeData')
+    if(originTreeData==[]||originTreeData==undefined){
     this.getClassifyGoods()
+    }else{
+      this.treeData=originTreeData
+    }
   },
   methods: {
     onExpand(expandedKeys) {
@@ -111,6 +115,7 @@ export default {
             item.classifyGroups.forEach(item2=>{
               const obj2={
                 title:item2.groupsId+' '+item2.groupsName,
+                fatherId:item.classifyId,
                 key:item2.groupsId,
                 id:item2.groupsId
               }
@@ -120,11 +125,13 @@ export default {
               title:'第'+item.classifyNum+'类'+' '+item.classifyName,
               key:item.classifyNum,
               id:item.classifyId,
+              price:item.classifyPrice,
               children:children
             }
             treeData.push(obj1)
           })
           console.log(treeData)
+          setStorage('treeData',treeData)
           this.treeData=treeData
         }
       })
