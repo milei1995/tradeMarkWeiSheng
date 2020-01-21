@@ -120,7 +120,7 @@
     </a-form>
     <div class="topay">
       <span class="topay1">应付金额</span>
-      <span class="topay2">￥300</span>
+      <span class="topay2">￥{{totalPrice}}</span>
       <a-button @click="toNext">下一步</a-button>
     </div>
   </div>
@@ -206,12 +206,17 @@ export default {
       plainOptions: ["企业单位", "自然人"],
       picOptions: ["自动生成", "手动上传"],
       isErr: true,
-      currentType: "", //当前类型
+      currentType: "企业单位", //当前类型
       writeInfo: [], //当前填写的信息
       imgUrl1: "", //企业营业执照
       imgUrl2: "", //身份证正面
       imgUrl3: "", //身份证反面
-      imgUrl4: "" //个体户证明资料
+      imgUrl4: "", //个体户证明资料
+      params: {}, //支付请求的参数
+      paramsPart1: null, //接收参数1
+      paramsPart2: {}, //请求参数2
+      isSave: false, //是否保存
+      totalPrice: "" //总价
     };
   },
   created() {
@@ -223,6 +228,11 @@ export default {
   },
   mounted() {
     this.validatorRules.type.initialValue = this.plainOptions[0];
+    const totalPrice = this.$router.history.current.query.totalPrice;
+    const paramsPart1 = this.$router.history.current.query.paramsPart1;
+    this.paramsPart1 = { ...paramsPart1 };
+    this.totalPrice = totalPrice;
+    console.log(this.paramsPart1);
   },
   methods: {
     handleTypeChange(e) {
@@ -237,10 +247,22 @@ export default {
     },
     toNext() {
       const isErr = this.isErr;
+      const isSave = this.isSave;
       if (isErr) {
         this.$message.error("请填写全信息");
       } else {
-        this.$router.push({ path: "/trademarkBuy/payOrder" });
+        if (isSave) {
+          this.params = Object.assign(this.paramsPart2, this.paramsPart1);
+          console.log(this.params);
+          console.log(this.paramsPart2);
+          console.log(this.paramsPart1);
+          this.$router.push({
+            path: "/trademarkBuy/payOrder",
+            query: { params: this.params }
+          });
+        } else {
+          this.$message.error("请先保存");
+        }
       }
     },
     getImageUrl1(imageUrl) {
@@ -268,111 +290,123 @@ export default {
           console.log("Received values of form: ", values);
           this.writeInfo = values;
           this.isErr = false;
+          const accessToken = getStorage("AccessToken");
+          console.log(accessToken)
+          if (accessToken) {
+            const currentType = this.currentType;
+            console.log(currentType)
+            if (currentType === "企业单位") {
+              (this.paramsPart2.companConfigId = "1"),
+                (this.paramsPart2.userConfigId = "0");
+              console.log(this.writeInfo);
+              const url = "/api/trademark/configApply/addConfigCompanyApply";
+              const applyType = this.writeInfo.applyType;
+              const companyName = this.writeInfo.bussinessName;
+              const companyProveImage = this.imgUrl1;
+              const province = this.writeInfo.licenseArea[0];
+              const city = this.writeInfo.licenseArea[1];
+              const district = this.writeInfo.licenseArea[2];
+              const businessLicenseAddress = this.writeInfo.licenseAddress;
+              const contacts = this.writeInfo.contacts;
+              const contactsPhone = this.writeInfo.phone;
+              const contactFax = this.writeInfo.fax;
+              const contactEmail = this.writeInfo.mail;
+              const params = {
+                applyType: applyType,
+                companyName: companyName,
+                companyProveImage: companyProveImage,
+                province: province,
+                city: city,
+                district: district,
+                businessLicenseAddress: businessLicenseAddress,
+                contacts: contacts,
+                contactsPhone: contactsPhone,
+                contactFax: contactFax,
+                contactEmail: contactEmail
+              };
+              const headers = {
+                accessToken: accessToken
+              };
+              const jsonparams = JSON.stringify(params);
+              console.log(jsonparams);
+              this.$axios({
+                method: "post",
+                url: url,
+                data: jsonparams,
+                headers: headers
+              })
+                .then(res => {
+                  console.log(res);
+                  if (res.data.success) {
+                    this.$message.success("保存成功");
+                    this.isSave = true;
+                  }
+                })
+                .catch(err => {
+                  console.log(err);
+                });
+            }
+            if (currentType === "自然人") {
+              (this.paramsPart2.companConfigId = "0"),
+                (this.paramsPart2.userConfigId = "1");
+              console.log(this.writeInfo);
+              const url = "/api/trademark/configApply/addConfigUserApply";
+              const headers = {
+                accessToken: accessToken
+              };
+              const applyUserName = this.writeInfo.applyPersonName;
+              const credentialsType = this.writeInfo.certificatesType;
+              const idCard = this.writeInfo.personId;
+              const idCardFront = this.imgUrl2;
+              const idCardReverse = this.imgUrl3;
+              const companyProveImage = this.imgUrl4;
+              const province = this.writeInfo.personArea[0];
+              const city = this.writeInfo.personArea[1];
+              const district = this.writeInfo.personArea[2];
+              const idCardAddress = this.writeInfo.idcardAddress;
+              const contactsPhone = this.writeInfo.phone;
+              const contacts = this.writeInfo.contacts;
+              const contactEmail = this.writeInfo.mail;
+              // const contactFax=this.writeInfo.contactFax
+              const params = {
+                applyUserName: applyUserName,
+                credentialsType: credentialsType,
+                idCard: idCard,
+                idCardFront: idCardFront,
+                idCardReverse: idCardReverse,
+                companyProveImage: companyProveImage,
+                province: province,
+                city: city,
+                district: district,
+                idCardAddress: idCardAddress,
+                contacts: contacts,
+                contactsPhone: contactsPhone,
+                contactEmail: contactEmail
+              };
+              const jsonparams = JSON.stringify(params);
+              console.log(params);
+              this.$axios({
+                method: "post",
+                url: url,
+                headers: headers,
+                data: jsonparams
+              })
+                .then(res => {
+                  console.log(res);
+                  if (res.data.success) {
+                    this.$message.success("保存成功");
+                    this.isSave = true;
+                  }
+                })
+                .catch(err => {
+                  console.log(err);
+                });
+            }
+          } else {
+            this.$message.warning("请先登录！");
+          }
         }
       });
-       const accessToken=  getStorage('AccessToken')
-      if(accessToken){
-       const currentType = this.currentType;
-        if (currentType === "企业单位" ) {
-          console.log(this.writeInfo)
-          const url="/api/trademark/configApply/addConfigCompanyApply"
-          const applyType=this.writeInfo.applyType
-          const  companyName=this.writeInfo.bussinessName
-          const  companyProveImage=this.imgUrl1
-          const province=this.writeInfo.licenseArea[0]
-          const city=this.writeInfo.licenseArea[1]
-          const district=this.writeInfo.licenseArea[2]
-          const businessLicenseAddress=this.writeInfo.licenseAddress
-          const contacts=this.writeInfo.contacts
-          const contactsPhone=this.writeInfo.phone
-          const contactFax=this.writeInfo.fax
-          const contactEmail=this.writeInfo.mail
-          const params={
-              "applyType":applyType,
-              "companyName":companyName,
-              "companyProveImage":companyProveImage,
-              "province":province,
-              "city":city,
-              "district":district,
-              "businessLicenseAddress":businessLicenseAddress,
-              "contacts":contacts,
-              "contactsPhone":contactsPhone,
-              "contactFax":contactFax,
-              "contactEmail":contactEmail
-          }
-          const headers={
-             'accessToken':accessToken
-          }
-          const jsonparams=JSON.stringify(params)
-          console.log(jsonparams)
-          this.$axios({
-            method:'post',
-            url:url,
-            data:jsonparams,
-            headers:headers
-          }).then(res=>{
-            console.log(res)
-            if(res.data.success){
-               this.$message.success('保存成功')
-            }
-          }).catch(err=>{
-            console.log(err)
-          })
-        }
-        if(currentType==="自然人"){
-            console.log(this.writeInfo)
-          const url="/api/trademark/configApply/addConfigUserApply"
-          const headers={
-             'accessToken':accessToken
-          }
-          const applyUserName=this.writeInfo.applyPersonName
-          const credentialsType=this.writeInfo.certificatesType
-          const idCard=this.writeInfo.personId
-          const idCardFront=this.imgUrl2
-          const idCardReverse=this.imgUrl3
-          const  companyProveImage=this.imgUrl4
-          const province=this.writeInfo.personArea[0]
-          const city=this.writeInfo.personArea[1]
-          const district=this.writeInfo.personArea[2]
-          const idCardAddress=this.writeInfo.idcardAddress
-          const contactsPhone=this.writeInfo.phone
-          const contacts=this.writeInfo.contacts
-          const contactEmail=this.writeInfo.mail
-          // const contactFax=this.writeInfo.contactFax
-          const params={
-              applyUserName:applyUserName,
-              credentialsType:credentialsType,
-              idCard:idCard,
-              idCardFront:idCardFront,
-              idCardReverse:idCardReverse,
-              companyProveImage:companyProveImage,
-              province:province,
-              city:city,
-              district:district,
-              idCardAddress:idCardAddress,
-              contacts:contacts,
-              contactsPhone:contactsPhone,
-              contactEmail:contactEmail
-          }
-           const  jsonparams=JSON.stringify(params)
-          console.log(params)
-          this.$axios({
-            method:'post',
-            url:url,
-            headers:headers,
-            data:jsonparams,
-          }).then(res=>{
-            console.log(res)
-             if(res.data.success){
-               this.$message.success('保存成功')
-            }
-          }).catch(err=>{
-            console.log(err)
-          })
-        }
-      }else{
-        this.$message.warning("请先登录！")
-      }
     }
   }
 };

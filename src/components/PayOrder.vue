@@ -22,8 +22,8 @@
         @change="handlePayTypeChange"
       />
       <div class="pay-img">
-          <img v-if='isPayTypeChange' src='../bannerAndIcon/alipay.png'/>
-          <img v-else src='../bannerAndIcon/wechatpay.png'/>
+        <img v-if="isPayTypeChange" src="../bannerAndIcon/alipay.png" />
+        <img v-else src="../bannerAndIcon/wechatpay.png" />
       </div>
     </div>
     <div class="topay">
@@ -35,27 +35,53 @@
 </template>
 
 <script>
+import { getStorage } from "../mixin/storage";
 export default {
   name: "PayOrder",
   data() {
     return {
-      isPayTypeChange:true,
+      isPayTypeChange: true,
       plainOptions: ["支付宝", "微信"]
     };
   },
-  methods:{
-      handlePayTypeChange(e){
-          console.log(e)
-          if(e.target.value==='支付宝'){
-              this.isPayTypeChange=true
-          }
-          if(e.target.value==='微信'){
-              this.isPayTypeChange=false
-          }
-      },
-      toNext(){
-        this.$router.push({path:'/trademarkBuy/commitTrademark'})
+  mounted() {
+    const params = this.$router.history.current.query;
+    console.log(params);
+    this.getMountedData(params.params);
+  },
+  methods: {
+    handlePayTypeChange(e) {
+      console.log(e);
+      if (e.target.value === "支付宝") {
+        this.isPayTypeChange = true;
       }
+      if (e.target.value === "微信") {
+        this.isPayTypeChange = false;
+      }
+    },
+    toNext() {
+      this.$router.push({ path: "/trademarkBuy/commitTrademark" });
+    },
+    getMountedData(paramsData) {
+      const url = "/api/trademark/trademarkOrder/registerPay";
+      const accessToken = getStorage("accessToken");
+      const headers = {
+        accessToken: accessToken
+      };
+      const params = paramsData;
+      this.$axios({
+        method: "post",
+        url: url,
+        headers: headers,
+        data: params
+      })
+        .then(res => {
+          console.log(res);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
   }
 };
 </script>
@@ -110,18 +136,18 @@ export default {
       margin-top: 10px;
     }
     .pay-img {
-      margin-top:10px;
+      margin-top: 10px;
       width: 111px;
       height: 36px;
       border: 1px solid rgba(232, 232, 232, 1);
       opacity: 1;
-      img{
-          width:100%;
-          height:100%;
+      img {
+        width: 100%;
+        height: 100%;
       }
     }
   }
-   /deep/.topay {
+  /deep/.topay {
     padding-left: 50px;
     padding-right: 50px;
     width: 100%;
@@ -133,7 +159,7 @@ export default {
     opacity: 1;
     display: flex;
     .topay1 {
-       display: table-cell;
+      display: table-cell;
       font-size: 14px;
       font-family: Source Han Sans CN;
       font-weight: 400;
@@ -141,7 +167,7 @@ export default {
       opacity: 1;
     }
     .topay2 {
-       display: table-cell;
+      display: table-cell;
       margin-left: 50px;
       font-size: 24px;
       font-family: Source Han Sans CN;
@@ -151,7 +177,7 @@ export default {
       opacity: 1;
     }
     .ant-btn {
-       display: table-cell;
+      display: table-cell;
       width: 98px;
       height: 29px;
       line-height: 29px;
@@ -161,7 +187,7 @@ export default {
       font-family: Source Han Sans CN;
       font-weight: 400;
       color: rgba(255, 255, 255, 1);
-      margin-left:60%;
+      margin-left: 60%;
     }
   }
 }

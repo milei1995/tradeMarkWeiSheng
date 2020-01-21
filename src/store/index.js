@@ -8,7 +8,8 @@ export default new Vuex.Store({
         searchType: '4',
         accessToken:'',//用户token
         userName:'',//用户名
-        userId:''//用户Id
+        userId:'',//用户Id
+        
     },
     mutations: {
         updataKeyword(state, newData) {

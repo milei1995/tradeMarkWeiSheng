@@ -41,7 +41,7 @@ export default {
   computed: {},
   methods: {
     chooseSteps(path) {
-       this.$router.push({path:path})
+      console.log(path)    //  this.$router.push({path:path})
     }
   }
 };

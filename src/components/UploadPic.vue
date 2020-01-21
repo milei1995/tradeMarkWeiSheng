@@ -75,6 +75,9 @@ export default {
               console.log(this.imageUrl)
               console.log(this.type);
               switch(this.type){
+                case '手动上传商标图样':
+                  this.$emit("getImageUrl",this.imageUrl)
+                  break
                 case '企业营业执照':
                    this.$emit("getImageUrl1",this.imageUrl)
                    break

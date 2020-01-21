@@ -2,7 +2,11 @@
   <div class="info">
     <a-form :form="form">
       <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="商标类型">
-        <a-radio-group :options="plainOptions" v-decorator="['type',validatorRules.type]" />
+        <a-radio-group
+          :options="plainOptions"
+          v-decorator="['type',validatorRules.type]"
+          @change="tradeMarkTypeChange"
+        />
       </a-form-item>
       <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="商标名称">
         <a-input placeholder="请输入商标名称" v-decorator="[ 'name', validatorRules.name]" />
@@ -19,13 +23,13 @@
         <!-- 自动生成 -->
         <div v-if="isAutoPic" class="creatpicture">
           <div class="pic-area">
-            <img :src="autoImgUrl" />
+            <span>{{autoContent}}</span>
           </div>
           <a-button @click="autoCreatePic">生成图片</a-button>
         </div>
         <!-- 手动生成 -->
         <div v-else class="pic-area-manual">
-          <upload-pic />
+          <upload-pic :type="'手动上传商标图样'" @getImageUrl="getUploadImageUrl" />
         </div>
         <div class="tips">
           <p class="tips-1">
@@ -74,7 +78,7 @@
                 <div class="info-table-part3-2-right-item-title">{{item.title}}</div>
                 <div class="info-table-part3-2-right-item-price">￥{{item.price}}</div>
                 <div>
-                  <a-tag v-for="(item2,index2) in item.selectChild" :key="index2" >{{item2.title}}</a-tag>
+                  <a-tag v-for="(item2,index2) in item.selectChild" :key="index2">{{item2.title}}</a-tag>
                 </div>
               </div>
             </div>
@@ -124,13 +128,17 @@ export default {
       plainOptions: ["文字商标", "图形商标", "文字图形组合商标"],
       picOptions: ["自动生成", "手动上传"],
       isAutoPic: true, //自动生成图片or手动生成图片
-      selectedTradeMark: [],
-      autoImgUrl: "", //自动生成图片url
+      autoContent: "", //自动生成内容
+      ManualImgUrl: "", //手动上传图片url
       onExpected: [], //已经展开的树结构
       onChecked: [], //已经选择的树结构
-      CheckedItem: [] //已经选中的商标
+      CheckedItem: [], //已经选中的商标
+      paramsPart1: {
+        orderType:'1'
+      } //请求时的参数
     };
   },
+
   mounted() {
     // this.getClassifyGoods()
   },
@@ -145,16 +153,41 @@ export default {
     }
   },
   watch: {
-    selectedTradeMark(newMark, oldMark) {
-      console.log(newMark, oldMark);
-    },
     CheckedItem(newChecked, oldChecked) {
       console.log(newChecked, oldChecked);
     }
   },
   methods: {
+    tradeMarkTypeChange(e) {
+      console.log(e.target.value);
+    },
+    getUploadImageUrl(imgUrl) {
+      //获取手动上传的图片Url
+      this.ManualImgUrl = imgUrl;
+      this.paramsPart1.trademarkImage = imgUrl;
+    },
     toNext() {
-      this.$router.push({ path: "/trademarkBuy/chooseApplicant" });
+      this.form.validateFields((err, values) => {
+        if (!err) {
+          console.log("Received values of form: ", values);
+          this.paramsPart1.trademarkExplain = values.explain;
+          this.paramsPart1.trademarkName = values.name;
+          switch (values.type) {
+            case "文字商标":
+              this.paramsPart1.trademarkStatus = "1";
+              break;
+            case "图形商标":
+              this.paramsPart1.trademarkStatus = "2";
+              break;
+            case "文字图形整合商标":
+              this.paramsPart1.trademarkStatus = "3";
+              break;
+          }
+          console.log(this.paramsPart1)
+           this.$router.push({ path: "/trademarkBuy/chooseApplicant" ,query:{paramsPart1:this.paramsPart1,totalPrice:this.totalPrice} });
+        }
+      });
+     
     },
     picTypeChange(e) {
       console.log(e);
@@ -168,26 +201,9 @@ export default {
     autoCreatePic() {
       const tradeMarkname = this.form.getFieldValue(["name"]).me;
       console.log(tradeMarkname);
-      const url = "/api/trademark/image/returnTrademarkImageByStr";
-      const params = {
-        str: tradeMarkname
-      };
       if (tradeMarkname !== undefined) {
-        this.$axios({
-          method: "get",
-          url: url,
-          params: params
-        })
-          .then(res => {
-            if (res.data.success) {
-              const imgbase64 = res.data.data.imageBase64;
-              console.log(imgbase64);
-              this.autoImgUrl = "data:image/jpeg;base64," + imgbase64;
-            }
-          })
-          .catch(err => {
-            console.log(err);
-          });
+        this.autoContent = tradeMarkname;
+        this.paramsPart1.trademarkImage=''
       } else {
         this.$message.warning("请输入要填写的商标名称");
       }
@@ -207,6 +223,8 @@ export default {
       this.onExpected = onExpandArray;
     },
     getCheckItem(value) {
+      console.log(value);
+      this.paramsPart1.trademarkGroupIds = value;
       const onExpected = this.onExpected;
       const checkedArray = [];
       value.forEach(item => {
@@ -259,9 +277,16 @@ export default {
       width: 104px;
       height: 104px;
       border: 1px dashed #d9d9d9;
-      img {
+      span {
+        display: block;
         width: 100%;
-        height: 100%;
+        height: 100px;
+        font-size: 20px;
+        font-weight: bold;
+        line-height: 100px;
+        text-align: center;
+        font-family: Arial, Helvetica, sans-serif;
+        overflow: hidden;
       }
     }
     .tips {
@@ -424,7 +449,7 @@ export default {
           overflow-y: auto;
           .info-table-part3-2-right-item {
             .info-table-part3-2-right-item-isShow {
-              margin-top:5px;
+              margin-top: 5px;
               width: 100%;
               height: 80px;
               overflow-y: auto;
