@@ -296,8 +296,8 @@ export default {
             const currentType = this.currentType;
             console.log(currentType)
             if (currentType === "企业单位") {
-              (this.paramsPart2.companConfigId = "1"),
-                (this.paramsPart2.userConfigId = "0");
+              this.paramsPart2.companyConfigId = "1",
+              this.paramsPart2.userConfigId = "0";
               console.log(this.writeInfo);
               const url = "/api/trademark/configApply/addConfigCompanyApply";
               const applyType = this.writeInfo.applyType;
@@ -347,8 +347,8 @@ export default {
                 });
             }
             if (currentType === "自然人") {
-              (this.paramsPart2.companConfigId = "0"),
-                (this.paramsPart2.userConfigId = "1");
+              this.paramsPart2.companyConfigId = "0",
+              this.paramsPart2.userConfigId = "1";
               console.log(this.writeInfo);
               const url = "/api/trademark/configApply/addConfigUserApply";
               const headers = {

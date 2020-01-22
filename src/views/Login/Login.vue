@@ -138,7 +138,7 @@ export default {
   padding-top: 1px;
   width: 44%;
   min-width: 650px;
-  height: 510px;
+  height: 450px;
   background: rgba(255, 255, 255, 1);
   opacity: 1;
   border-radius: 10px;

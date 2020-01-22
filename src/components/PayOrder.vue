@@ -3,11 +3,11 @@
     <div class="payorder-part1">
       <div class="payorder-part1-item">
         <span class="item-label">订单：</span>
-        <span class="item-text">22554566885555</span>
+        <span class="item-text">{{orderNo}}</span>
       </div>
       <div class="payorder-part1-item">
         <span class="item-label">费用：</span>
-        <span class="item-text">300元</span>
+        <span class="item-text">{{totalPrice}}元</span>
       </div>
       <div class="payorder-part1-item">
         <span class="item-label">申请状态：</span>
@@ -28,7 +28,7 @@
     </div>
     <div class="topay">
       <span class="topay1">应付金额</span>
-      <span class="topay2">￥&nbsp;300</span>
+      <span class="topay2">￥&nbsp;{{totalPrice}}</span>
       <a-button @click="toNext">下一步</a-button>
     </div>
   </div>
@@ -41,7 +41,9 @@ export default {
   data() {
     return {
       isPayTypeChange: true,
-      plainOptions: ["支付宝", "微信"]
+      plainOptions: ["支付宝", "微信"],
+      orderNo:'',//订单编号
+      totalPrice:''//总价
     };
   },
   mounted() {
@@ -64,7 +66,7 @@ export default {
     },
     getMountedData(paramsData) {
       const url = "/api/trademark/trademarkOrder/registerPay";
-      const accessToken = getStorage("accessToken");
+      const accessToken = getStorage("AccessToken");
       const headers = {
         accessToken: accessToken
       };
@@ -77,6 +79,10 @@ export default {
       })
         .then(res => {
           console.log(res);
+          if(res.data.success){
+              this.orderNo=res.data.data.orderNo,
+              this.totalPrice=res.data.data.totalPrice
+          }
         })
         .catch(err => {
           console.log(err);
