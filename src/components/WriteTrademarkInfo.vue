@@ -60,8 +60,8 @@
           </div>
           <div class="info-table-part3-1-right">
             <span class="choose">已经选择的商标类型</span>
-            <a-button class="save-btn">保存当前类别</a-button>
-            <a-button class="clear-btn">清除全部</a-button>
+            <a-button class="save-btn" disabled>保存当前类别</a-button>
+            <a-button class="clear-btn" disabled>清除全部</a-button>
           </div>
         </div>
         <div class="info-table-part3-2">
@@ -147,7 +147,12 @@ export default {
       const CheckedItem = this.CheckedItem;
       let total = null;
       CheckedItem.forEach(item => {
+        if(item.selectChild.length>0){
+          item.price=300
         total += Number(item.price);
+        }else{
+          item.price=0
+        }
       });
       return total;
     }

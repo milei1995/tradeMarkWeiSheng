@@ -84,7 +84,7 @@
           <upload-pic :type="'个体户证明资料'" @getImageUrl4="getImageUrl4" />
           <div style="color:rgb(253, 114, 55);">请上传个体工商户证明资料！</div>
         </a-form-item>
-        <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="申请人行政区划">
+        <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="申请人行政区">
           <a-cascader
             placeholder="请选择地区"
             :props="{ expandTrigger: 'hover' }"
@@ -214,7 +214,9 @@ export default {
       imgUrl4: "", //个体户证明资料
       params: {}, //支付请求的参数
       paramsPart1: null, //接收参数1
-      paramsPart2: {}, //请求参数2
+      paramsPart2: {
+        payType:"1" //默认微信支付
+      }, //请求参数2
       isSave: false, //是否保存
       totalPrice: "" //总价
     };

@@ -92,7 +92,7 @@ export default {
   opacity: 1;
   .expert-part1 {
     width: 100%;
-    min-width: 868px;
+    min-width: 1000px;
     height: 455px;
     background: rgba(255, 255, 255, 1);
     border: 1px solid rgba(235, 235, 235, 1);
@@ -138,7 +138,7 @@ export default {
   .expert-part2 {
     margin-top: 20px;
     width: 100%;
-    min-width: 868px;
+    min-width: 1000px;
     height: 455px;
     img {
       width: 100%;

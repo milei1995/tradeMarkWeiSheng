@@ -1,7 +1,7 @@
 <template>
   <div class="search">
     <div class="search-part3">
-      <a-select size='large'   style="width: 160px;height:50px" @change="handleChange">
+      <a-select size='large'  defaultValue='1' style="width: 160px;height:50px" @change="handleChange">
         <a-select-option value="1">商标名</a-select-option>
         <a-select-option value="2">注册号</a-select-option>
         <a-select-option value="3">申请人</a-select-option>

@@ -1,6 +1,10 @@
 <template>
   <div class="list">
     <div class="list-banner">
+       <div class="banner-search">
+          <a-input v-model="searchContent" placeholder="请输入相关搜索内容"/>
+          <a-button @click='handleSearch'>搜索</a-button>
+       </div>
       <div class="list-banner-title">全行业覆盖</div>
       <div class="list-banner-des">为您量身定制商标注册方案</div>
     </div>
@@ -9,7 +13,7 @@
       <div class="list-content-result">
         <div class="result-item" v-for="(item,index) in categoryList" :key="index">
           <div class="result-item-img">
-            <img :src="item.tmImg" />
+            <img :src="item.tmImg" @click="toDetail(item.regNo,item.intCls)"/>
           </div>
           <div class="result-item-des">
             <span class='result-item-des1'>第{{item.intCls}}类</span>&nbsp;
@@ -51,7 +55,8 @@ export default {
       keyword:'化学',//商标keyWord
       defaultCurrent:1,//默认页码
       currentPage:1,//当前页码
-      searchType:'4'
+      searchType:'4',
+      searchContent:''//搜索内容
     };
   },
   watch: {
@@ -133,6 +138,11 @@ export default {
     },
     toDetail(regNo,id){
       this.$router.push({path:'/detail',query:{regNo:regNo,id:id}})
+    },
+    handleSearch(){
+      const searchContent=this.searchContent
+      this.keyword=searchContent
+      this.getTradeMarkListData(this.categoryId,this.currentPage,this.keyword,this.searchType)
     }
   }
 };
@@ -155,8 +165,16 @@ export default {
   background: url("../../bannerAndIcon/list-banner-bg.png") no-repeat center;
   background-size: cover;
 }
+.banner-search{
+  display: flex;
+  width:60%;
+  height:50px;
+  line-height: 50px;
+  margin:2px auto 0px;
+  opacity: 0.9;
+}
 .list-banner-title {
-  margin-top: 100px;
+  margin-top: 80px;
   margin-left: 42%;
   width: 175px;
   height: 39px;
@@ -197,6 +215,7 @@ export default {
   width: 100%;
   height: 130px;
   border: 1px dashed black;
+  cursor: pointer;
 }
 .result-item-des {
   margin: 0px auto 0px;

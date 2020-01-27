@@ -11,7 +11,10 @@
       <!-- <div><a-button>发送验证码</a-button></div> -->
       <a-icon type="lock" class="login-content-possword-icon" />
       <div class="login-content-tip">
-        <a-button @click="sendVerificationCode">发送验证码</a-button>
+        <a-button @click="sendVerificationCode">
+          <span v-show="isShow">发送验证码</span>
+          <span v-show="!isShow">{{count}}s</span>
+        </a-button>
       </div>
       <a-button class="login-button" @click="toHome">登录</a-button>
       <div class="toregister" @click="toUserRegister">立即免费注册>>></div>

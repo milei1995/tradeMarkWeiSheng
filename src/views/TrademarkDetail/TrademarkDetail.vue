@@ -21,7 +21,7 @@
             <div
               class="des3-3"
             >类似群组:&nbsp;&nbsp;{{tradeMarkContent.announcementIssue}};</div>
-            <div class="des3-4">使用范围:&nbsp;&nbsp;1111111111111111111111111111111111111111111</div>
+            <div class="des3-4">使用范围:&nbsp;&nbsp;</div>
           </div>
         </div>
         <div class="detail-banner-part1-3">
@@ -55,7 +55,7 @@
       </div>
     </div>
     <trademark-modal1  ref='modal1'/>
-    <trademark-modal2  ref='modal2' :tradeMarkName="tradeMarkContent.tmName" @toNextModal='Consulteok'/>
+    <trademark-modal2  ref='modal2' :tradeMarkName="tradeMarkContent.tmName" :tradeMarkRegNo="tradeMarkContent.regNo" @toNextModal='Consulteok'/>
     <trademark-modal3  ref='modal3' @toNextModal2="toNextModal2"/>
   </div>
 </template>
@@ -318,8 +318,11 @@ export default {
     }
     .content-detail {
       width: 100%;
+      background-color: #F5F5F5;
+      min-width: 1050px;
       padding: 20px 20px 20px 20px;
       display: flex;
+      justify-content: space-around;
       flex-wrap: wrap;
       .content-detail-item {
         display: flex;
@@ -347,13 +350,15 @@ export default {
     .content-transfer {
       width: 100%;
       height: 260px;
+      min-width: 1050px;
       border-bottom: 1px solid rgba(232, 232, 232, 1);
-      background: url("../../assets/detail-step.jpg") no-repeat center;
+      background: url("../../assets/detail-step.png") no-repeat center;
       background-size: cover;
     }
     .transfer-info {
       width: 100%;
       height: 260px;
+      min-width:1050px;
       border-bottom: 1px solid rgba(232, 232, 232, 1);
       background: url("../../assets/detail-transfer.jpg") no-repeat center;
       background-size: cover;
@@ -361,6 +366,7 @@ export default {
     .serve {
       width: 100%;
       height: 92px;
+      min-width:1050px;
       line-height: 92px;
       background:#f3f3f3;
       opacity: 1;

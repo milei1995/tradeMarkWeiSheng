@@ -1,6 +1,6 @@
 <template>
   <div v-if="isShow" class="globalHeader">
-    <img src="../bannerAndIcon/login-logo2.png" class="globalHeader-logo" />
+    <img src="../bannerAndIcon/login-logo2.png" class="globalHeader-logo" @click="goHome"/>
     <div class="globalHearder-nav">
       <div
         class="globalHeader-nav-item"
@@ -65,6 +65,9 @@ export default {
   methods: {
     chooseCategory(path) {
       this.$router.push({ path: path });
+    },
+    goHome(){
+      this.$router.push({path:'/home'})
     }
   }
 };
@@ -86,6 +89,7 @@ export default {
   margin-left: 22%;
   width: 205px;
   height: 51px;
+  cursor: pointer;
 }
 .globalHearder-nav {
   display: flex;

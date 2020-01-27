@@ -25,6 +25,9 @@
         <img v-if="isPayTypeChange" src="../bannerAndIcon/alipay.png" />
         <img v-else src="../bannerAndIcon/wechatpay.png" />
       </div>
+      <div class='pay-code' v-if="isShowCode">
+         <img :src="codeImgUrl" />
+      </div>
     </div>
     <div class="topay">
       <span class="topay1">应付金额</span>
@@ -43,7 +46,9 @@ export default {
       isPayTypeChange: true,
       plainOptions: ["支付宝", "微信"],
       orderNo:'',//订单编号
-      totalPrice:''//总价
+      totalPrice:'',//总价
+      isShowCode:false,//展示二维码
+      codeImgUrl:''//二维码图片URL
     };
   },
   mounted() {
@@ -55,9 +60,12 @@ export default {
     handlePayTypeChange(e) {
       console.log(e);
       if (e.target.value === "支付宝") {
+        this.isShowCode=false
+        this.$message.warning('抱歉,尚未开通支付保支付功能')
         this.isPayTypeChange = true;
       }
       if (e.target.value === "微信") {
+        this.isShowCode=true
         this.isPayTypeChange = false;
       }
     },
@@ -82,6 +90,7 @@ export default {
           if(res.data.success){
               this.orderNo=res.data.data.orderNo,
               this.totalPrice=res.data.data.totalPrice
+              this.codeImgUrl= 'data:image/jpg;base64,'+res.data.data.payCodeQR
           }
         })
         .catch(err => {
@@ -150,6 +159,14 @@ export default {
       img {
         width: 100%;
         height: 100%;
+      }
+    }
+    .pay-code{
+      width:100px;
+      height:100px;
+      img{
+        width:100%;
+        height:100%;
       }
     }
   }

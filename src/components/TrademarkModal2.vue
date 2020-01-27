@@ -42,6 +42,7 @@
 </template>
 
 <script>
+import { getStorage } from '../mixin/storage'
 export default {
   name: "TrademarkModal2",
   data() {
@@ -51,7 +52,7 @@ export default {
       form: this.$form.createForm(this)
     };
   },
-  props:['tradeMarkName'],
+  props:['tradeMarkName','tradeMarkRegNo'],
   methods: {
     showModal() {
       this.visible = true;
@@ -62,13 +63,43 @@ export default {
     handleCancel() {
       this.visible = false;
     },
-    handleSubmit(e) {
-      e.preventDefault();
+    handleSubmit() {
       this.form.validateFields((err, values) => {
         if (!err) {
           console.log("Received values of form: ", values);
-          this.visible=false
-          this.$emit('toNextModal')
+          const phone=values.mobile
+          const userName=values.user
+          const applyType='3' //商标咨询
+          const regNo=this.tradeMarkRegNo
+          const params={
+            phone:phone,
+            userName:userName,
+            applyType:applyType,
+            regNo:regNo
+          }
+        
+          const url='/api/trademark/applyNeeds/addApplyNeeds'
+          const accessToken=getStorage("AccessToken")
+          const headers={
+            accessToken:accessToken
+          }
+          this.$axios({
+            method:'post',
+            url:url,
+            data:params,
+            headers:headers
+          }).then(res=>{
+            console.log(res)
+            if(res.data.success){
+              this.$message.success("提交成功")
+              this.visible=false
+              this.$emit('toNextModal')
+            }
+          }).catch(err=>{
+            console.log(err)
+          })
+          
+         
         }
       });
     }
