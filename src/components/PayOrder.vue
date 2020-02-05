@@ -18,7 +18,6 @@
       <div class="payorder-part2-1">其他方式支付</div>
       <a-radio-group
         :options="plainOptions"
-        :defaultValue="plainOptions[0]"
         @change="handlePayTypeChange"
       />
       <div class="pay-img">
@@ -26,7 +25,12 @@
         <img v-else src="../bannerAndIcon/wechatpay.png" />
       </div>
       <div class='pay-code' v-if="isShowCode">
+        <a-tooltip placement='rightTop'>
+          <template slot='title'>
+            <span>请扫描二维码支付哦</span>
+          </template>
          <img :src="codeImgUrl" />
+        </a-tooltip>
       </div>
     </div>
     <div class="topay">
@@ -70,7 +74,30 @@ export default {
       }
     },
     toNext() {
-      this.$router.push({ path: "/trademarkBuy/commitTrademark" });
+      const url='/api/trademark/trademarkOrder/selectOrderByOrderNo'
+      const accessToken=getStorage("AccessToken")
+      const headers={
+        accessToken:accessToken
+      }
+      const params={
+        orderNo:this.orderNo
+      }
+      this.$axios({
+        method:'get',
+        url:url,
+        headers:headers,
+        params:params
+      }).then(res=>{
+        console.log(res)
+        if(res.data.success){
+          this.$message.success("支付成功")
+          this.$router.push({ path: "/trademarkBuy/commitTrademark" });
+        }else{
+          this.$message.error("支付失败")
+        }
+      }).catch(err=>{
+        console.log(err)
+      })
     },
     getMountedData(paramsData) {
       const url = "/api/trademark/trademarkOrder/registerPay";
@@ -162,8 +189,8 @@ export default {
       }
     }
     .pay-code{
-      width:100px;
-      height:100px;
+      width:140px;
+      height:140px;
       img{
         width:100%;
         height:100%;

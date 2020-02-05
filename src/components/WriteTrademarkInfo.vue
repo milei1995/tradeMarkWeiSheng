@@ -40,7 +40,7 @@
       </a-form-item>
     </a-form>
     <div class="info-table">
-      <div class="info-table-part1">
+      <!-- <div class="info-table-part1">
         <div class="info-table-part1-1">选择推荐方案</div>
         <a-select placeholder="请选择领域">
           <a-select-option value="jack">领域1</a-select-option>
@@ -51,7 +51,7 @@
       <div class="info-table-part2">
         <div class="info-table-part2-1">常用商标类别</div>
         <div class="info-table-part2-2">暂无商标类别</div>
-      </div>
+      </div>-->
       <div class="info-table-part3">
         <div class="info-table-part3-1">
           <div class="info-table-part3-1-left">
@@ -134,7 +134,7 @@ export default {
       onChecked: [], //已经选择的树结构
       CheckedItem: [], //已经选中的商标
       paramsPart1: {
-        orderType:'1'
+        orderType: "1"
       } //请求时的参数
     };
   },
@@ -147,11 +147,11 @@ export default {
       const CheckedItem = this.CheckedItem;
       let total = null;
       CheckedItem.forEach(item => {
-        if(item.selectChild.length>0){
-          item.price=300
-        total += Number(item.price);
-        }else{
-          item.price=0
+        if (item.selectChild.length > 0) {
+          item.price = 300;
+          total += Number(item.price);
+        } else {
+          item.price = 0;
         }
       });
       return total;
@@ -188,11 +188,16 @@ export default {
               this.paramsPart1.trademarkStatus = "3";
               break;
           }
-          console.log(this.paramsPart1)
-           this.$router.push({ path: "/trademarkBuy/chooseApplicant" ,query:{paramsPart1:this.paramsPart1,totalPrice:this.totalPrice} });
+          console.log(this.paramsPart1);
+          this.$router.push({
+            path: "/trademarkBuy/chooseApplicant",
+            query: {
+              paramsPart1: this.paramsPart1,
+              totalPrice: this.totalPrice
+            }
+          });
         }
       });
-     
     },
     picTypeChange(e) {
       console.log(e);
@@ -208,7 +213,7 @@ export default {
       console.log(tradeMarkname);
       if (tradeMarkname !== undefined) {
         this.autoContent = tradeMarkname;
-        this.paramsPart1.trademarkImage=''
+        this.paramsPart1.trademarkImage = "";
       } else {
         this.$message.warning("请输入要填写的商标名称");
       }
@@ -217,7 +222,6 @@ export default {
       console.log(value);
       const originTreeData = getStorage("treeData");
       const onExpandArray = [];
-      console.log(originTreeData);
       value.forEach(item => {
         const onExpandItem = originTreeData.filter(treeDataItem => {
           return treeDataItem.key === item;
@@ -232,32 +236,34 @@ export default {
       this.paramsPart1.trademarkGroupIds = value;
       const onExpected = this.onExpected;
       const checkedArray = [];
-      value.forEach(item => {
-        onExpected.forEach(item2 => {
-          const onCheckItem = item2.children.filter(item3 => {
-            return item3.key === item;
+        value.forEach(item => {
+          onExpected.forEach(item2 => {
+            const onCheckItem = item2.children.filter(item3 => {
+              return item3.key === item;
+            });
+            checkedArray.push(onCheckItem[0]);
           });
-          checkedArray.push(onCheckItem[0]);
         });
-      });
-      filterUnderfind(checkedArray);
-      console.log(checkedArray);
-      this.onChecked = checkedArray;
-      onExpected.forEach(item => {
-        const selectChild = [];
-        if (checkedArray.length > 0) {
-          checkedArray.forEach(item2 => {
-            if (item2.fatherId === item.id) {
-              selectChild.push(item2);
-            }
-            this.$set(item, "selectChild", selectChild);
-          });
-        }
-      });
-      this.CheckedItem = onExpected;
-      console.log(this.CheckedItem);
+        filterUnderfind(checkedArray);
+        console.log(checkedArray);
+        this.onChecked = checkedArray;
+        onExpected.forEach(item => {
+          const selectChild = [];
+          if (checkedArray.length > 0) {
+            checkedArray.forEach(item2 => {
+              if (item2.fatherId === item.id) {
+                selectChild.push(item2);
+                this.$set(item, "selectChild", selectChild);
+              }
+            });
+          }else{
+            this.$set(item,"selectChild",[])
+          }
+        });
+        this.CheckedItem = onExpected;
+        console.log(onExpected);
+      }
     }
-  }
 };
 </script>
 
@@ -313,32 +319,32 @@ export default {
     height: 652px;
     border: 1px solid rgba(245, 245, 245, 1);
     opacity: 1;
-    /deep/.info-table-part1 {
-      height: 36px;
-      line-height: 36px;
-      display: flex;
-      .info-table-part1-1 {
-        font-size: 16px;
-        font-family: Source Han Sans CN;
-        font-weight: 400;
-        color: rgba(51, 51, 51, 1);
-        opacity: 1;
-      }
-      .ant-select {
-        width: 280px;
-        height: 36px;
-        margin-left: 20px;
-      }
-      .ant-btn {
-        width: 137px;
-        height: 33px;
-        background: rgba(247, 247, 247, 1);
-        border: 1px solid rgba(232, 232, 232, 1);
-        opacity: 1;
-        margin-left: 20px;
-        color: rgba(153, 153, 153, 1);
-      }
-    }
+    // /deep/.info-table-part1 {
+    //   height: 36px;
+    //   line-height: 36px;
+    //   display: flex;
+    //   .info-table-part1-1 {
+    //     font-size: 16px;
+    //     font-family: Source Han Sans CN;
+    //     font-weight: 400;
+    //     color: rgba(51, 51, 51, 1);
+    //     opacity: 1;
+    //   }
+    //   .ant-select {
+    //     width: 280px;
+    //     height: 36px;
+    //     margin-left: 20px;
+    //   }
+    //   .ant-btn {
+    //     width: 137px;
+    //     height: 33px;
+    //     background: rgba(247, 247, 247, 1);
+    //     border: 1px solid rgba(232, 232, 232, 1);
+    //     opacity: 1;
+    //     margin-left: 20px;
+    //     color: rgba(153, 153, 153, 1);
+    //   }
+    // }
     .info-table-part2 {
       width: 100%;
       height: 36px;
@@ -432,7 +438,7 @@ export default {
       }
       .info-table-part3-2 {
         width: 100%;
-        height: 430px;
+        height: 530px;
         display: flex;
         box-sizing: border-box;
         border: 1px solid rgba(232, 232, 232, 1);

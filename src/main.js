@@ -28,7 +28,19 @@ axios.defaults.headers.get['Content-Type'] = 'application/x-www-form-urlencoded'
 //   return ret
 // }]
 
-Vue.prototype.$axios = axios
+Vue.prototype.$axios = axios;
+
+router.beforeEach(({meta,path},from,next) => {
+  let {auth=true}=meta;//该路由是否需要登录
+  let $user=JSON.parse(sessionStorage.getItem('$user'))||{};
+  let isLogin=Boolean($user.auth) //true用户已经登录，false用户未登录
+  console.log(isLogin)
+  if(!auth && !isLogin &&path!='/login'){
+    return next({path:'/login'})
+  }else{
+    next()
+  }
+})
 
 new Vue({
   render: h => h(App),

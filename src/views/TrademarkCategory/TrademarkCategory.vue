@@ -37,6 +37,7 @@
 </template>
 
 <script>
+import { getStorage } from '../../mixin/storage'
 import TrademarkCategorySearch from "../../components/TrademarkCategorySearch";
 export default {
   name: "TrademarkCategory",
@@ -288,7 +289,29 @@ export default {
       if(this.mobilePhone==='' ||this.needServe===''){
         this.$message.warning('输入内容不能为空')
       }else{
-        this.$message.success('商标需求提交成功')
+        const accessToken=getStorage('AccessToken')
+        const url='/api/trademark/applyNeeds/addApplyNeeds'
+        const headers={
+           accessToken:accessToken
+        }
+        const params={
+            phone:this.mobilePhone,
+            applyType:'2'
+        }
+        this.$axios({
+          method:'post',
+          url:url,
+          headers:headers,
+          data:params
+        }).then(res=>{
+          console.log(res)
+          if(res.data.success){
+             this.$message.success('商标需求提交成功')
+          }
+        }).catch(err=>{
+          console.log(err)
+        })
+      
       }
     }
   }

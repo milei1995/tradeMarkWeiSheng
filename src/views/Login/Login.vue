@@ -25,6 +25,7 @@
 <script>
 const TIME_COUNT = 60; //更改倒计时时间
 import { setStorage } from "../../mixin/storage";
+import {mapMutations} from 'vuex'
 export default {
   name: "login",
   data() {
@@ -37,6 +38,7 @@ export default {
     };
   },
   methods: {
+    ...mapMutations(['setUser']),
     toUserRegister() {
       this.$router.push({ path: "/userRegister" });
     },
@@ -60,15 +62,15 @@ export default {
             console.log(res);
             if (res.data.success) {
               that.$message.info("登录成功");
-              that.$store.commit("updataAccessToken", res.data.token);
-              that.$store.commit("updataUserName", res.data.userName);
-              that.$store.commit("updataUserId", res.data.userId);
               setStorage("AccessToken", res.data.data.token);
               setStorage("UserName", res.data.data.userName);
               setStorage("UserId", res.data.data.userId);
+              that.setUser(res.data.data.userName)
               setTimeout(() => {
                 that.$router.push({ path: "/home" });
               }, 1500);
+            }else{
+                that.$message.error("登录失败");
             }
           })
           .catch(error => {

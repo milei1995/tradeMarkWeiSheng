@@ -1,6 +1,6 @@
 <template>
   <div v-if="isShow" class="globalHeader">
-    <img src="../bannerAndIcon/login-logo2.png" class="globalHeader-logo" @click="goHome"/>
+    <img src="../bannerAndIcon/login-logo2.png" class="globalHeader-logo" @click="goHome" />
     <div class="globalHearder-nav">
       <div
         class="globalHeader-nav-item"
@@ -9,11 +9,31 @@
         @click="chooseCategory(item.path)"
         :class="{active:item.path===$route.path}"
       >{{item.name}}</div>
+      <div class="globalHeader-nav-item" :class="{active:$router.path==='/login'}">
+        <span v-if="!isLogin" @click="chooseCategory('/login')">登录</span>
+        <span v-else>
+          <a-dropdown>
+            <div class="ant-dropdown-link" href="#">
+               <span style='color:rgba(41, 158, 249, 1);'> {{userName}}</span>
+              <a-icon type="down" style='color:rgba(41, 158, 249, 1);'/>
+            </div>
+            <a-menu slot="overlay">
+              <a-menu-item>
+                <div>个人中心</div>
+              </a-menu-item>
+              <a-menu-item>
+                <div  @click='logout'>注销</div>
+              </a-menu-item>
+            </a-menu>
+          </a-dropdown>
+        </span>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import {mapMutations} from 'vuex'
 export default {
   name: "globalHeader",
   data() {
@@ -39,22 +59,30 @@ export default {
           name: "专家申请",
           path: "/expertApplication"
         },
-        {
-          name: "登录",
-          path: "/login"
-        },
+        // {
+        //   name: "登录",
+        //   path: "/login"
+        // },
         {
           name: "免费注册",
           path: "/userRegister"
         }
       ],
       isShow: true,
-      categoryIndex: 0
+      categoryIndex: 0,
+      isLogin: false
     };
   },
   watch: {
     $route(to, from) {
       console.log(to, from);
+       const user= this.$store.state.userName
+      if(user===''){
+        this.isLogin=false
+      }else{
+        this.isLogin=true
+        this.userName=user
+      }
       if (to.name === "login" || to.name === "userRegister") {
         this.isShow = false;
       } else {
@@ -62,12 +90,27 @@ export default {
       }
     }
   },
+  mounted(){
+       const user= this.$store.state.userName
+       console.log(user)
+      if(user==='' || user==={}){
+        this.isLogin=false
+      }else{
+        this.isLogin=true
+        this.userName=user
+      }
+  },
   methods: {
+    ...mapMutations(['clearUser']),
     chooseCategory(path) {
       this.$router.push({ path: path });
     },
-    goHome(){
-      this.$router.push({path:'/home'})
+    goHome() {
+      this.$router.push({ path: "/home" });
+    },
+    logout(){
+      this.clearUser();
+      this.$router.push({path:'/login'})
     }
   }
 };

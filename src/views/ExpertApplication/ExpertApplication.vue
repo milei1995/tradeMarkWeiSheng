@@ -8,7 +8,10 @@
         <a-form-item label="联系方式" :label-col="{ span: 7 }" :wrapper-col="{ span: 12 }">
           <div class="contentType">
             <a-input v-decorator="[ 'phoneNumber', validatorRules.phoneNumber]"></a-input>
-            <a-button @click="getVerificationCode">获取验证码</a-button>
+            <a-button @click="getVerificationCode">
+              <span v-show="isShow">发送验证码</span>
+              <span v-show="!isShow">{{count}}s</span>
+            </a-button>
           </div>
         </a-form-item>
         <a-form-item label="验证码" :label-col="{ span: 7 }" :wrapper-col="{ span: 12 }">
@@ -28,6 +31,8 @@
 </template>
 
 <script>
+import {getStorage} from '../../mixin/storage'
+const TIME_COUNT = 60; //更改倒计时时间
 export default {
   name: "ExpertApplication",
   data() {
@@ -41,8 +46,11 @@ export default {
         verificationCode: {
           rules: [{ required: true, message: "请输入验证码!" }]
         },
-        needs:{}
-      }
+        needs: {}
+      },
+      isShow: true, //验证码倒计时
+      timer: null, //倒计时
+      count: "" //初始化次数
     };
   },
   methods: {
@@ -51,13 +59,35 @@ export default {
       this.form.validateFields((err, values) => {
         if (!err) {
           console.log("Received values of form: ", values);
-            this.$message.info('提交成功');
+          const accessToken=getStorage('AccessToken')
+          const url='/api/trademark/applyNeeds/addApplyNeeds'
+          const headers={
+            accessToken:accessToken
+          }
+          const params={
+            applyType:'1',
+            phone:values.phoneNumber
+          }
+          this.$axios({
+            method:'post',
+            url:url,
+            headers:headers,
+            data:params
+          }).then(res=>{
+            console.log(res)
+            if(res.data.success){
+              this.$message.info("提交成功");
+            }
+          }).catch(err=>{
+            console.log(err)
+          })
+      
         }
       });
-       
     },
     getVerificationCode() {
-      const phoneNumber = this.phoneNumber;
+      const phoneNumber = this.form.getFieldValue(['phoneNumber']).oneNumber;
+      console.log(phoneNumber)
       const url = "/api/trademark/sms/sendSmsCode";
       let params = {
         phone: phoneNumber,
@@ -73,6 +103,20 @@ export default {
         })
           .then(res => {
             console.log(res);
+            if (!this.timer && res.data.success) {
+              this.count = TIME_COUNT;
+              this.isShow = false;
+              this.$message.warning("若验证码有误，请60秒后重新获取");
+              this.timer = setInterval(() => {
+                if (this.count > 0 && this.count <= TIME_COUNT) {
+                  this.count--;
+                } else {
+                  this.isShow = true;
+                  clearInterval(this.timer); //清除定时器
+                  this.timer = null;
+                }
+              }, 1000);
+            }
           })
           .catch(error => {
             console.log(error);

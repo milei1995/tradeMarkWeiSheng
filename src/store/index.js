@@ -6,10 +6,12 @@ export default new Vuex.Store({
     state: {
         keyword: '化学',
         searchType: '4',
-        accessToken:'',//用户token
         userName:'',//用户名
-        userId:'',//用户Id
-        
+    },
+    actions:{
+      setUser({commit},item){
+          commit('setUser',item)
+      }
     },
     mutations: {
         updataKeyword(state, newData) {
@@ -18,14 +20,15 @@ export default new Vuex.Store({
         updataSearchType(state,newType){
           state.searchType=newType
         },
-        updataAccessToken(state,newToken){
-          state.accessToken=newToken
+        //设置登录信息
+        setUser(state,item){
+            state.userName=item
+            sessionStorage.setItem('$user',JSON.stringify(state.userName))
         },
-        updataUserName(state,newName){
-            state.userName=newName
-        },
-        updataUserId(state,newId){
-            state.userId=newId
+        //注销登录
+        clearUser(state){
+            state.userName=null
+            sessionStorage.setItem('$user',JSON.stringify(state.userName))
         }
     }
 })
