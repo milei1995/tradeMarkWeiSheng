@@ -47,7 +47,7 @@ export default {
   width: 100%;
   height: 350px;
   min-width: 1400px;
-  background: url("../bannerAndIcon/category-bg.png") no-repeat center;
+  background: url("http://wssbw-images.oss-cn-hangzhou.aliyuncs.com/trademark/web/c944c38f-5bc0-4f68-9ce9-80551215c44a.png") no-repeat center;
   background-size: cover;
 }
 .list-search-part1-1 {

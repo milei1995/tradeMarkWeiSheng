@@ -3,7 +3,10 @@
     <div class="detail-banner">
       <div class="detail-banner-part1">
         <div class="detail-banner-part1-1">
-          <img :src="'http://tmpic.tmkoo.com/'+tradeMarkContent.tmImg" class="detail-banner-part1-1-bg" />
+          <img
+            :src="'http://tmpic.tmkoo.com/'+tradeMarkContent.tmImg"
+            class="detail-banner-part1-1-bg"
+          />
         </div>
         <div class="detail-banner-part1-2">
           <div class="detail-banner-part1-2-des1">
@@ -18,19 +21,24 @@
           <div class="detail-banner-part1-2-des3">
             <div class="des3-1">同名多类:&nbsp;&nbsp;45类;&nbsp;&nbsp;44类;&nbsp;&nbsp;21类</div>
             <div class="des3-2">有效期限:&nbsp;&nbsp;{{tradeMarkContent.privateDate}}</div>
-            <div
-              class="des3-3"
-            >类似群组:&nbsp;&nbsp;{{tradeMarkContent.announcementIssue}};</div>
-            <div class="des3-4">使用范围:&nbsp;&nbsp;</div>
+            <div class="des3-3">类似群组:&nbsp;&nbsp;{{tradeMarkContent.announcementIssue}};</div>
+            <div class="des3-4">使用范围:&nbsp;&nbsp;{{useRange}}</div>
+            <div class="collect" @click="collectTradeMark">
+              <a-icon type="plus" />点击收藏
+            </div>
           </div>
         </div>
         <div class="detail-banner-part1-3">
-          <a-input class="btn1" placeholder="输入您的手机号" >
+          <a-input class="btn1" placeholder="输入您的手机号">
             <a-icon slot="prefix" type="mobile" />
           </a-input>
-          <a-button type="primary" class="btn2" @click='searchTradeMark'>
+          <a-button type="primary" class="btn2" @click="searchTradeMark">
             <a-icon type="search" />点击帮你找标
           </a-button>
+        </div>
+        <div class="detail-banner-part1-button">
+          <!-- <a-button class="detail-banner-part1-button1">求购咨询</a-button>
+          <a-button class="detail-banner-part1-button2">立即购买</a-button> -->
         </div>
       </div>
     </div>
@@ -41,6 +49,7 @@
           <div class="detail-item-1">{{item.title}}</div>
           <div class="detail-item-2">{{item.value}}</div>
         </div>
+        <div class="gosearch">去商标局官网查询</div>
       </div>
       <p>商标转让</p>
       <div class="content-transfer"></div>
@@ -50,26 +59,32 @@
       <div class="serve">
         <div class="serve-item" v-for="(item,index) in serveIconArray" :key="index">
           <img :src="item.src" class="serve-item-icon" />
-          <span class='serve-item-text'>{{item.text}}</span>
+          <span class="serve-item-text">{{item.text}}</span>
         </div>
       </div>
     </div>
-    <trademark-modal1  ref='modal1'/>
-    <trademark-modal2  ref='modal2' :tradeMarkName="tradeMarkContent.tmName" :tradeMarkRegNo="tradeMarkContent.regNo" @toNextModal='Consulteok'/>
-    <trademark-modal3  ref='modal3' @toNextModal2="toNextModal2"/>
+    <trademark-modal1 ref="modal1" />
+    <trademark-modal2
+      ref="modal2"
+      :tradeMarkName="tradeMarkContent.tmName"
+      :tradeMarkRegNo="tradeMarkContent.regNo"
+      @toNextModal="Consulteok"
+    />
+    <trademark-modal3 ref="modal3" @toNextModal2="toNextModal2" />
   </div>
 </template>
 
 <script>
-import TrademarkModal1 from '../../components/TrademarkModal1'
-import TrademarkModal2 from '../../components/TrademarkModal2'
-import TrademarkModal3 from '../../components/TrademarkModal3'
+import TrademarkModal1 from "../../components/TrademarkModal1";
+import TrademarkModal2 from "../../components/TrademarkModal2";
+import TrademarkModal3 from "../../components/TrademarkModal3";
+import { getStorage } from "../../mixin/storage";
 export default {
   name: "TrademarkDetail",
-  components:{
-   TrademarkModal1,
-   TrademarkModal2,
-   TrademarkModal3
+  components: {
+    TrademarkModal1,
+    TrademarkModal2,
+    TrademarkModal3
   },
   data() {
     return {
@@ -103,59 +118,97 @@ export default {
           text: "专家服务团队"
         }
       ],
-      currentRegNo:'',//当前商标序号
-      categoryId:'',//当前分类id
-      tradeMarkContent:{}//商标内容
+      currentRegNo: "", //当前商标序号
+      categoryId: "", //当前分类id
+      tradeMarkContent: {}, //商标内容
+      useRange: "" //使用范围
     };
   },
-  mounted(){
-    console.log(this.$route.query)
-    this.currentRegNo=this.$route.query.regNo
-    this.categoryId=this.$route.query.id
-    this.getDetail(this.currentRegNo,this.categoryId)
+  mounted() {
+    console.log(this.$route.query);
+    this.currentRegNo = this.$route.query.regNo;
+    this.categoryId = this.$route.query.id;
+    this.getDetail(this.currentRegNo, this.categoryId);
   },
-  watch:{
+  watch: {
     //  currentRegNo(newNo,oldNo){
-
     //  }
   },
-  methods:{
-    getDetail(regNo,id){
-      const url="/api/trademark/main/trademarkDetail"
-      const params={
-         regNo:regNo,
-         intCls:id
-      }
+  methods: {
+    getDetail(regNo, id) {
+      const url = "/api/trademark/main/trademarkDetail";
+      const params = {
+        regNo: regNo,
+        intCls: id
+      };
       this.$axios({
-        method:'get',
-        url:url,
-        params:params
-      }).then(res=>{
-        if(res.data.success){
-          console.log(res.data.data)
-         this.tradeMarkContent=res.data.data.trademarkDetail
-         this.detailAray[0].value=res.data.data.trademarkDetail.tmName
-         this.detailAray[1].value=res.data.data.trademarkDetail.regNo
-         this.detailAray[2].value='第'+res.data.data.trademarkDetail.intCls+'类'
-         this.detailAray[3].value=res.data.data.trademarkDetail.announcementDate
-         this.detailAray[4].value=res.data.data.trademarkDetail.appDate
-         this.detailAray[5].value=res.data.data.trademarkDetail.announcementIssue
-         this.detailAray[6].value=res.data.data.trademarkDetail.agent
-         this.detailAray[7].value=res.data.data.trademarkDetail.category
-         this.detailAray[9].value=res.data.data.trademarkDetail.privateDate
-        }
-      }).catch(error=>{
-        console.log(error)
+        method: "get",
+        url: url,
+        params: params
       })
+        .then(res => {
+          if (res.data.success) {
+            console.log(res.data.data);
+            this.tradeMarkContent = res.data.data.trademarkDetail;
+            this.detailAray[0].value = res.data.data.trademarkDetail.tmName;
+            this.detailAray[1].value = res.data.data.trademarkDetail.regNo;
+            this.detailAray[2].value =
+              "第" + res.data.data.trademarkDetail.intCls + "类";
+            this.detailAray[3].value =
+              res.data.data.trademarkDetail.announcementDate;
+            this.detailAray[4].value = res.data.data.trademarkDetail.appDate;
+            this.detailAray[5].value =
+              res.data.data.trademarkDetail.announcementIssue;
+            this.detailAray[6].value = res.data.data.trademarkDetail.agent;
+            this.detailAray[7].value = res.data.data.trademarkDetail.category;
+            this.detailAray[9].value =
+              res.data.data.trademarkDetail.privateDate;
+            this.tradeMarkContent.goods.forEach(item => {
+              this.useRange += item.goodsName + ";";
+            });
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
     },
-    searchTradeMark(){
-      this.$refs.modal2.showModal()
+    searchTradeMark() {
+      this.$refs.modal2.showModal();
     },
-    Consulteok(){
-      this.$refs.modal3.showModal()
+    Consulteok() {
+      this.$refs.modal3.showModal();
     },
-    toNextModal2(){
-      this.$refs.modal1.showModal()
+    toNextModal2() {
+      this.$refs.modal1.showModal();
+    },
+    collectTradeMark() {
+      const url = "/api/trademark/trademarkCollection/addTrademarkCollection";
+      const accessToken = getStorage("AccessToken");
+      if (accessToken) {
+        const headers = {
+          accessToken: accessToken
+        };
+        const params = {
+          regNo: this.tradeMarkContent.regNo
+        };
+        this.$axios({
+          method: "post",
+          url: url,
+          headers: headers,
+          data: params
+        })
+          .then(res => {
+            console.log(res);
+            if (res.data.success) {
+              this.$message.success("收藏成功");
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }else{
+        this.$message.error('请先登录')
+      }
     }
   }
 };
@@ -174,6 +227,25 @@ export default {
       padding: 25px 20% 25px 20%;
       display: flex;
       justify-content: space-between;
+      position: relative;
+      .detail-banner-part1-button {
+        position: absolute;
+        width: 200px;
+        height: 50px;
+        bottom: 0px;
+        left: 40%;
+        display: flex;
+        .detail-banner-part1-button1 {
+          border: 1px solid #fe6a0c;
+          background-color: #fe6a0c;
+          color: #ffffff;
+        }
+        .detail-banner-part1-button2 {
+          border: 1px solid #fe6a0c;
+          color: #fe6a0c;
+          margin-left: 10px;
+        }
+      }
       .detail-banner-part1-1 {
         width: 30%;
         min-width: 266px;
@@ -202,7 +274,7 @@ export default {
           background: rgba(243, 243, 243, 1);
           vertical-align: middle;
           .des1-1 {
-            width:50%;
+            width: 50%;
             overflow: hidden;
             font-size: 24px;
             font-family: Source Han Sans CN;
@@ -228,7 +300,7 @@ export default {
             color: rgba(255, 255, 255, 1);
           }
           .des1-3 {
-            width:30%;
+            width: 30%;
             overflow: hidden;
             margin-left: 60px;
             height: 24px;
@@ -265,6 +337,15 @@ export default {
           line-height: 24px;
           color: rgba(153, 153, 153, 1);
           opacity: 1;
+          position: relative;
+          .collect {
+            position: absolute;
+            color: #fe6a0c;
+            font-size: 14px;
+            cursor: pointer;
+            top: 5px;
+            right: 10px;
+          }
           .des3-1,
           .des3-2,
           .des3-3,
@@ -292,7 +373,7 @@ export default {
         background-size: cover;
         text-align: center;
         .btn1 {
-          width:140px;
+          width: 140px;
           margin-top: 180px;
         }
         .btn2 {
@@ -311,25 +392,36 @@ export default {
       font-size: 24px;
       font-family: Source Han Sans CN;
       font-weight: 500;
-      margin-top:10px;
+      margin-top: 10px;
       line-height: 41px;
       color: rgba(51, 51, 51, 1);
       opacity: 1;
     }
     .content-detail {
       width: 100%;
-      background-color: #F5F5F5;
+      background-color: #f5f5f5;
       min-width: 1050px;
       padding: 20px 20px 20px 20px;
       display: flex;
       justify-content: space-around;
       flex-wrap: wrap;
+      position: relative;
+      .gosearch {
+        width: 120px;
+        height: 15px;
+        line-height: 15px;
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        color: rgba(41, 158, 249, 1);
+        cursor: pointer;
+      }
       .content-detail-item {
         display: flex;
         flex-wrap: nowrap;
         margin-top: 15px;
         width: 33%;
-        min-width:325px;
+        min-width: 325px;
         height: 20px;
         .detail-item-1 {
           overflow: hidden;
@@ -342,7 +434,7 @@ export default {
           width: 70%;
           overflow: hidden;
           height: 20px;
-          min-width:100px;
+          min-width: 100px;
           text-align: left;
         }
       }
@@ -358,7 +450,7 @@ export default {
     .transfer-info {
       width: 100%;
       height: 260px;
-      min-width:1050px;
+      min-width: 1050px;
       border-bottom: 1px solid rgba(232, 232, 232, 1);
       background: url("../../assets/detail-transfer.jpg") no-repeat center;
       background-size: cover;
@@ -366,9 +458,9 @@ export default {
     .serve {
       width: 100%;
       height: 92px;
-      min-width:1050px;
+      min-width: 1050px;
       line-height: 92px;
-      background:#f3f3f3;
+      background: #f3f3f3;
       opacity: 1;
       display: flex;
       font-size: 16px;
@@ -388,8 +480,8 @@ export default {
           border-radius: 50%;
           opacity: 1;
         }
-        .serve-item-text{
-            margin-left:10px;
+        .serve-item-text {
+          margin-left: 10px;
         }
       }
     }

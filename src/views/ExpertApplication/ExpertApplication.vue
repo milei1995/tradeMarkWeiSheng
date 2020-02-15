@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import {getStorage} from '../../mixin/storage'
+import { getStorage } from "../../mixin/storage";
 const TIME_COUNT = 60; //更改倒计时时间
 export default {
   name: "ExpertApplication",
@@ -59,35 +59,41 @@ export default {
       this.form.validateFields((err, values) => {
         if (!err) {
           console.log("Received values of form: ", values);
-          const accessToken=getStorage('AccessToken')
-          const url='/api/trademark/applyNeeds/addApplyNeeds'
-          const headers={
-            accessToken:accessToken
+          const accessToken = getStorage("AccessToken");
+          if (accessToken) {
+            const url = "/api/trademark/applyNeeds/addApplyNeeds";
+            const headers = {
+              accessToken: accessToken
+            };
+            const params = {
+              applyType: "1",
+              phone: values.phoneNumber
+            };
+            this.$axios({
+              method: "post",
+              url: url,
+              headers: headers,
+              data: params
+            })
+              .then(res => {
+                console.log(res);
+                if (res.data.success) {
+                  this.$message.info("提交成功");
+                }
+              })
+              .catch(err => {
+                console.log(err);
+              });
+          }else{
+            this.$message.error('请先登录')
           }
-          const params={
-            applyType:'1',
-            phone:values.phoneNumber
-          }
-          this.$axios({
-            method:'post',
-            url:url,
-            headers:headers,
-            data:params
-          }).then(res=>{
-            console.log(res)
-            if(res.data.success){
-              this.$message.info("提交成功");
-            }
-          }).catch(err=>{
-            console.log(err)
-          })
-      
         }
       });
     },
     getVerificationCode() {
-      const phoneNumber = this.form.getFieldValue(['phoneNumber']).oneNumber;
-      console.log(phoneNumber)
+      const phoneNumber = this.form.getFieldValue(["phoneNumber"]).oneNumber;
+      console.log(phoneNumber);
+      var re = /^1\d{10}$/; //验证手机号
       const url = "/api/trademark/sms/sendSmsCode";
       let params = {
         phone: phoneNumber,
@@ -95,7 +101,7 @@ export default {
       };
       let JsonParams = JSON.stringify(params);
       console.log(JsonParams);
-      if (phoneNumber) {
+      if (re.test(phoneNumber)) {
         this.$axios({
           method: "post",
           url: url,
@@ -121,6 +127,8 @@ export default {
           .catch(error => {
             console.log(error);
           });
+      } else {
+        this.$message.warning("手机号不正确");
       }
     }
   }

@@ -172,6 +172,8 @@ export default {
       this.paramsPart1.trademarkImage = imgUrl;
     },
     toNext() {
+      const accessToken=getStorage('AccessToken')
+      if(accessToken){
       this.form.validateFields((err, values) => {
         if (!err) {
           console.log("Received values of form: ", values);
@@ -198,6 +200,9 @@ export default {
           });
         }
       });
+      }else{
+        this.$message.error('请先登录')
+      }
     },
     picTypeChange(e) {
       console.log(e);

@@ -379,7 +379,7 @@ export default {
   padding-top: 1px;
   text-align: center;
   height: 400px;
-  background: url("../../bannerAndIcon/category-bg3.png") no-repeat center;
+  background: url("http://wssbw-images.oss-cn-hangzhou.aliyuncs.com/trademark/web/35e7516c-1f8b-489e-b025-e9468ddd0cf6.png") no-repeat center;
   background-size: cover;
 }
 .category-part6-title {

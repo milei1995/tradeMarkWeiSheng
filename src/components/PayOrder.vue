@@ -16,20 +16,17 @@
     </div>
     <div class="payorder-part2">
       <div class="payorder-part2-1">其他方式支付</div>
-      <a-radio-group
-        :options="plainOptions"
-        @change="handlePayTypeChange"
-      />
+      <a-radio-group :options="plainOptions" @change="handlePayTypeChange" />
       <div class="pay-img">
         <img v-if="isPayTypeChange" src="../bannerAndIcon/alipay.png" />
         <img v-else src="../bannerAndIcon/wechatpay.png" />
       </div>
-      <div class='pay-code' v-if="isShowCode">
-        <a-tooltip placement='rightTop'>
-          <template slot='title'>
+      <div class="pay-code" v-if="isShowCode">
+        <a-tooltip placement="rightTop">
+          <template slot="title">
             <span>请扫描二维码支付哦</span>
           </template>
-         <img :src="codeImgUrl" />
+          <img :src="codeImgUrl" />
         </a-tooltip>
       </div>
     </div>
@@ -49,55 +46,67 @@ export default {
     return {
       isPayTypeChange: true,
       plainOptions: ["支付宝", "微信"],
-      orderNo:'',//订单编号
-      totalPrice:'',//总价
-      isShowCode:false,//展示二维码
-      codeImgUrl:''//二维码图片URL
+      orderNo: "", //订单编号
+      totalPrice: "", //总价
+      isShowCode: false, //展示二维码
+      codeImgUrl: "", //二维码图片URL
+      orderType: null //从哪里传来 1.从注册商标(选择新申请人传来) 2.从我的订单传来
     };
   },
   mounted() {
     const params = this.$router.history.current.query;
-    console.log(params);
-    this.getMountedData(params.params);
+    this.orderType = params.orderType;
+    if (this.orderType === "1") {
+      this.getMountedData(params.params);
+    }
+    if (this.orderType === "2") {
+      const paramsdata={
+        orderNo:params.orderNo,
+        payType:params.payType
+      }
+      this.getMountedDataByOrderNo(paramsdata)
+    }
   },
   methods: {
     handlePayTypeChange(e) {
       console.log(e);
       if (e.target.value === "支付宝") {
-        this.isShowCode=false
-        this.$message.warning('抱歉,尚未开通支付保支付功能')
+        this.isShowCode = false;
+        this.$message.warning("抱歉,尚未开通支付保支付功能");
         this.isPayTypeChange = true;
       }
       if (e.target.value === "微信") {
-        this.isShowCode=true
+        this.isShowCode = true;
         this.isPayTypeChange = false;
       }
     },
     toNext() {
-      const url='/api/trademark/trademarkOrder/selectOrderByOrderNo'
-      const accessToken=getStorage("AccessToken")
-      const headers={
-        accessToken:accessToken
-      }
-      const params={
-        orderNo:this.orderNo
-      }
+      const url = "/api/trademark/trademarkOrder/selectOrderByOrderNo";
+      const accessToken = getStorage("AccessToken");
+      const headers = {
+        accessToken: accessToken
+      };
+      const params = {
+        orderNo: this.orderNo
+      };
       this.$axios({
-        method:'get',
-        url:url,
-        headers:headers,
-        params:params
-      }).then(res=>{
-        console.log(res)
-        if(res.data.success){
-          this.$message.success("支付成功")
-          this.$router.push({ path: "/trademarkBuy/commitTrademark" });
-        }else{
-          this.$message.error("支付失败")
-        }
-      }).catch(err=>{
-        console.log(err)
+        method: "get",
+        url: url,
+        headers: headers,
+        params: params
       })
+        .then(res => {
+          console.log(res);
+          if (res.data.success) {
+            this.$message.success("支付成功");
+            this.$router.push({ path: "/trademarkBuy/commitTrademark" });
+          } else {
+            this.$message.error("支付失败");
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
     },
     getMountedData(paramsData) {
       const url = "/api/trademark/trademarkOrder/registerPay";
@@ -114,10 +123,37 @@ export default {
       })
         .then(res => {
           console.log(res);
-          if(res.data.success){
-              this.orderNo=res.data.data.orderNo,
-              this.totalPrice=res.data.data.totalPrice
-              this.codeImgUrl= 'data:image/jpg;base64,'+res.data.data.payCodeQR
+          if (res.data.success) {
+            (this.orderNo = res.data.data.orderNo),
+              (this.totalPrice = res.data.data.totalPrice);
+            this.codeImgUrl =
+              "data:image/jpg;base64," + res.data.data.payCodeQR;
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    getMountedDataByOrderNo(paramsData) {
+      const url = "/api/trademark/trademarkOrder/registerPayByOrderNo";
+      const accessToken = getStorage("AccessToken");
+      const headers = {
+        accessToken: accessToken
+      };
+      const params = paramsData;
+      this.$axios({
+        method: "post",
+        url: url,
+        headers: headers,
+        data: params
+      })
+        .then(res => {
+          console.log(res);
+          if (res.data.success) {
+            (this.orderNo = res.data.data.orderNo),
+              (this.totalPrice = res.data.data.totalPrice);
+            this.codeImgUrl =
+              "data:image/jpg;base64," + res.data.data.payCodeQR;
           }
         })
         .catch(err => {
@@ -188,12 +224,12 @@ export default {
         height: 100%;
       }
     }
-    .pay-code{
-      width:140px;
-      height:140px;
-      img{
-        width:100%;
-        height:100%;
+    .pay-code {
+      width: 140px;
+      height: 140px;
+      img {
+        width: 100%;
+        height: 100%;
       }
     }
   }

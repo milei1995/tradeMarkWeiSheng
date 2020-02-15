@@ -45,6 +45,8 @@ export default {
     toHome() {
       const that = this;
       const phoneNumber = this.phoneNumber;
+      const re=/^1\d{10}$/ //验证手机号
+      console.log(re.test(phoneNumber))
       const verificationCode = this.verificationCode;
       const url = "/api/trademark/user/login";
       let params = {
@@ -52,7 +54,7 @@ export default {
         smsCode: verificationCode
       };
       let JsonParams = JSON.stringify(params);
-      if (phoneNumber) {
+      if (re.test(phoneNumber)) {
         this.$axios({
           method: "post",
           url: url,
@@ -76,6 +78,8 @@ export default {
           .catch(error => {
             console.log(error);
           });
+      }else{
+        this.$message.error('请输入正确格式的手机号码')
       }
     },
     sendVerificationCode() {
@@ -127,7 +131,7 @@ export default {
   left: 0;
   bottom: 0;
   right: 0;
-  background: url("../../bannerAndIcon/login-bg.png") no-repeat center;
+  background: url("http://wssbw-images.oss-cn-hangzhou.aliyuncs.com/trademark/web/ca2d1b1d-5b84-4547-973b-34164c31adaa.png") no-repeat center;
   background-size: cover;
 }
 .login-logo {

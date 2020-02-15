@@ -90,6 +90,8 @@ export default {
                 case '个体户证明资料':
                   this.$emit("getImageUrl4",this.imageUrl)
                   break
+                case '修改个人头像':
+                  this.$emit("getImageUrl5",this.imageUrl)
               }
              
             }

@@ -13,7 +13,7 @@
     <div class="globalFooter-part3">
       <div class="globalFooter-part3-tip">添加微信</div>
       <div class="globalFooter-part3-wx">
-        <img src="../bannerAndIcon/boss-code.jpg" />
+        <img src="http://wssbw-images.oss-cn-hangzhou.aliyuncs.com/trademark/web/3bd70d2c-e714-43f3-a88c-86ff0f552115.png" />
       </div>
     </div>
   </div>
@@ -46,7 +46,9 @@ export default {
         to.name === "writeTrademarkInfo" ||
         to.name === "chooseApplicant" ||
         to.name === "payOrder" ||
-        to.name === "commitTrademark"
+        to.name === "commitTrademark" 
+        // to.name === "personalSetting" ||
+        // to.name === "myOrder"
       ) {
         this.isShow = false;
       } else {
@@ -55,11 +57,11 @@ export default {
     }
   },
   mounted(){
-    const currentRoute=this.$router.path
-     console.log(currentRoute)
-     if(currentRoute==undefined){
-       this.isShow=false
-     }
+    // const currentRoute=this.$router.path
+    //  console.log(currentRoute)
+    //  if(currentRoute==undefined){
+    //    this.isShow=false
+    //  }
   }
 };
 </script>

@@ -19,7 +19,7 @@
             </div>
             <a-menu slot="overlay">
               <a-menu-item>
-                <div>个人中心</div>
+                <div @click='toPersonCenter' :class="{active:$router.path==='/personCenter'}">个人中心</div>
               </a-menu-item>
               <a-menu-item>
                 <div  @click='logout'>注销</div>
@@ -34,6 +34,7 @@
 
 <script>
 import {mapMutations} from 'vuex'
+import {removeStorage,getStorage} from '../mixin/storage'
 export default {
   name: "globalHeader",
   data() {
@@ -76,12 +77,13 @@ export default {
   watch: {
     $route(to, from) {
       console.log(to, from);
-       const user= this.$store.state.userName
-      if(user===''){
+      const accessToken=getStorage('AccessToken')
+     const userName=getStorage('UserName')
+      if(!accessToken){
         this.isLogin=false
       }else{
         this.isLogin=true
-        this.userName=user
+        this.userName=userName
       }
       if (to.name === "login" || to.name === "userRegister") {
         this.isShow = false;
@@ -91,13 +93,13 @@ export default {
     }
   },
   mounted(){
-       const user= this.$store.state.userName
-       console.log(user)
-      if(user==='' || user==={}){
+     const accessToken=getStorage('AccessToken')
+     const userName=getStorage('UserName')
+      if(!accessToken){
         this.isLogin=false
       }else{
         this.isLogin=true
-        this.userName=user
+        this.userName=userName
       }
   },
   methods: {
@@ -110,7 +112,13 @@ export default {
     },
     logout(){
       this.clearUser();
+      removeStorage('AccessToken')
+      removeStorage('UserName')
+      removeStorage('UserId')
       this.$router.push({path:'/login'})
+    },
+    toPersonCenter(){
+      this.$router.push({path:'/personCenter'})
     }
   }
 };

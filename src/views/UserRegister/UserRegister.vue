@@ -68,6 +68,7 @@ export default {
     sendVerificationCode() {
       //发送验证码
       const phoneNumber = this.phoneNumber;
+      const re=/^1\d{10}$/ //验证手机号
       const url = "/api/trademark/sms/sendSmsCode";
       let params = {
         phone: phoneNumber,
@@ -75,7 +76,7 @@ export default {
       };
       let JsonParams = JSON.stringify(params);
       console.log(JsonParams);
-      if (phoneNumber) {
+      if (re.test(phoneNumber)) {
         this.$axios({
           method: "post",
           url: url,
@@ -101,11 +102,14 @@ export default {
           .catch(error => {
             console.log(error);
           });
+      }else{
+          this.$message.warning('请输入正确格式的手机号码')
       }
     },
     ImmediateRegistration() {
       const that = this;
       const phoneNumber = this.phoneNumber;
+      const re=/^1\d{10}$/ //验证手机号
       const verificationCode = this.verificationCode;
       const url = "/api/trademark/user/login";
       let params = {
@@ -113,7 +117,7 @@ export default {
         smsCode: verificationCode
       };
       let JsonParams = JSON.stringify(params);
-      if (phoneNumber) {
+      if (re.test(phoneNumber)) {
         this.$axios({
           method: "post",
           url: url,
@@ -137,6 +141,8 @@ export default {
           .catch(error => {
             console.log(error);
           });
+      }else{
+        this.$message.warning('请输入正确格式的手机号码')
       }
     }
   }
@@ -150,7 +156,7 @@ export default {
   left: 0;
   bottom: 0;
   right: 0;
-  background: url("../../bannerAndIcon/register-bg.png") no-repeat center;
+  background: url("http://wssbw-images.oss-cn-hangzhou.aliyuncs.com/trademark/web/bbf5e9d9-a8ef-4763-bf20-438598bd75df.png") no-repeat center;
   background-size: cover;
 }
 .register-logo {

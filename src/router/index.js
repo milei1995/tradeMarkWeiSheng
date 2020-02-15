@@ -12,6 +12,9 @@ import ChooseApplicant from '../components/ChooseApplicant.vue'
 import PayOrder from '../components/PayOrder.vue'
 import CommitTradermark from '../components/CommitTrademark.vue'
 import ExpertApplication from '../views/ExpertApplication/ExpertApplication.vue'
+import PersonCenter from '../views/PersonCenter/PersonCenter.vue'
+import PersonalSetting from '../components/PersonalSetting.vue'
+import MyOrder from '../components/MyOrder.vue'
 
 Vue.use(Router)
 
@@ -86,6 +89,28 @@ const routes = [
         path:'/detail',
         name:'detail',
         component:TrademarkDetail
+    },
+    {
+        path:'/personCenter',
+        name:'personCenter',
+        component:PersonCenter,
+        children:[
+           {
+               path:'/personCenter',
+               name:'personCenter',
+               redirect:'/personCenter/personalSetting'
+           },
+           {
+               path: '/personCenter/personalSetting',
+               name:'personalSetting',
+               component:PersonalSetting
+           },
+           {
+               path:'/personCenter/myOrder',
+               name:'myOrder',
+               component:MyOrder
+           }
+        ]
     }
    
 ] 

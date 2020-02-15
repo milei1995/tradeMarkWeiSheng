@@ -44,7 +44,7 @@ export default {
   width: 100%;
   min-width:1400px;
   height: 400px;
-  background: url("../bannerAndIcon/home-bg.png") no-repeat center;
+  background: url("http://wssbw-images.oss-cn-hangzhou.aliyuncs.com/trademark/web/47ef690a-2867-463e-abc0-67d1e8345703.png") no-repeat center;
   background-size: cover;
 }
 /* .search-part1 {

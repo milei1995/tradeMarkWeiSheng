@@ -162,7 +162,7 @@ export default {
   width: 100%;
   height: 350px;
   min-width: 1400px;
-  background: url("../../bannerAndIcon/list-banner-bg.png") no-repeat center;
+  background: url("http://wssbw-images.oss-cn-hangzhou.aliyuncs.com/trademark/web/b8c0a85d-6832-4518-b632-cf42ccfb4c0c.png") no-repeat center;
   background-size: cover;
 }
 .banner-search{

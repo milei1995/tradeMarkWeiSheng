@@ -175,13 +175,13 @@ export default {
   color: #ffffff;
 }
 .content-1-item1 {
-  background: url("../bannerAndIcon/content1-item-bg1.png") no-repeat center;
+  background: url("http://wssbw-images.oss-cn-hangzhou.aliyuncs.com/trademark/web/2126f8b1-ad3c-45b0-9e21-578d34610897.png") no-repeat center;
 }
 .content-1-item2 {
-  background: url("../bannerAndIcon/content1-item-bg2.png") no-repeat center;
+  background: url("http://wssbw-images.oss-cn-hangzhou.aliyuncs.com/trademark/web/81406ca4-240e-45c2-b703-cbc38bffa16b.png") no-repeat center;
 }
 .content-1-item3 {
-  background: url("../bannerAndIcon/content1-item-bg3.png") no-repeat center;
+  background: url("http://wssbw-images.oss-cn-hangzhou.aliyuncs.com/trademark/web/a38cde2b-c328-4763-a7f2-7cace3f9c1ab.png") no-repeat center;
 }
 .content-2 {
   padding: 1px;
@@ -304,7 +304,7 @@ export default {
   width: 100%;
   min-width: 1400px;
   height: 253px;
-  background: url("../bannerAndIcon/sept-bg.png") no-repeat center;
+  background: url("http://wssbw-images.oss-cn-hangzhou.aliyuncs.com/trademark/web/b0b0cde0-4d87-4b9c-9c9e-df13f409d3b4.png") no-repeat center;
   opacity: 0.5;
   background-size: cover;
 }

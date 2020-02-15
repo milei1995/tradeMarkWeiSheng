@@ -260,7 +260,7 @@ export default {
           console.log(this.paramsPart1);
           this.$router.push({
             path: "/trademarkBuy/payOrder",
-            query: { params: this.params }
+            query: { params: this.params ,orderType:'1'}
           });
         } else {
           this.$message.error("请先保存");
