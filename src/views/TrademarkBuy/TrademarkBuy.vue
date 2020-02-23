@@ -31,7 +31,7 @@ export default {
     return {
       stepsArray: [
         { title: "填写商标信息",path:"/trademarkBuy/writeTrademarkInfo"},
-        { title: "选择新申请人",path:"/trademarkBuy/chooseApplicant"},
+        { title: "选择申请人",path:"/trademarkBuy/chooseApplicant"},
         { title: "订单支付",path:"/trademarkBuy/payOrder"},
         { title: "提交商标局",path:"/trademarkBuy/commitTrademark" }
       ],

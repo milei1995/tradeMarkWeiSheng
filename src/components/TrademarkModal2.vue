@@ -111,7 +111,8 @@ export default {
 .modal-content {
   .modal-title {
     margin-left: 40%;
-    width: 72px;
+    width: 120px;
+    text-align: center;
     height: 18px;
     font-size: 18px;
     font-family: Source Han Sans CN;

@@ -116,6 +116,7 @@ export default {
               const obj2={
                 title:item2.groupsId+' '+item2.groupsName,
                 fatherId:item.classifyId,
+                price:item.price,
                 key:item2.groupsId,
                 id:item2.groupsId
               }

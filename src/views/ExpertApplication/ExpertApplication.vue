@@ -40,13 +40,16 @@ export default {
       formLayout: "horizontal",
       form: this.$form.createForm(this),
       validatorRules: {
+
         phoneNumber: {
           rules: [{ required: true, message: "请输入手机号!" }]
         },
         verificationCode: {
           rules: [{ required: true, message: "请输入验证码!" }]
         },
-        needs: {}
+        needs: {
+            rules: [{ required: true, message: "请填写您需要的服务" }]
+        }
       },
       isShow: true, //验证码倒计时
       timer: null, //倒计时
@@ -67,7 +70,9 @@ export default {
             };
             const params = {
               applyType: "1",
-              phone: values.phoneNumber
+              phone: values.phoneNumber,
+              remark:values.needs,
+              smsCode:values.verificationCode
             };
             this.$axios({
               method: "post",
@@ -79,7 +84,10 @@ export default {
                 console.log(res);
                 if (res.data.success) {
                   this.$message.info("提交成功");
+                }else{
+                  this.$message.error(res.data.msg)
                 }
+                
               })
               .catch(err => {
                 console.log(err);

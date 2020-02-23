@@ -22,22 +22,22 @@
       <div class="category-part6-title">填写商标需求，即刻享受专属服务</div>
       <div class="category-part6-des">万尚倾尽全力&nbsp;为您保驾护航</div>
       <div class="category-part6-form">
-          <div class="category-part6-form-part1">
-             <div class='category-part6-form-part1-label'>需要服务:</div>
-             <a-textarea class='category-part6-form-part1-input' v-model="needServe"></a-textarea>
-          </div>
-          <div class="category-part6-form-part2">
-            <div class="category-part6-form-part2-label">联系方式:</div>
-             <a-input v-model="mobilePhone" class='category-part6-form-part2-input'></a-input>
-          </div>
-          <a-button class='category-part6-form-button' @click="commitNeeds">提交需求</a-button>
+        <div class="category-part6-form-part1">
+          <div class="category-part6-form-part1-label">需要服务:</div>
+          <a-textarea class="category-part6-form-part1-input" v-model="needServe"></a-textarea>
+        </div>
+        <div class="category-part6-form-part2">
+          <div class="category-part6-form-part2-label">联系方式:</div>
+          <a-input v-model="mobilePhone" class="category-part6-form-part2-input"></a-input>
+        </div>
+        <a-button class="category-part6-form-button" @click="commitNeeds">提交需求</a-button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { getStorage } from '../../mixin/storage'
+import { getStorage } from "../../mixin/storage";
 import TrademarkCategorySearch from "../../components/TrademarkCategorySearch";
 export default {
   name: "TrademarkCategory",
@@ -48,8 +48,8 @@ export default {
     return {
       searchTitle: "知识产权服务",
       searchTitleResult: "商标优选",
-      needServe:'',
-      mobilePhone:'',
+      needServe: "",
+      mobilePhone: "",
       category: [
         {
           id: "1",
@@ -281,37 +281,47 @@ export default {
   },
   methods: {
     toTrademarkList(id) {
-      const keyword=this.$store.state.keyword
-      const searchType=this.$store.state.searchType
-      this.$router.push({ path: "/trademarkList" ,query:{id:id,keyword:keyword,searchType:searchType}});
+      const keyword = this.$store.state.keyword;
+      const searchType = this.$store.state.searchType;
+      this.$router.push({
+        path: "/trademarkList",
+        query: { id: id, keyword: keyword, searchType: searchType }
+      });
     },
-    commitNeeds(){
-      if(this.mobilePhone==='' ||this.needServe===''){
-        this.$message.warning('输入内容不能为空')
-      }else{
-        const accessToken=getStorage('AccessToken')
-        const url='/api/trademark/applyNeeds/addApplyNeeds'
-        const headers={
-           accessToken:accessToken
+    commitNeeds() {
+      if (this.mobilePhone === "" || this.needServe === "") {
+        this.$message.warning("输入内容不能为空");
+      } else {
+        var re = /^1\d{10}$/; //验证手机号
+        if (re.test(this.mobilePhone)) {
+          const accessToken = getStorage("AccessToken");
+          const url = "/api/trademark/applyNeeds/addApplyNeeds";
+          const headers = {
+            accessToken: accessToken
+          };
+          const params = {
+            phone: this.mobilePhone,
+            applyType: "2",
+            remark:this.needServe
+          };
+          this.$axios({
+            method: "post",
+            url: url,
+            headers: headers,
+            data: params
+          })
+            .then(res => {
+              console.log(res);
+              if (res.data.success) {
+                this.$message.success("商标需求提交成功");
+              }
+            })
+            .catch(err => {
+              console.log(err);
+            });
+        }else{
+          this.$message.error('手机号码错误')
         }
-        const params={
-            phone:this.mobilePhone,
-            applyType:'2'
-        }
-        this.$axios({
-          method:'post',
-          url:url,
-          headers:headers,
-          data:params
-        }).then(res=>{
-          console.log(res)
-          if(res.data.success){
-             this.$message.success('商标需求提交成功')
-          }
-        }).catch(err=>{
-          console.log(err)
-        })
-      
       }
     }
   }
@@ -379,7 +389,8 @@ export default {
   padding-top: 1px;
   text-align: center;
   height: 400px;
-  background: url("http://wssbw-images.oss-cn-hangzhou.aliyuncs.com/trademark/web/35e7516c-1f8b-489e-b025-e9468ddd0cf6.png") no-repeat center;
+  background: url("http://wssbw-images.oss-cn-hangzhou.aliyuncs.com/trademark/web/35e7516c-1f8b-489e-b025-e9468ddd0cf6.png")
+    no-repeat center;
   background-size: cover;
 }
 .category-part6-title {
@@ -400,56 +411,54 @@ export default {
   opacity: 1;
 }
 .category-part6-form {
-  padding:30px,30px,30px,30px;
+  padding: 30px, 30px, 30px, 30px;
   width: 28%;
   height: 240px;
   margin: 10px auto 0px;
   background: rgba(255, 255, 255, 1);
   box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
   opacity: 1;
-  position:relative;
+  position: relative;
 }
-.category-part6-form-part1,.category-part6-form-part2{
-  width:88%;
+.category-part6-form-part1,
+.category-part6-form-part2 {
+  width: 88%;
   display: flex;
   justify-content: space-between;
 }
- .category-part6-form-part1{
-   position:absolute;
-   top:35px;
-   left:30px;
-  height:80px;
-  line-height:80px;
-  
-} 
-.category-part6-form-part2{
-   position:absolute;
-  height:35px;
-  line-height:35px;
-  left:35px;
-  top:145px;
- 
-} 
-.category-part6-form-part1-input,.category-part6-form-part2-input{
-  width:80%;
-
-}
-.category-part6-form-part1-label{
-
-}
-.category-part6-form-part1-input{
-  height:80px;
-}
-.category-part6-form-button{
+.category-part6-form-part1 {
   position: absolute;
-  left:150px;
-  top:200px;
-  background:rgba(253,114,55,1);
- opacity:1;
- border-radius:5px;
- font-family:Source Han Sans CN;
-font-weight:400;
-line-height:24px;
-color:rgba(255,255,255,1);
+  top: 35px;
+  left: 30px;
+  height: 80px;
+  line-height: 80px;
+}
+.category-part6-form-part2 {
+  position: absolute;
+  height: 35px;
+  line-height: 35px;
+  left: 35px;
+  top: 145px;
+}
+.category-part6-form-part1-input,
+.category-part6-form-part2-input {
+  width: 80%;
+}
+.category-part6-form-part1-label {
+}
+.category-part6-form-part1-input {
+  height: 80px;
+}
+.category-part6-form-button {
+  position: absolute;
+  left: 150px;
+  top: 200px;
+  background: rgba(253, 114, 55, 1);
+  opacity: 1;
+  border-radius: 5px;
+  font-family: Source Han Sans CN;
+  font-weight: 400;
+  line-height: 24px;
+  color: rgba(255, 255, 255, 1);
 }
 </style>

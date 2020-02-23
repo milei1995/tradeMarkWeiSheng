@@ -29,7 +29,7 @@ export default {
         { title: "邮箱地址", value: "jxws518@163.com", icon: "mail" },
         {
           title: "公司地址",
-          value: "浙江省海宁市马桥精编园区8路11号",
+          value: "浙江省海宁市马桥经编园区8路11号",
           icon: "address"
         },
         { title: "技术支持", value: "嘉兴微胜科技有限公司", icon: "desktop" }

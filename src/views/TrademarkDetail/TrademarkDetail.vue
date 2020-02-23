@@ -49,7 +49,7 @@
           <div class="detail-item-1">{{item.title}}</div>
           <div class="detail-item-2">{{item.value}}</div>
         </div>
-        <div class="gosearch">去商标局官网查询</div>
+        <a class="gosearch" href="http://sbj.cnipa.gov.cn/sbcx/">去商标局官网查询</a>
       </div>
       <p>商标转让</p>
       <div class="content-transfer"></div>

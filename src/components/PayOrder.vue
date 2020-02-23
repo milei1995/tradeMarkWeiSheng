@@ -17,7 +17,7 @@
     <div class="payorder-part2">
       <div class="payorder-part2-1">其他方式支付</div>
       <a-radio-group :options="plainOptions" @change="handlePayTypeChange" />
-      <div class="pay-img">
+      <div class="pay-img" v-if="isShowPayType">
         <img v-if="isPayTypeChange" src="../bannerAndIcon/alipay.png" />
         <img v-else src="../bannerAndIcon/wechatpay.png" />
       </div>
@@ -33,7 +33,7 @@
     <div class="topay">
       <span class="topay1">应付金额</span>
       <span class="topay2">￥&nbsp;{{totalPrice}}</span>
-      <a-button @click="toNext">下一步</a-button>
+      <!-- <a-button @click="toNext">下一步</a-button> -->
     </div>
   </div>
 </template>
@@ -45,6 +45,7 @@ export default {
   data() {
     return {
       isPayTypeChange: true,
+      isShowPayType: false,
       plainOptions: ["支付宝", "微信"],
       orderNo: "", //订单编号
       totalPrice: "", //总价
@@ -60,16 +61,18 @@ export default {
       this.getMountedData(params.params);
     }
     if (this.orderType === "2") {
-      const paramsdata={
-        orderNo:params.orderNo,
-        payType:params.payType
-      }
-      this.getMountedDataByOrderNo(paramsdata)
+      const paramsdata = {
+        orderNo: params.orderNo,
+        payType: params.payType
+      };
+      this.getMountedDataByOrderNo(paramsdata);
     }
+    this.payInterval()
   },
   methods: {
     handlePayTypeChange(e) {
       console.log(e);
+      this.isShowPayType = true;
       if (e.target.value === "支付宝") {
         this.isShowCode = false;
         this.$message.warning("抱歉,尚未开通支付保支付功能");
@@ -98,8 +101,13 @@ export default {
         .then(res => {
           console.log(res);
           if (res.data.success) {
-            this.$message.success("支付成功");
-            this.$router.push({ path: "/trademarkBuy/commitTrademark" });
+            if (res.data.data.payStatus === 1) {
+              this.$message.success("支付成功");
+              this.$router.push({ path: "/trademarkBuy/commitTrademark" });
+            }
+            if (res.data.data.payStatus === 0) {
+              this.$message.error("支付失败");
+            }
           } else {
             this.$message.error("支付失败");
           }
@@ -107,6 +115,37 @@ export default {
         .catch(err => {
           console.log(err);
         });
+    },
+    payInterval() {
+      var myPayInterVal = setInterval(() => {
+        const url = "/api/trademark/trademarkOrder/selectOrderByOrderNo";
+        const accessToken = getStorage("AccessToken");
+        const headers = {
+          accessToken: accessToken
+        };
+        const params = {
+          orderNo: this.orderNo
+        };
+        this.$axios({
+          method: "get",
+          url: url,
+          headers: headers,
+          params: params
+        })
+          .then(res => {
+            console.log(res);
+            if (res.data.success) {
+              var payStatus = res.data.data.payStatus;
+              if (payStatus === 1) {
+                clearInterval(myPayInterVal);
+                this.$router.push({ path: "/trademarkBuy/commitTrademark" });
+              }
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }, 2000);
     },
     getMountedData(paramsData) {
       const url = "/api/trademark/trademarkOrder/registerPay";

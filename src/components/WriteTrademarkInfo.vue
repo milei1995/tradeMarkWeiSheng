@@ -55,13 +55,14 @@
       <div class="info-table-part3">
         <div class="info-table-part3-1">
           <div class="info-table-part3-1-left">
-            <a-input-search placeholder="请输入搜索关键字，如:针筒" />
-            <span class="cancel">取消</span>
+             <div style='line-height:40px;'>请根据下方商标类型挑选您所需要的商标</div>
+            <!-- <a-input-search placeholder="请输入搜索关键字，如:针筒" />
+            <span class="cancel">取消</span> -->
           </div>
           <div class="info-table-part3-1-right">
             <span class="choose">已经选择的商标类型</span>
-            <a-button class="save-btn" disabled>保存当前类别</a-button>
-            <a-button class="clear-btn" disabled>清除全部</a-button>
+            <!-- <a-button class="save-btn" disabled>保存当前类别</a-button>
+            <a-button class="clear-btn" disabled>清除全部</a-button> -->
           </div>
         </div>
         <div class="info-table-part3-2">
@@ -148,7 +149,7 @@ export default {
       let total = null;
       CheckedItem.forEach(item => {
         if (item.selectChild.length > 0) {
-          item.price = 300;
+          item.price = 0.01;
           total += Number(item.price);
         } else {
           item.price = 0;
