@@ -189,7 +189,11 @@ export default {
           accessToken: accessToken
         };
         const params = {
-          regNo: this.tradeMarkContent.regNo
+          regNo: this.tradeMarkContent.regNo,
+          tmName:this.tradeMarkContent.tmName,
+          tmImg:'http://tmpic.tmkoo.com/'+this.tradeMarkContent.tmImg,
+          intCls:this.tradeMarkContent.intCls,
+          status:1
         };
         this.$axios({
           method: "post",

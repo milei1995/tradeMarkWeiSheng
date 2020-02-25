@@ -84,7 +84,6 @@
                <div class='content-4-step-item-des3'>免费持续售后服务</div>
            </div>
        </div>
-       
     </div>
   </div>
 </template>
@@ -177,12 +176,22 @@ export default {
 .content-1-item1 {
   background: url("http://wssbw-images.oss-cn-hangzhou.aliyuncs.com/trademark/web/2126f8b1-ad3c-45b0-9e21-578d34610897.png") no-repeat center;
 }
+.content-1-item1:hover{
+  transform: scale(1.1)
+}
 .content-1-item2 {
   background: url("http://wssbw-images.oss-cn-hangzhou.aliyuncs.com/trademark/web/81406ca4-240e-45c2-b703-cbc38bffa16b.png") no-repeat center;
+}
+.content-1-item2:hover{
+  transform: scale(1.1)
 }
 .content-1-item3 {
   background: url("http://wssbw-images.oss-cn-hangzhou.aliyuncs.com/trademark/web/a38cde2b-c328-4763-a7f2-7cace3f9c1ab.png") no-repeat center;
 }
+.content-1-item3:hover{
+  transform: scale(1.1)
+}
+
 .content-2 {
   padding: 1px;
   width: 100%;
@@ -227,6 +236,9 @@ export default {
   margin-left: 47px;
   text-align: center;
 }
+.content-2-list-item:hover{
+  transform: scale(1.2)
+}
 .content-2-list-item-1 {
   font-size: 26px;
   font-family: Source Han Sans CN;
@@ -270,7 +282,7 @@ export default {
   color: rgba(255, 255, 255, 1);
 }
 .content-3 {
-  width: 100%;
+  width: 114%;
   min-width: 1400px;
   height: 140px;
   display: flex;
@@ -279,9 +291,10 @@ export default {
 .content-3-item {
   margin-top: 30px;
   display: flex;
+  text-align: center;
   width: 25%;
   height: 80px;
-  min-width: 175px;
+  min-width: 220px;
 }
 .content-3-item-icon {
   height: 80px;
@@ -305,7 +318,7 @@ export default {
   min-width: 1400px;
   height: 253px;
   background: url("http://wssbw-images.oss-cn-hangzhou.aliyuncs.com/trademark/web/b0b0cde0-4d87-4b9c-9c9e-df13f409d3b4.png") no-repeat center;
-  opacity: 0.5;
+  opacity: 0.9;
   background-size: cover;
 }
 .content-4-title,.content-4-des{
@@ -315,7 +328,7 @@ export default {
 font-size:28px;
 font-family:Source Han Sans CN;
 font-weight:500;
-color:rgba(255,255,255,1);
+color:rgba(51,51,51,1);
 opacity:1;
 margin-top:20px;
 }
@@ -323,7 +336,7 @@ margin-top:20px;
 font-size:14px;
 font-family:Source Han Sans CN;
 font-weight:400;
-color:rgba(255,255,255,1);
+color:rgba(251,251,251,1);
 opacity:1;
 }
 .content-4-step{
@@ -339,13 +352,13 @@ opacity:1;
  margin-left:30px;
 }
 .content-4-step-item-des1{
- border:1px solid rgba(255,255,255,1);
+ border:1px solid rgba(51,51,51,1);
 opacity:1;
 border-radius:5px;
 font-size:16px;
 font-family:Source Han Sans CN;
 font-weight:400;
-color:rgba(255,255,255,1);
+color:rgba(51,51,51,1);
 text-align: center;
 }
 .content-4-step-item-des2,.content-4-step-item-des3{
@@ -353,7 +366,7 @@ width:126px;
 font-size:14px;
 font-family:Source Han Sans CN;
 font-weight:400;
-color:rgba(255,255,255,1);
+color:rgba(51,51,51,1);
 opacity:1;
 text-align: center;
 }

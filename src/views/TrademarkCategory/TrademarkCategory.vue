@@ -16,8 +16,21 @@
         </div>
       </div>
     </div>
-    <div class="category-part4"></div>
-    <div class="category-part5"></div>
+    <div class="category-part4">
+      <div class="category-part4-title">为什么购买已注册商标</div>
+      <div class="category-part4-des">官方服务，品质保证，节约时间成本</div>
+      <div class="category-part4-bg">
+        <img class='category-part4-bg-img' src='../../bannerAndIcon/category-bg1.png' />
+      </div>
+    </div>
+    <div class="category-part5">
+       <div class='category-part5-title'>商标交易流程</div>
+       <div class='category-part5-des'>有我们，商标转让就是这么简单</div>
+       <div class='category-part5-bg'>
+         <img class='category-part5-bg-img' src='../../bannerAndIcon/category-bg2.png' />
+       </div>
+
+    </div>
     <div class="category-part6">
       <div class="category-part6-title">填写商标需求，即刻享受专属服务</div>
       <div class="category-part6-des">万尚倾尽全力&nbsp;为您保驾护航</div>
@@ -302,7 +315,7 @@ export default {
           const params = {
             phone: this.mobilePhone,
             applyType: "2",
-            remark:this.needServe
+            remark: this.needServe
           };
           this.$axios({
             method: "post",
@@ -319,8 +332,8 @@ export default {
             .catch(err => {
               console.log(err);
             });
-        }else{
-          this.$message.error('手机号码错误')
+        } else {
+          this.$message.error("手机号码错误");
         }
       }
     }
@@ -377,13 +390,67 @@ export default {
 }
 .category-part4 {
   height: 400px;
-  background: url("../../assets/category-bg1.jpg") no-repeat center;
-  background-size: cover;
+  text-align: center;
+  /* background: url("../../assets/category-bg1.jpg") no-repeat center;
+  background-size: cover; */
 }
+.category-part4-title {
+  font-size: 28px;
+  font-family: Source Han Sans CN;
+  font-weight: 500;
+  line-height: 48px;
+  color: rgba(51, 51, 51, 1);
+  opacity: 1;
+}
+.category-part4-des {
+  font-size: 14px;
+  font-family: Source Han Sans CN;
+  font-weight: 400;
+  line-height: 24px;
+  color: rgba(102, 102, 102, 1);
+  opacity: 1;
+}
+.category-part4-bg{
+  width:80%;
+  height:300px;
+  margin:10px auto 0px;
+}
+.category-part4-bg-img{
+  width:100%;
+  height:100%;
+}
+
 .category-part5 {
-  height: 400px;
-  background: url("../../assets/category-bg2.jpg") no-repeat center;
-  background-size: cover;
+  height: 300px;
+  text-align: center;
+  margin-top:20px;
+  /* background: url("../../assets/category-bg2.jpg") no-repeat center;
+  background-size: cover; */
+}
+.category-part5-title{
+  font-size: 28px;
+  font-family: Source Han Sans CN;
+  font-weight: 500;
+  line-height: 48px;
+  color: rgba(51, 51, 51, 1);
+  opacity: 1;
+}
+.category-part5-des{
+  font-size: 14px;
+  font-family: Source Han Sans CN;
+  font-weight: 400;
+  line-height: 24px;
+  color: rgba(102, 102, 102, 1);
+  opacity: 1;
+}
+.category-part5-bg{
+  width:80%;
+  height:150px;
+  margin:10px auto 0px;
+}
+.category-part5-bg-img{
+  width:100%;
+  height:100%;
 }
 .category-part6 {
   padding-top: 1px;

@@ -52,7 +52,7 @@ export default {
       categoryId: "0",
       categoryList: [],
       total: 0,
-      keyword:'化学',//商标keyWord
+      keyword:'互联网',//商标keyWord
       defaultCurrent:1,//默认页码
       currentPage:1,//当前页码
       searchType:'4',

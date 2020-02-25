@@ -149,7 +149,7 @@ export default {
       let total = null;
       CheckedItem.forEach(item => {
         if (item.selectChild.length > 0) {
-          item.price = 0.01;
+          // item.price = 0.01;
           total += Number(item.price);
         } else {
           item.price = 0;

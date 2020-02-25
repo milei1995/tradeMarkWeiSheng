@@ -15,6 +15,7 @@ import ExpertApplication from '../views/ExpertApplication/ExpertApplication.vue'
 import PersonCenter from '../views/PersonCenter/PersonCenter.vue'
 import PersonalSetting from '../components/PersonalSetting.vue'
 import MyOrder from '../components/MyOrder.vue'
+import MyCollect from '../components/MyCollect.vue'
 
 Vue.use(Router)
 
@@ -109,6 +110,11 @@ const routes = [
                path:'/personCenter/myOrder',
                name:'myOrder',
                component:MyOrder
+           },
+           {
+               path:'/personCenter/myCollect',
+               name:'myCollect',
+               component:MyCollect
            }
         ]
     }

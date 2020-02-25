@@ -15,6 +15,9 @@
           <a-menu-item key="2" @click='toMyOrder'>
             <a-icon type="smile" />我的订单
           </a-menu-item>
+          <a-menu-item key="3" @click='toMyCollect'>
+            <a-icon type="database" />我的收藏
+          </a-menu-item>
         </a-menu>
       </div>
     </div>
@@ -50,6 +53,9 @@ export default {
       },
       toMyOrder(){
           this.$router.push({path:'/personCenter/myOrder'})
+      },
+      toMyCollect(){
+          this.$router.push({path:'/personCenter/myCollect'})
       }
   }
 };
