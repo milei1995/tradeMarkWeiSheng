@@ -55,7 +55,7 @@
       <div class="info-table-part3">
         <div class="info-table-part3-1">
           <div class="info-table-part3-1-left">
-             <div style='line-height:40px;'>请根据下方商标类型挑选您所需要的商标</div>
+             <div style='line-height:40px;'>请根据商标类型挑选商标</div>
             <!-- <a-input-search placeholder="请输入搜索关键字，如:针筒" />
             <span class="cancel">取消</span> -->
           </div>
@@ -155,7 +155,7 @@ export default {
           item.price = 0;
         }
       });
-      return total;
+      return  Number(total).toFixed(2);
     }
   },
   watch: {
@@ -321,7 +321,7 @@ export default {
   }
   .info-table {
     padding: 15px 10px 15px 10px;
-    width: 100%;
+    width: 65%;
     height: 652px;
     border: 1px solid rgba(245, 245, 245, 1);
     opacity: 1;
@@ -468,7 +468,7 @@ export default {
             .info-table-part3-2-right-item-isShow {
               margin-top: 5px;
               width: 100%;
-              height: 80px;
+              height: 90px;
               overflow-y: auto;
               position: relative;
               border-bottom: 1px solid rgba(221, 221, 221, 1);
@@ -486,7 +486,7 @@ export default {
     }
   }
   .footer {
-    width: 100%;
+    width: 65%;
     height: 70px;
     background: rgba(245, 246, 250, 1);
     opacity: 1;

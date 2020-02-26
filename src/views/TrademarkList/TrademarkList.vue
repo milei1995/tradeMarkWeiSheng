@@ -16,7 +16,7 @@
             <img :src="item.tmImg" @click="toDetail(item.regNo,item.intCls)"/>
           </div>
           <div class="result-item-des">
-            <span class='result-item-des1'>第{{item.intCls}}类</span>&nbsp;
+            <span class='result-item-des1'>类{{item.intCls}}</span>&nbsp;
             <span class='result-item-des2'>{{item.tmName}}</span>&nbsp;
             <a-button class="result-item-button" @click="toDetail(item.regNo,item.intCls)">认证</a-button>
           </div>

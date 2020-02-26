@@ -96,7 +96,7 @@ export default {
         },
         {
           id: "7",
-          name: "第01类-机械设备",
+          name: "第07类-机械设备",
           src: require("../../static/category7.png")
         },
         {

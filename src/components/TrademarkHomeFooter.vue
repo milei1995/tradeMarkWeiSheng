@@ -41,7 +41,7 @@ export default {
   margin-left: 15%;
   height: 520px;
   text-align: center;
-  min-width: 1250px;
+  min-width: 1000px;
   background: rgba(236, 236, 236, 1);
   opacity: 1;
   /* background: url("../assets/common-problem-bg.jpg") no-repeat center;

@@ -146,6 +146,7 @@ export default {
           color: #ffffff;
           text-align: center;
           margin-top: 5px;
+          cursor: pointer;
         }
       }
     }
