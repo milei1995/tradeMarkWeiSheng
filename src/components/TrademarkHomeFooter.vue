@@ -36,7 +36,7 @@ export default {
 
 <style lang='scss' scoped>
 .home-bg1 {
-  padding-top:1px;
+  padding-top: 1px;
   width: 70%;
   margin-left: 15%;
   height: 520px;
@@ -69,28 +69,28 @@ export default {
     height: 450px;
     padding: 10px 20px 10px 20px;
     text-align: left;
-    .question1{
+    .question1 {
       .question-title {
-      font-size: 16px;
-      font-family: Source Han Sans CN;
-      font-weight:bolder;
-      line-height: 27px;
-      color: rgba(51, 51, 51, 1);
-      opacity: 1;
+        font-size: 16px;
+        font-family: Source Han Sans CN;
+        font-weight: bolder;
+        line-height: 27px;
+        color: rgba(51, 51, 51, 1);
+        opacity: 1;
+      }
     }
-    }
-    .question2,.question3{
-      margin-top:30px;
+    .question2,
+    .question3 {
+      margin-top: 30px;
       .question-title {
-      font-size: 16px;
-      font-family: Source Han Sans CN;
-      font-weight:bolder;
-      line-height: 27px;
-      color: rgba(51, 51, 51, 1);
-      opacity: 1;
+        font-size: 16px;
+        font-family: Source Han Sans CN;
+        font-weight: bolder;
+        line-height: 27px;
+        color: rgba(51, 51, 51, 1);
+        opacity: 1;
+      }
     }
-    }
-   
   }
 }
 /* .home-bg2 {

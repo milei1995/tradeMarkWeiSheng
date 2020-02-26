@@ -64,10 +64,10 @@ export default {
         //   name: "登录",
         //   path: "/login"
         // },
-        {
-          name: "免费注册",
-          path: "/userRegister"
-        }
+        // {
+        //   name: "免费注册",
+        //   path: "/userRegister"
+        // }
       ],
       isShow: true,
       categoryIndex: 0,

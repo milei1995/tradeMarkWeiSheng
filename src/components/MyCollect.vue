@@ -10,8 +10,8 @@
           <div class="collect-item-info">
             <div class="collect-item-info-title">商标信息</div>
             <div class="collect-item-info-content">
-              <div class="info1">商标分类-{{item.intCls}}</div>
-              <div class="info2">适用项目:1111111111</div>
+              <div class="info1">商标分类-{{item.intCls}}-{{item.classifyName}}</div>
+              <div class="info2">适用项目:{{item.goodsName}}</div>
               <div class="info3">商标编号:{{item.regNo}}</div>
             </div>
           </div>

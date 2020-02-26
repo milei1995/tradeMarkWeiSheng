@@ -121,7 +121,8 @@ export default {
       currentRegNo: "", //当前商标序号
       categoryId: "", //当前分类id
       tradeMarkContent: {}, //商标内容
-      useRange: "" //使用范围
+      useRange: "", //使用范围
+      currentGoods:[]//当前商标使用范围的数组 
     };
   },
   mounted() {
@@ -182,6 +183,7 @@ export default {
       this.$refs.modal1.showModal();
     },
     collectTradeMark() {
+      console.log(this.tradeMarkContent.goods)
       const url = "/api/trademark/trademarkCollection/addTrademarkCollection";
       const accessToken = getStorage("AccessToken");
       if (accessToken) {
@@ -193,7 +195,8 @@ export default {
           tmName:this.tradeMarkContent.tmName,
           tmImg:'http://tmpic.tmkoo.com/'+this.tradeMarkContent.tmImg,
           intCls:this.tradeMarkContent.intCls,
-          status:1
+          status:1,
+          goods:this.tradeMarkContent.goods
         };
         this.$axios({
           method: "post",
