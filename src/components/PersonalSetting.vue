@@ -188,7 +188,7 @@ export default {
       }).then(res => {
         console.log(res);
         if (res.data.success) {
-          this.$message.success("保存成功,请重新刷新界面");
+          this.$message.success("保存成功,请重新进入个人中心");
         }
       });
     },
@@ -292,6 +292,7 @@ export default {
           margin-left: 25px;
         }
         img {
+          border-radius: 50%;
           width: 100%;
           height: 100%;
         }
@@ -306,6 +307,7 @@ export default {
         justify-content: space-between;
         .button1 {
           width: 100px;
+          cursor: pointer;
           height: 40px;
           color: #fffeff;
           border: 1px solid #ff5961;
@@ -316,6 +318,7 @@ export default {
         .button2 {
           width: 100px;
           height: 40px;
+          cursor: pointer;
           text-align: center;
           line-height: 40px;
           border: 1px solid rgba(153, 153, 153, 1);

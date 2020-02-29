@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import { getStorage } from '../mixin/storage'
+import { getStorage } from "../mixin/storage";
 export default {
   name: "TrademarkModal2",
   data() {
@@ -52,13 +52,13 @@ export default {
       form: this.$form.createForm(this)
     };
   },
-  props:['tradeMarkName','tradeMarkRegNo'],
+  props: ["tradeMarkName", "tradeMarkRegNo"],
   methods: {
     showModal() {
       this.visible = true;
     },
     handleOk() {
-       this.handleSubmit()
+      this.handleSubmit();
     },
     handleCancel() {
       this.visible = false;
@@ -67,39 +67,44 @@ export default {
       this.form.validateFields((err, values) => {
         if (!err) {
           console.log("Received values of form: ", values);
-          const phone=values.mobile
-          const userName=values.user
-          const applyType='3' //商标咨询
-          const regNo=this.tradeMarkRegNo
-          const params={
-            phone:phone,
-            userName:userName,
-            applyType:applyType,
-            regNo:regNo
+          const phone = values.mobile;
+          const userName = values.user;
+          const applyType = "3"; //商标咨询
+          const regNo = this.tradeMarkRegNo;
+          const params = {
+            phone: phone,
+            userName: userName,
+            applyType: applyType,
+            regNo: regNo
+          };
+
+          const url = "/api/trademark/applyNeeds/addApplyNeeds";
+          const accessToken = getStorage("AccessToken");
+          const headers = {
+            accessToken: accessToken
+          };
+          const re = /^1\d{10}$/; //验证手机号
+          if (re.test(phone)) {
+            this.$axios({
+              method: "post",
+              url: url,
+              data: params,
+              headers: headers
+            })
+              .then(res => {
+                console.log(res);
+                if (res.data.success) {
+                  this.$message.success("提交成功");
+                  this.visible = false;
+                  this.$emit("toNextModal");
+                }
+              })
+              .catch(err => {
+                console.log(err);
+              });
+          }else{
+            this.$message.error('手机号格式错误')
           }
-        
-          const url='/api/trademark/applyNeeds/addApplyNeeds'
-          const accessToken=getStorage("AccessToken")
-          const headers={
-            accessToken:accessToken
-          }
-          this.$axios({
-            method:'post',
-            url:url,
-            data:params,
-            headers:headers
-          }).then(res=>{
-            console.log(res)
-            if(res.data.success){
-              this.$message.success("提交成功")
-              this.visible=false
-              this.$emit('toNextModal')
-            }
-          }).catch(err=>{
-            console.log(err)
-          })
-          
-         
         }
       });
     }
@@ -136,7 +141,7 @@ export default {
   .ant-form {
     margin-top: 10px;
     .modal-btn {
-     width:100%;
+      width: 100%;
       height: 40px;
       background: rgba(253, 114, 55, 1);
       opacity: 1;

@@ -2,10 +2,10 @@
   <div class="myCollect">
     <div class="title">我的收藏</div>
     <div class="collect-content">
-      <template v-if='collectList.length>0'>
+      <template v-if="collectList.length>0">
         <div class="collect-item" v-for="(item,index) in collectList" :key="index">
-          <div class="collect-item-img">
-             <img style='width:100%;height:100%;' :src='item.tmImg' />
+          <div class="collect-item-img" @click='toDetail(item.regNo,item.intCls)'>
+            <img style="width:100%;height:100%;" :src="item.tmImg" />
           </div>
           <div class="collect-item-info">
             <div class="collect-item-info-title">商标信息</div>
@@ -16,23 +16,33 @@
             </div>
           </div>
           <div class="collect-operation">
-            <div class="collect-button">取消收藏</div>
-            <div class="collect-button">立即咨询</div>
+            <div class="collect-button" style="background:#5257EC;" @click="cancelCollect(item.collectId)">取消收藏</div>
+            <div class="collect-button" style="background: rgba(253, 114, 55, 1);" @click="consultCollect(item)">立即咨询</div>
           </div>
         </div>
       </template>
       <div v-else>您目前没有收藏任何商标哦，赶快前往商标列表收藏吧！</div>
     </div>
+    <trademark-modal2  
+       ref="modal2"
+      :tradeMarkName="consultCollectItem.tmName"
+      :tradeMarkRegNo="consultCollectItem.regNo"
+     />
   </div>
 </template>
 
 <script>
 import { getStorage } from "../mixin/storage";
+import TrademarkModal2 from './TrademarkModal2';
 export default {
   name: "myCollect",
+  components:{
+    TrademarkModal2
+  },
   data() {
     return {
-      collectList: [] //我的收藏
+      collectList: [], //我的收藏
+      consultCollectItem:{} //要咨询的收藏
     };
   },
   mounted() {
@@ -60,6 +70,34 @@ export default {
         .catch(err => {
           console.log(err);
         });
+    },
+    cancelCollect(colledtionId) {
+      const url = "api/trademark/trademarkCollection/deleteTrademarkCollection";
+      const accessToken = getStorage("AccessToken");
+      const headers = {
+        accessToken: accessToken
+      };
+      this.$axios({
+        method: "post",
+        url: url,
+        data: {
+          collectionId: colledtionId
+        },
+        headers: headers
+      }).then(res => {
+        console.log(res);
+        if(res.data.success){
+          this.getCollect()
+        }
+      });
+    },
+    consultCollect(data){
+      console.log(data)
+      this.consultCollectItem=data
+       this.$refs.modal2.showModal();
+    },
+    toDetail(regNo,id){
+      this.$router.push({path:'/detail',query:{regNo:regNo,id:id}})
     }
   }
 };
@@ -95,6 +133,7 @@ export default {
         height: 115px;
         width: 115px;
         border: 1px solid rgba(232, 232, 232, 1);
+        cursor : pointer;
         opacity: 1;
       }
       .collect-item-info {
