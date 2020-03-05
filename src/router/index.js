@@ -8,6 +8,7 @@ import UserRegister from '../views/UserRegister/UserRegister.vue'
 import TrademarkList from '../views/TrademarkList/TrademarkList.vue'
 import TrademarkDetail from '../views/TrademarkDetail/TrademarkDetail.vue'
 import WriteTrademarkInfo from '../components/WriteTrademarkInfo.vue'
+import CloseWriteTrademarkInfo from '../components/closeWriteTradeMarkInfo.vue'
 import ChooseApplicant from '../components/ChooseApplicant.vue'
 import PayOrder from '../components/PayOrder.vue'
 import CommitTradermark from '../components/CommitTrademark.vue'
@@ -37,13 +38,18 @@ const routes = [
            {
                path:'/trademarkBuy',
                name:'trademarkBuy',
-               redirect:'/trademarkBuy/writeTrademarkInfo'
+               redirect:'/trademarkBuy/TrademarkInfo'
            },
            {
                path:'/trademarkBuy/writeTrademarkInfo',
                name:'writeTrademarkInfo',
                component:WriteTrademarkInfo
            },
+            {
+                path: '/trademarkBuy/closewriteTrademarkInfo',
+                name: 'closewriteTrademarkInfo',
+                component:CloseWriteTrademarkInfo
+            },
            {
              path:'/trademarkBuy/chooseApplicant',
              name:'chooseApplicant',

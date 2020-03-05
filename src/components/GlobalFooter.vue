@@ -9,7 +9,12 @@
         <span>{{item.title}}:</span>
         <span>{{item.value}}</span>
       </div>
+       <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=33048302000453" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;margin-top:5px;">
+         <img src="../bannerAndIcon/guohui.png" style="float:left;"/>
+       <p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#FFFFFF;">浙公网安备 33048302000453号</p >
+      </a>
     </div>
+   
     <div class="globalFooter-part3">
       <div class="globalFooter-part3-tip">添加微信</div>
       <div class="globalFooter-part3-wx">
@@ -97,7 +102,7 @@ export default {
   margin-left: 13%;
 }
 .globalFooter-part2-info {
-  margin-top: 10px;
+  margin-top: 5px;
 }
 .globalFooter-part3 {
   width: 100px;

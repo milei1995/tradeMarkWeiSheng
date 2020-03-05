@@ -40,29 +40,14 @@
       </a-form-item>
     </a-form>
     <div class="info-table">
-      <!-- <div class="info-table-part1">
-        <div class="info-table-part1-1">选择推荐方案</div>
-        <a-select placeholder="请选择领域">
-          <a-select-option value="jack">领域1</a-select-option>
-          <a-select-option value="lucy">领域2</a-select-option>
-        </a-select>
-        <a-button>添加所选方案</a-button>
-      </div>
-      <div class="info-table-part2">
-        <div class="info-table-part2-1">常用商标类别</div>
-        <div class="info-table-part2-2">暂无商标类别</div>
-      </div>-->
-      <div class="info-table-part3">
+      <trade-mark-category />
+      <!-- <div class="info-table-part3">
         <div class="info-table-part3-1">
           <div class="info-table-part3-1-left">
              <div style='line-height:40px;'>请根据商标类型挑选商标</div>
-            <!-- <a-input-search placeholder="请输入搜索关键字，如:针筒" />
-            <span class="cancel">取消</span> -->
           </div>
           <div class="info-table-part3-1-right">
             <span class="choose">已经选择的商标类型</span>
-            <!-- <a-button class="save-btn" disabled>保存当前类别</a-button>
-            <a-button class="clear-btn" disabled>清除全部</a-button> -->
           </div>
         </div>
         <div class="info-table-part3-2">
@@ -85,26 +70,31 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
     <div class="footer">
       <div class="footer-part1">应付金额</div>
       <div class="footer-part2">￥{{totalPrice}}</div>
       <a-button class="footer-part3" @click="toNext">下一步</a-button>
     </div>
+    <!-- <close-write-trade-mark-info /> -->
   </div>
 </template>
 
 <script>
 import { getStorage } from "../mixin/storage";
 import UploadPic from "./UploadPic";
-import TrademarkTree from "./TrademarkTree";
+import TradeMarkCategory from "./tradeMarkCategory/index"
+// import TrademarkTree from "./TrademarkTree";
 import { filterUnderfind } from "../untils/filterUnderfind";
+// import closeWriteTradeMarkInfo from "./closeWriteTradeMarkInfo"
 export default {
   name: "info",
   components: {
     UploadPic,
-    TrademarkTree
+    TradeMarkCategory
+    // TrademarkTree,
+    // closeWriteTradeMarkInfo
   },
   data() {
     return {
