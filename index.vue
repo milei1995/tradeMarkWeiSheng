@@ -7,7 +7,7 @@
             class="category1-item"
             v-for="(item,index) in category1"
             :key="index"
-            @click="chooseTrade(item.classifyNum,item.classifyName)"
+            @click="chooseTrade(index, item.classifyNum,item.classifyName)"
           >第{{item.classifyNum}}类&nbsp;{{item.classifyName}}</div>
         </div>
       </a-tab-pane>
@@ -17,7 +17,7 @@
             class="category2-item"
             v-for="(item,index) in category2"
             :key="index"
-            @click="chooseTrade2(item.groupsNum)"
+            @click="chooseTrade2(item.groupsNum, index)"
           >{{item.groupsNum}}--{{item.groupName}}</div>
         </div>
       </a-tab-pane>
@@ -33,37 +33,11 @@
               v-for="(item,index) in category3.goodsList"
               :key="index"
               @click="selectGoods(item,category3.groupsNum)"
-              :class="[isSelected(item)===true?'active3':'']"
-            >{{item}}</div>
+            >{{item}}{{lastList.includes(item)}}</div>
           </div>
         </div>
       </a-tab-pane>
     </a-tabs>
-    <div class="choose-content">
-      <template v-for="(item,index) in selectedClone" >
-      <div class="choose-content-item" :key="index">
-        <div class="item-part1">
-          <span style="font-size:16px;">第{{item.classNum}}类&nbsp;{{item.className}}</span>
-          <span style="margin-left:20px;">所选群组:&nbsp;</span>
-          <span v-for="(item2,index2) in item.chooseGroup" :key="index2" style="margin-left:5px;">
-            <span
-              style="display:inline-block;background-color:#5D5C5C;color:#ffffff;border-radius:2px;padding:0 5px 0 5px;"
-            >{{item2.groupsNum}}({{item2.groupArray.length}})</span>
-          </span>
-          <span style="margin-left:20px;">当前选择{{item.totalArray.length}}个商品/服务</span>
-        </div>
-        <div class="item-part2">
-          <span
-            class="item-part2-item"
-            v-for="(item3,index3) in item.totalArray"
-            :key="index3"
-          >{{item3}}
-            <a-icon type="close-circle" style="color:red;font-size:20px;margin-top:2px;cursor:pointer;" @click="reduce(item3)"/>
-          </span>
-        </div>
-      </div>
-      </template>
-    </div>
   </div>
 </template>
 
@@ -71,7 +45,6 @@
 var groupArray = []; //当前挑选类的小类
 var chooseGroup = []; //当前挑选类的小类的商品
 var currentSelectedClass = {}; //当前挑选的类
-import { deepClone } from "../../untils/deepClone";
 export default {
   data() {
     return {
@@ -79,25 +52,14 @@ export default {
       category2: [], //存放类似群组
       category3: [], //存放具体商品
       currentActiveKey: "1",
-      selected: [], //挑选的整体数组
-      selectedClone: [] // 深度克隆selected
+      first: {},
+      secoord: {},
+      lastList: [],
+      selected: [] //挑选的整体数组
     };
   },
   computed: {
-    isSelected() {
-      return val => {
-        this.selectedClone.forEach(item1 => {
-          item1.chooseGroup.forEach(item2 => {
-            if(item2.groupArray.includes(val)){
-              console.log(1)
-              return true
-            }else{
-              return false
-            }
-          });
-        });
-      };
-    }
+    
   },
   mounted() {
     this.getCategory(1, "");
@@ -133,24 +95,37 @@ export default {
       }
     },
 
-    chooseTrade(code, name) {
+    chooseTrade(index, code, name) {
+      this.first = {}
+      this.secoord = {}
+      this.lastList = []
       this.currentActiveKey = "2";
       this.getCategory(2, code);
       const isExist = this.selected.find(z => z.classNum == code);
       console.log(isExist);
+      this.first = JSON.parse(JSON.stringify(this.category1[index]))
       if (!isExist) {
         const obj1 = {
           className: name,
           classNum: code
         };
         currentSelectedClass = { ...obj1 };
-        console.log(currentSelectedClass);
+         console.log(currentSelectedClass);
         this.selected.push(currentSelectedClass);
-      } else {
-        currentSelectedClass = isExist;
-      }
+      }else{
+        var i;
+        for( i=0;i<isExist.chooseGroup.length;i++){
+           if(isExist.chooseGroup[i].groupsNum==this.category3.groupsNum)
+           return i
+        }
+        console.log(i)
+        groupArray=isExist.chooseGroup[i].groupArray
+      } 
     },
-    chooseTrade2(groupsNum) {
+    chooseTrade2(groupsNum, index) {
+      const { category2 } = this
+      console.log(category2, index)
+      this.secoord = JSON.parse(JSON.stringify(category2[index]))
       let choosed = this.category2.find(n => n.groupsNum == groupsNum);
       console.log(choosed);
       this.currentActiveKey = "3";
@@ -168,53 +143,22 @@ export default {
       console.log(currentSelectedClass);
     },
     selectGoods(goods, groupsNum) {
-      const isExist = groupArray.find(n => n == goods);
-      if (!isExist) {
-        groupArray.push(goods);
-        const target = currentSelectedClass.chooseGroup.find(
-          n => n.groupsNum == groupsNum
-        );
-
-        // eslint-disable-next-line no-unused-vars
-        var totalArray = [];
-        currentSelectedClass.chooseGroup.forEach(item => {
-          totalArray = totalArray.concat(item.groupArray);
-        });
-        currentSelectedClass.totalArray = totalArray;
-        target.groupArray = groupArray;
-        console.log(currentSelectedClass);
-        console.log(this.selected);
-        this.selectedClone = deepClone(this.selected, []);
-        console.log(this.selectedClone);
+      const { lastList } =  this
+      if (lastList.includes(goods)) {
+        lastList.splice(lastList.indexOf(goods), 1)
+      } else {
+        lastList.push(goods)
       }
-    },
-    reduce(val){
-      var index1=0//val在totalArray中的下标
-      var index2=0//val在大类中的第几项
-      var index3=0//val在已知大类中中类groupArray的下标
-      var index4=0//val在已知大类中中类的第几项
-      for(var i=0;i<this.selectedClone.length;i++){
-            var y=this.selectedClone[i].totalArray.indexOf(val)
-              if(y>0){
-              console.log(y)
-              console.log(i)
-                index1=y
-                index2=i
-              }
-        for(var l=0;l<this.selectedClone[i].chooseGroup.length;l++){
-             var z=this.selectedClone[i].chooseGroup[l].groupArray.indexOf(val)
-              if(z>0){
-                console.log(z)
-                console.log(l)
-                index3=z
-                index4=l
-              }
-        }
-      }
-      console.log(index1,index2,index3,index4)
-      this.selectedClone[index2].totalArray.splice(index1,1)
-      this.selectedClone[index2].chooseGroup[index4].groupArray.splice(index3,1)
-      console.log(this.selectedClone)
+      this.lastList = lastList
+      console.log(55555, this.first, this.secoord, this.lastList)
+      groupArray.push(goods);
+      // console.log(groupArray)
+      const target = currentSelectedClass.chooseGroup.find(
+        n => n.groupsNum == groupsNum
+      );
+      target.groupArray = groupArray;
+      console.log(222, currentSelectedClass);
+      console.log(111, this.selected);
     },
     getCategory(queryType, code) {
       const url =
@@ -252,10 +196,10 @@ export default {
       width: 100%;
       .category1 {
         width: 100%;
-        height: 300px;
-        overflow-y: auto;
+        height:300px;
+        overflow-y:scroll ;
         display: flex;
-        align-content: flex-start;
+        align-content:flex-start;
         flex-wrap: wrap;
         .category1-item {
           width: 14%;
@@ -274,10 +218,10 @@ export default {
       }
       .category2 {
         width: 100%;
-        height: 300px;
-        overflow-y: auto;
+        height:300px;
+        overflow-y:scroll ;
         display: flex;
-        align-content: flex-start;
+        align-content:flex-start;
         flex-wrap: wrap;
         .category2-item {
           width: 50%;
@@ -301,59 +245,24 @@ export default {
           font-size: 28px;
         }
         .category3-content {
-          height: 200px;
-          overflow-y: auto;
+          height:300px;
+          overflow-y:scroll ;
           width: 100%;
           display: flex;
-          align-content: flex-start;
+          align-content:flex-start;
           flex-wrap: wrap;
           .category3-item {
             background-color: #ececec;
             margin-left: 20px;
             margin-top: 10px;
-            height: 30px;
+            height:30px;
             cursor: pointer;
             line-height: 30px;
           }
-          .active3 {
-            color: #ffffff;
-            background-color: #faa80a;
-          }
           .category3-item:hover {
-           color:red;
+            background-color: #faa80a;
+            color: #ffffff;
           }
-        }
-      }
-    }
-  }
-  .choose-content {
-    margin-top: 5px;
-    width: 100%;
-    height: 250px;
-    overflow: auto;
-    .choose-content-item {
-      margin-top: 5px;
-      width: 100%;
-      overflow: auto;
-      height: 150px;
-      background-color: #ebecec;
-      .item-part1 {
-        width: 100%;
-        display: flex;
-        height: 30px;
-        line-height: 30px;
-      }
-      .item-part2 {
-        width: 100%;
-        display: flex;
-        flex-wrap: wrap;
-        align-content: flex-start;
-        .item-part2-item {
-          height: 30px;
-          margin-top: 2px;
-          margin-left: 5px;
-          line-height: 30px;
-          border: 1px solid #f3a80a;
         }
       }
     }
