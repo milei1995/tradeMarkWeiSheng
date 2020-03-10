@@ -312,7 +312,7 @@ export default {
   .info-table {
     padding: 15px 10px 15px 10px;
     width: 65%;
-    height: 652px;
+    height: 752px;
     border: 1px solid rgba(245, 245, 245, 1);
     opacity: 1;
     // /deep/.info-table-part1 {

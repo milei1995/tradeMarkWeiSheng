@@ -28,13 +28,33 @@
             <span>{{category3.groupName}}</span>
           </div>
           <div class="category3-content">
-            <div
+            <div class="content1">
+              <div
+                class="content-item"
+                v-for="(item,index) in category3.groupsNormGoodsList"
+                @click="selectGoods(item,category3.groupsNum)"
+                :class="[isSelected(item)===true ? 'active3':'unactive']"
+                :key="index"
+              >{{item}}</div>
+            </div>
+            <div class="remark" style="color:red;margin-left:20px;">{{category3.remark}}</div>
+            <div class="notNorm-tip">新增可网报的非规范商品（不建议选择，商标局随时都可能会调整）</div>
+            <div class="content2">
+              <div
+                class="content-item"
+                v-for="(item,index) in category3.groupsNotNormGoodsList"
+                @click="selectGoods(item,category3.groupsNum)"
+                :class="[isSelected(item)===true ? 'active3':'unactive']"
+                :key="index"
+              >{{item}}</div>
+            </div>
+            <!-- <div
               class="category3-item"
               v-for="(item,index) in category3.goodsList"
               :key="index"
               @click="selectGoods(item,category3.groupsNum)"
               :class="[isSelected(item)===true ? 'active3':'unactive']"
-            >{{item}}</div>
+            >{{item}}</div>-->
           </div>
         </div>
       </a-tab-pane>
@@ -52,7 +72,7 @@
               >{{item2.groupsNum}}({{item2.groupArray.length}})</span>
             </span>
             <span style="margin-left:20px;">当前选择{{item.totalArray.length}}个商品/服务</span>
-            <div class="price">￥{{item.classifyPrice}}</div>
+            <div class="price">￥{{item.totalPriceItem}}</div>
           </div>
           <div class="item-part2">
             <span class="item-part2-item" v-for="(item3,index3) in item.totalArray" :key="index3">
@@ -184,6 +204,13 @@ export default {
         });
         currentSelectedClass.totalArray = totalArray;
         console.log(currentSelectedClass);
+        this.selected.forEach(item=>{
+          if(item.totalArray.length>10){
+            item.totalPriceItem=item.classifyPrice+(item.totalArray.length-10)*item.classifyPrice
+          }else{
+            item.totalPriceItem=item.classifyPrice
+          }
+        })
         console.log(this.selected);
         this.selectedClone = deepClone(this.selected, []);
         console.log(this.selectedClone);
@@ -323,29 +350,40 @@ export default {
           font-size: 28px;
         }
         .category3-content {
-          height: 200px;
+          height: 300px;
           overflow-y: auto;
           width: 100%;
-          display: flex;
-          align-content: flex-start;
-          flex-wrap: wrap;
-          .category3-item {
-            margin-left: 20px;
-            margin-top: 10px;
-            height: 30px;
-            cursor: pointer;
-            line-height: 30px;
+          .content1,
+          .content2 {
+            width: 100%;
+            display: flex;
+            align-content: flex-start;
+            flex-wrap: wrap;
+            .content-item {
+              margin-left: 20px;
+              height: 25px;
+              margin-top:4px;
+              cursor: pointer;
+              line-height: 25px;
+            }
+            .unactive {
+              color: #000000;
+              background-color: #ececec;
+            }
+            .active3 {
+              color: #ffffff;
+              background-color: #faa80a;
+            }
+            .content-item:hover {
+              color: red;
+            }
           }
-          .unactive {
-            color: #000000;
-            background-color: #ececec;
-          }
-          .active3 {
-            color: #ffffff;
-            background-color: #faa80a;
-          }
-          .category3-item:hover {
-            color: red;
+          .notNorm-tip {
+            width: 100%;
+            margin-top:5px;
+            color: azure;
+            text-indent: 20px;
+            background-color: #b8c5ca;
           }
         }
       }
@@ -354,13 +392,13 @@ export default {
   .choose-content {
     margin-top: 5px;
     width: 100%;
-    height: 250px;
+    height: 300px;
     overflow: auto;
     .choose-content-item {
       margin-top: 5px;
       width: 100%;
       overflow: auto;
-      height: 150px;
+      height: 120px;
       background-color: #ebecec;
       .item-part1 {
         width: 100%;
