@@ -13,6 +13,7 @@
          <img src="../bannerAndIcon/guohui.png" style="float:left;"/>
        <p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#FFFFFF;">浙公网安备 33048302000453号</p >
       </a>
+       <p><a target="_blank" href="http://www.beian.miit.gov.cn"  style="color:#ffffff;text-decoration:none">浙ICP备18050867号-5</a></p>
     </div>
    
     <div class="globalFooter-part3">
@@ -98,7 +99,7 @@ export default {
   font-family: Source Han Sans CN;
   color: rgba(255, 255, 255, 1);
   opacity: 1;
-  padding-top: 25px;
+  padding-top: 15px;
   margin-left: 13%;
 }
 .globalFooter-part2-info {

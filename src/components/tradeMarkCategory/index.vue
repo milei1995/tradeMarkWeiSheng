@@ -7,7 +7,7 @@
             class="category1-item"
             v-for="(item,index) in category1"
             :key="index"
-            @click="chooseTrade(item.classifyNum,item.classifyName)"
+            @click="chooseTrade(item.classifyNum,item.classifyName,item.classifyPrice)"
           >第{{item.classifyNum}}类&nbsp;{{item.classifyName}}</div>
         </div>
       </a-tab-pane>
@@ -33,35 +33,38 @@
               v-for="(item,index) in category3.goodsList"
               :key="index"
               @click="selectGoods(item,category3.groupsNum)"
-              :class="[isSelected(item)===true?'active3':'']"
+              :class="[isSelected(item)===true ? 'active3':'unactive']"
             >{{item}}</div>
           </div>
         </div>
       </a-tab-pane>
     </a-tabs>
     <div class="choose-content">
-      <template v-for="(item,index) in selectedClone" >
-      <div class="choose-content-item" :key="index">
-        <div class="item-part1">
-          <span style="font-size:16px;">第{{item.classNum}}类&nbsp;{{item.className}}</span>
-          <span style="margin-left:20px;">所选群组:&nbsp;</span>
-          <span v-for="(item2,index2) in item.chooseGroup" :key="index2" style="margin-left:5px;">
-            <span
-              style="display:inline-block;background-color:#5D5C5C;color:#ffffff;border-radius:2px;padding:0 5px 0 5px;"
-            >{{item2.groupsNum}}({{item2.groupArray.length}})</span>
-          </span>
-          <span style="margin-left:20px;">当前选择{{item.totalArray.length}}个商品/服务</span>
+      <template v-for="(item,index) in selectedClone">
+        <div class="choose-content-item" :key="index" v-if="item.totalArray.length>0">
+          <div class="item-part1">
+            <span style="font-size:16px;">第{{item.classNum}}类&nbsp;{{item.className}}</span>
+            <span style="margin-left:20px;">所选群组:&nbsp;</span>
+            <span v-for="(item2,index2) in item.chooseGroup" :key="index2" style="margin-left:5px;">
+              <span
+                v-if="item2.groupArray.length>0"
+                style="display:inline-block;background-color:#5D5C5C;color:#ffffff;border-radius:2px;padding:0 5px 0 5px;"
+              >{{item2.groupsNum}}({{item2.groupArray.length}})</span>
+            </span>
+            <span style="margin-left:20px;">当前选择{{item.totalArray.length}}个商品/服务</span>
+            <div class="price">￥{{item.classifyPrice}}</div>
+          </div>
+          <div class="item-part2">
+            <span class="item-part2-item" v-for="(item3,index3) in item.totalArray" :key="index3">
+              {{item3}}
+              <a-icon
+                type="close-circle"
+                style="color:red;font-size:20px;margin-top:2px;cursor:pointer;"
+                @click="reduce(item3)"
+              />
+            </span>
+          </div>
         </div>
-        <div class="item-part2">
-          <span
-            class="item-part2-item"
-            v-for="(item3,index3) in item.totalArray"
-            :key="index3"
-          >{{item3}}
-            <a-icon type="close-circle" style="color:red;font-size:20px;margin-top:2px;cursor:pointer;" @click="reduce(item3)"/>
-          </span>
-        </div>
-      </div>
       </template>
     </div>
   </div>
@@ -80,22 +83,19 @@ export default {
       category3: [], //存放具体商品
       currentActiveKey: "1",
       selected: [], //挑选的整体数组
-      selectedClone: [] // 深度克隆selected
+      selectedClone: [], // 深度克隆selected
+      totalSelectItemArray: [] //将选择所有的小类放入一个数组
     };
   },
   computed: {
     isSelected() {
       return val => {
-        this.selectedClone.forEach(item1 => {
-          item1.chooseGroup.forEach(item2 => {
-            if(item2.groupArray.includes(val)){
-              console.log(1)
-              return true
-            }else{
-              return false
-            }
-          });
-        });
+        var isExist = this.totalSelectItemArray.includes(val);
+        if (isExist) {
+          return true;
+        } else {
+          return false;
+        }
       };
     }
   },
@@ -133,7 +133,7 @@ export default {
       }
     },
 
-    chooseTrade(code, name) {
+    chooseTrade(code, name, price) {
       this.currentActiveKey = "2";
       this.getCategory(2, code);
       const isExist = this.selected.find(z => z.classNum == code);
@@ -141,7 +141,8 @@ export default {
       if (!isExist) {
         const obj1 = {
           className: name,
-          classNum: code
+          classNum: code,
+          classifyPrice: price
         };
         currentSelectedClass = { ...obj1 };
         console.log(currentSelectedClass);
@@ -171,50 +172,71 @@ export default {
       const isExist = groupArray.find(n => n == goods);
       if (!isExist) {
         groupArray.push(goods);
+        this.totalSelectItemArray.push(goods);
         const target = currentSelectedClass.chooseGroup.find(
           n => n.groupsNum == groupsNum
         );
-
-        // eslint-disable-next-line no-unused-vars
+        target.groupArray = groupArray;
         var totalArray = [];
         currentSelectedClass.chooseGroup.forEach(item => {
+          console.log(item.groupArray);
           totalArray = totalArray.concat(item.groupArray);
         });
         currentSelectedClass.totalArray = totalArray;
-        target.groupArray = groupArray;
         console.log(currentSelectedClass);
         console.log(this.selected);
         this.selectedClone = deepClone(this.selected, []);
         console.log(this.selectedClone);
       }
     },
-    reduce(val){
-      var index1=0//val在totalArray中的下标
-      var index2=0//val在大类中的第几项
-      var index3=0//val在已知大类中中类groupArray的下标
-      var index4=0//val在已知大类中中类的第几项
-      for(var i=0;i<this.selectedClone.length;i++){
-            var y=this.selectedClone[i].totalArray.indexOf(val)
-              if(y>0){
-              console.log(y)
-              console.log(i)
-                index1=y
-                index2=i
-              }
-        for(var l=0;l<this.selectedClone[i].chooseGroup.length;l++){
-             var z=this.selectedClone[i].chooseGroup[l].groupArray.indexOf(val)
-              if(z>0){
-                console.log(z)
-                console.log(l)
-                index3=z
-                index4=l
-              }
+    reduce(val) {
+      console.log(this.selected);
+      var index1 = 0; //val在totalArray中的下标
+      var index2 = 0; //val在大类中的第几项
+      var index3 = 0; //val在已知大类中中类groupArray的下标
+      var index4 = 0; //val在已知大类中中类的第几项
+      var index5 = 0; //val在totalSelectItemArray中的下标
+      for (var i = 0; i < this.selectedClone.length; i++) {
+        var y = this.selectedClone[i].totalArray.indexOf(val);
+        if (y >= 0) {
+          index1 = y;
+          index2 = i;
+        }
+        for (var l = 0; l < this.selectedClone[i].chooseGroup.length; l++) {
+          var z = this.selectedClone[i].chooseGroup[l].groupArray.indexOf(val);
+          if (z >= 0) {
+            index3 = z;
+            index4 = l;
+          }
         }
       }
-      console.log(index1,index2,index3,index4)
-      this.selectedClone[index2].totalArray.splice(index1,1)
-      this.selectedClone[index2].chooseGroup[index4].groupArray.splice(index3,1)
-      console.log(this.selectedClone)
+      console.log(index1, index2, index3, index4);
+      this.selected[index2].totalArray.splice(index1, 1);
+      this.selected[index2].chooseGroup[index4].groupArray.splice(index3, 1);
+      // if( this.selected[index2].chooseGroup[index4].groupArray.length==0){
+      //    this.selected[index2].chooseGroup.splice(index4,1)
+      //     if(this.selected[index2].chooseGroup.length==0){
+      //       this.selected.splice(index2,1)
+      //    }
+      // }
+      this.selectedClone[index2].totalArray.splice(index1, 1);
+      this.selectedClone[index2].chooseGroup[index4].groupArray.splice(
+        index3,
+        1
+      );
+      if (
+        this.selectedClone[index2].chooseGroup[index4].groupArray.length == 0
+      ) {
+        this.selectedClone[index2].chooseGroup.splice(index4, 1);
+        if (this.selectedClone[index2].chooseGroup.length == 0) {
+          this.selectedClone.splice(index2, 1);
+        }
+      }
+      index5 = this.totalSelectItemArray.indexOf(val);
+      if (index5 > -1) {
+        this.totalSelectItemArray.splice(index5, 1);
+      }
+      console.log(this.selectedClone);
     },
     getCategory(queryType, code) {
       const url =
@@ -308,19 +330,22 @@ export default {
           align-content: flex-start;
           flex-wrap: wrap;
           .category3-item {
-            background-color: #ececec;
             margin-left: 20px;
             margin-top: 10px;
             height: 30px;
             cursor: pointer;
             line-height: 30px;
           }
+          .unactive {
+            color: #000000;
+            background-color: #ececec;
+          }
           .active3 {
             color: #ffffff;
             background-color: #faa80a;
           }
           .category3-item:hover {
-           color:red;
+            color: red;
           }
         }
       }
@@ -339,9 +364,17 @@ export default {
       background-color: #ebecec;
       .item-part1 {
         width: 100%;
+        position: relative;
         display: flex;
         height: 30px;
         line-height: 30px;
+        .price {
+          top: 5px;
+          right: 5px;
+          font-size: 25px;
+          color: #faa80a;
+          position: absolute;
+        }
       }
       .item-part2 {
         width: 100%;
