@@ -327,6 +327,13 @@ export default {
               console.log(res);
               if (res.data.success) {
                 this.$message.success("商标需求提交成功");
+              }else{
+                if(res.data.code==='10004'){
+                  this.$message.error('当前用户已过期，请重新登录')
+                  setTimeout(()=>{
+                    this.$router.push({path:'/login'})
+                  },2000)
+                }
               }
             })
             .catch(err => {

@@ -35,64 +35,69 @@ export default {
 </script>
 
 <style lang='scss' scoped>
-.home-bg1 {
-  padding-top: 1px;
-  width: 70%;
-  margin-left: 15%;
-  height: 520px;
-  text-align: center;
-  min-width: 1000px;
-  background: rgba(236, 236, 236, 1);
-  opacity: 1;
-  /* background: url("../assets/common-problem-bg.jpg") no-repeat center;
+.home-bg {
+  width: 100%;
+  min-width: 1400px;
+  .home-bg1 {
+    padding-top: 1px;
+    width: 70%;
+    margin-left: 15%;
+    height: 520px;
+    text-align: center;
+    min-width: 1000px;
+    background: rgba(236, 236, 236, 1);
+    opacity: 1;
+    /* background: url("../assets/common-problem-bg.jpg") no-repeat center;
   background-size: cover; */
-  margin-bottom: 20px;
-  .title {
-    margin-top: 20px;
-    font-size: 28px;
-    font-family: Source Han Sans CN;
-    font-weight: 500;
-    line-height: 48px;
-    color: rgba(51, 51, 51, 1);
-    opacity: 1;
-  }
-  .title-des {
-    font-size: 14px;
-    font-family: Source Han Sans CN;
-    font-weight: 400;
-    line-height: 24px;
-    color: rgba(102, 102, 102, 1);
-    opacity: 1;
-  }
-  .question-content {
-    width: 100%;
-    height: 450px;
-    padding: 10px 20px 10px 20px;
-    text-align: left;
-    .question1 {
-      .question-title {
-        font-size: 16px;
-        font-family: Source Han Sans CN;
-        font-weight: bolder;
-        line-height: 27px;
-        color: rgba(51, 51, 51, 1);
-        opacity: 1;
-      }
+    margin-bottom: 20px;
+    .title {
+      margin-top: 20px;
+      font-size: 28px;
+      font-family: Source Han Sans CN;
+      font-weight: 500;
+      line-height: 48px;
+      color: rgba(51, 51, 51, 1);
+      opacity: 1;
     }
-    .question2,
-    .question3 {
-      margin-top: 30px;
-      .question-title {
-        font-size: 16px;
-        font-family: Source Han Sans CN;
-        font-weight: bolder;
-        line-height: 27px;
-        color: rgba(51, 51, 51, 1);
-        opacity: 1;
+    .title-des {
+      font-size: 14px;
+      font-family: Source Han Sans CN;
+      font-weight: 400;
+      line-height: 24px;
+      color: rgba(102, 102, 102, 1);
+      opacity: 1;
+    }
+    .question-content {
+      width: 100%;
+      height: 450px;
+      padding: 10px 20px 10px 20px;
+      text-align: left;
+      .question1 {
+        .question-title {
+          font-size: 16px;
+          font-family: Source Han Sans CN;
+          font-weight: bolder;
+          line-height: 27px;
+          color: rgba(51, 51, 51, 1);
+          opacity: 1;
+        }
+      }
+      .question2,
+      .question3 {
+        margin-top: 30px;
+        .question-title {
+          font-size: 16px;
+          font-family: Source Han Sans CN;
+          font-weight: bolder;
+          line-height: 27px;
+          color: rgba(51, 51, 51, 1);
+          opacity: 1;
+        }
       }
     }
   }
 }
+
 /* .home-bg2 {
   width: 100%;
   height: 520px;

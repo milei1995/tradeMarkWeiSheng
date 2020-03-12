@@ -215,7 +215,7 @@ export default {
       params: {}, //支付请求的参数
       paramsPart1: null, //接收参数1
       paramsPart2: {
-        payType:"1" //默认微信支付
+        payType: "1" //默认微信支付
       }, //请求参数2
       isSave: false, //是否保存
       totalPrice: "" //总价
@@ -260,7 +260,7 @@ export default {
           console.log(this.paramsPart1);
           this.$router.push({
             path: "/trademarkBuy/payOrder",
-            query: { params: this.params ,orderType:'1'}
+            query: { params: this.params, orderType: "1" }
           });
         } else {
           this.$message.error("请先保存");
@@ -293,13 +293,13 @@ export default {
           this.writeInfo = values;
           this.isErr = false;
           const accessToken = getStorage("AccessToken");
-          console.log(accessToken)
+          console.log(accessToken);
           if (accessToken) {
             const currentType = this.currentType;
-            console.log(currentType)
+            console.log(currentType);
             if (currentType === "企业单位") {
-              this.paramsPart2.companyConfigId = "1",
-              this.paramsPart2.userConfigId = "0";
+              (this.paramsPart2.companyConfigId = "1"),
+                (this.paramsPart2.userConfigId = "0");
               console.log(this.writeInfo);
               const url = "/api/trademark/configApply/addConfigCompanyApply";
               const applyType = this.writeInfo.applyType;
@@ -342,6 +342,13 @@ export default {
                   if (res.data.success) {
                     this.$message.success("保存成功");
                     this.isSave = true;
+                  } else {
+                    if (res.data.code === "10004") {
+                      this.$message.error("当前用户已过期，请重新登录");
+                      setTimeout(() => {
+                        this.$router.push({ path: "/login" });
+                      }, 2000);
+                    }
                   }
                 })
                 .catch(err => {
@@ -349,8 +356,8 @@ export default {
                 });
             }
             if (currentType === "自然人") {
-              this.paramsPart2.companyConfigId = "0",
-              this.paramsPart2.userConfigId = "1";
+              (this.paramsPart2.companyConfigId = "0"),
+                (this.paramsPart2.userConfigId = "1");
               console.log(this.writeInfo);
               const url = "/api/trademark/configApply/addConfigUserApply";
               const headers = {
@@ -398,6 +405,13 @@ export default {
                   if (res.data.success) {
                     this.$message.success("保存成功");
                     this.isSave = true;
+                  } else {
+                    if (res.data.code === "10004") {
+                      this.$message.error("当前用户已过期，请重新登录");
+                      setTimeout(() => {
+                        this.$router.push({ path: "/login" });
+                      }, 2000);
+                    }
                   }
                 })
                 .catch(err => {

@@ -14,5 +14,6 @@ export default {
    .commit{
      margin-top:40px;
      text-align: center;
+     height:700px;
    }
 </style>

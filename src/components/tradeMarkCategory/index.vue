@@ -7,7 +7,7 @@
             class="category1-item"
             v-for="(item,index) in category1"
             :key="index"
-            @click="chooseTrade(item.classifyNum,item.classifyName,item.classifyPrice)"
+            @click="chooseTrade(item.classifyNum,item.classifyName)"
           >第{{item.classifyNum}}类&nbsp;{{item.classifyName}}</div>
         </div>
       </a-tab-pane>
@@ -21,7 +21,7 @@
           >{{item.groupsNum}}--{{item.groupName}}</div>
         </div>
       </a-tab-pane>
-      <a-tab-pane class="tab-pane" tab="情选择具体商品/服务" key="3">
+      <a-tab-pane class="tab-pane" tab="请选择具体商品/服务" key="3">
         <div class="category3">
           <div class="category3-title">
             <span>{{category3.groupsNum}}</span>--
@@ -104,7 +104,12 @@ export default {
       currentActiveKey: "1",
       selected: [], //挑选的整体数组
       selectedClone: [], // 深度克隆selected
-      totalSelectItemArray: [] //将选择所有的小类放入一个数组
+      totalSelectItemArray: [], //将选择所有的小类放入一个数组
+      tradeMarkPriceConfig:{
+        freeNumber:null,//大类免费选择几项
+        classifyPrice:null,//大类的价格
+        extraPrice:null//超出部分外加费用
+      }
     };
   },
   computed: {
@@ -121,6 +126,7 @@ export default {
   },
   mounted() {
     this.getCategory(1, "");
+    this.getPriceConfig()
   },
   methods: {
     callback(e) {
@@ -152,8 +158,26 @@ export default {
         }
       }
     },
+    getPriceConfig(){//获取价格配置
+       this.$axios({
+         method:'get',
+         url:'/api/trademark/trademarkClassifyGoods/findTrademarkGoodsConfig'
+       }).then(res=>{
+         if(res.data.success){
+              res.data.data.list.forEach(item=>{
+                if(item.type===1){
+                  this.tradeMarkPriceConfig.classifyPrice=item.price
+                }
+                if(item.type===2){
+                  this.tradeMarkPriceConfig.freeNumber=item.freeNumber
+                  this.tradeMarkPriceConfig.extraPrice=item.price
+                }
+              })
+         }
+       })
+    },
 
-    chooseTrade(code, name, price) {
+    chooseTrade(code, name) {
       this.currentActiveKey = "2";
       this.getCategory(2, code);
       const isExist = this.selected.find(z => z.classNum == code);
@@ -161,14 +185,14 @@ export default {
       if (!isExist) {
         const obj1 = {
           className: name,
-          classNum: code,
-          classifyPrice: price
+          classNum: code
         };
         currentSelectedClass = { ...obj1 };
-        console.log(currentSelectedClass);
+        // console.log(currentSelectedClass);
         this.selected.push(currentSelectedClass);
       } else {
         currentSelectedClass = isExist;
+        chooseGroup=isExist.chooseGroup
       }
     },
     chooseTrade2(groupsNum) {
@@ -186,7 +210,7 @@ export default {
         groupArray = isExist.groupArray;
       }
       currentSelectedClass.chooseGroup = chooseGroup;
-      console.log(currentSelectedClass);
+      // console.log(currentSelectedClass);
     },
     selectGoods(goods, groupsNum) {
       const isExist = groupArray.find(n => n == goods);
@@ -199,25 +223,26 @@ export default {
         target.groupArray = groupArray;
         var totalArray = [];
         currentSelectedClass.chooseGroup.forEach(item => {
-          console.log(item.groupArray);
+          // console.log(item.groupArray);
           totalArray = totalArray.concat(item.groupArray);
         });
         currentSelectedClass.totalArray = totalArray;
-        console.log(currentSelectedClass);
+        // console.log(currentSelectedClass);
         this.selected.forEach(item=>{
-          if(item.totalArray.length>10){
-            item.totalPriceItem=item.classifyPrice+(item.totalArray.length-10)*item.classifyPrice
+          if(item.totalArray.length>this.tradeMarkPriceConfig.freeNumber){
+            item.totalPriceItem=(this.tradeMarkPriceConfig.classifyPrice+(item.totalArray.length-this.tradeMarkPriceConfig.freeNumber)*this.tradeMarkPriceConfig.extraPrice).toFixed(2)
           }else{
-            item.totalPriceItem=item.classifyPrice
+            item.totalPriceItem=this.tradeMarkPriceConfig.classifyPrice
           }
         })
-        console.log(this.selected);
+        // console.log(this.selected);
         this.selectedClone = deepClone(this.selected, []);
-        console.log(this.selectedClone);
+        // console.log(this.selectedClone);
+        this.$emit('selectGoods',this.selectedClone)
       }
     },
     reduce(val) {
-      console.log(this.selected);
+      // console.log(this.selected);
       var index1 = 0; //val在totalArray中的下标
       var index2 = 0; //val在大类中的第几项
       var index3 = 0; //val在已知大类中中类groupArray的下标
@@ -237,7 +262,7 @@ export default {
           }
         }
       }
-      console.log(index1, index2, index3, index4);
+      // console.log(index1, index2, index3, index4);
       this.selected[index2].totalArray.splice(index1, 1);
       this.selected[index2].chooseGroup[index4].groupArray.splice(index3, 1);
       // if( this.selected[index2].chooseGroup[index4].groupArray.length==0){
@@ -263,7 +288,14 @@ export default {
       if (index5 > -1) {
         this.totalSelectItemArray.splice(index5, 1);
       }
-      console.log(this.selectedClone);
+        this.selectedClone.forEach(item=>{
+          if(item.totalArray.length>this.tradeMarkPriceConfig.freeNumber){
+            item.totalPriceItem=(this.tradeMarkPriceConfig.classifyPrice+(item.totalArray.length-this.tradeMarkPriceConfig.freeNumber)*this.tradeMarkPriceConfig.extraPrice).toFixed(2)
+          }else{
+            item.totalPriceItem=this.tradeMarkPriceConfig.classifyPrice
+          }
+        })
+      this.$emit('reduceGoods',this.selectedClone)
     },
     getCategory(queryType, code) {
       const url =

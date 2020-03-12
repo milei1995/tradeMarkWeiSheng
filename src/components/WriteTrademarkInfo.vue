@@ -40,53 +40,22 @@
       </a-form-item>
     </a-form>
     <div class="info-table">
-      <trade-mark-category />
-      <!-- <div class="info-table-part3">
-        <div class="info-table-part3-1">
-          <div class="info-table-part3-1-left">
-             <div style='line-height:40px;'>请根据商标类型挑选商标</div>
-          </div>
-          <div class="info-table-part3-1-right">
-            <span class="choose">已经选择的商标类型</span>
-          </div>
-        </div>
-        <div class="info-table-part3-2">
-          <div class="info-table-part3-2-left">
-            <trademark-tree @onExpandItem="getExpandItem" @onCheckItem="getCheckItem" />
-          </div>
-          <div class="info-table-part3-2-right">
-            <div
-              class="info-table-part3-2-right-item"
-              v-for="(item,index) in CheckedItem"
-              :key="index"
-            >
-              <div class="info-table-part3-2-right-item-isShow" v-if="item.selectChild.length>0">
-                <div class="info-table-part3-2-right-item-title">{{item.title}}</div>
-                <div class="info-table-part3-2-right-item-price">￥{{item.price}}</div>
-                <div>
-                  <a-tag v-for="(item2,index2) in item.selectChild" :key="index2">{{item2.title}}</a-tag>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div> -->
+      <trade-mark-category @selectGoods="selectGoods" @reduceGoods="reduceGoods" />
     </div>
     <div class="footer">
       <div class="footer-part1">应付金额</div>
       <div class="footer-part2">￥{{totalPrice}}</div>
       <a-button class="footer-part3" @click="toNext">下一步</a-button>
     </div>
-    <!-- <close-write-trade-mark-info /> -->
   </div>
 </template>
 
 <script>
 import { getStorage } from "../mixin/storage";
 import UploadPic from "./UploadPic";
-import TradeMarkCategory from "./tradeMarkCategory/index"
+import TradeMarkCategory from "./tradeMarkCategory/index";
 // import TrademarkTree from "./TrademarkTree";
-import { filterUnderfind } from "../untils/filterUnderfind";
+// import { filterUnderfind } from "../untils/filterUnderfind";
 // import closeWriteTradeMarkInfo from "./closeWriteTradeMarkInfo"
 export default {
   name: "info",
@@ -121,9 +90,7 @@ export default {
       isAutoPic: true, //自动生成图片or手动生成图片
       autoContent: "", //自动生成内容
       ManualImgUrl: "", //手动上传图片url
-      onExpected: [], //已经展开的树结构
-      onChecked: [], //已经选择的树结构
-      CheckedItem: [], //已经选中的商标
+      choosed: [], //已经选中的
       paramsPart1: {
         orderType: "1"
       } //请求时的参数
@@ -135,17 +102,12 @@ export default {
   },
   computed: {
     totalPrice() {
-      const CheckedItem = this.CheckedItem;
-      let total = null;
-      CheckedItem.forEach(item => {
-        if (item.selectChild.length > 0) {
-          // item.price = 0.01;
-          total += Number(item.price);
-        } else {
-          item.price = 0;
-        }
+      const choosed = this.choosed;
+      let total=0 ;
+      choosed.forEach(item => {
+        total += Number(item.totalPriceItem);
       });
-      return  Number(total).toFixed(2);
+      return total.toFixed(2);
     }
   },
   watch: {
@@ -163,36 +125,41 @@ export default {
       this.paramsPart1.trademarkImage = imgUrl;
     },
     toNext() {
-      const accessToken=getStorage('AccessToken')
-      if(accessToken){
-      this.form.validateFields((err, values) => {
-        if (!err) {
-          console.log("Received values of form: ", values);
-          this.paramsPart1.trademarkExplain = values.explain;
-          this.paramsPart1.trademarkName = values.name;
-          switch (values.type) {
-            case "文字商标":
-              this.paramsPart1.trademarkStatus = "1";
-              break;
-            case "图形商标":
-              this.paramsPart1.trademarkStatus = "2";
-              break;
-            case "文字图形整合商标":
-              this.paramsPart1.trademarkStatus = "3";
-              break;
-          }
-          console.log(this.paramsPart1);
-          this.$router.push({
-            path: "/trademarkBuy/chooseApplicant",
-            query: {
-              paramsPart1: this.paramsPart1,
-              totalPrice: this.totalPrice
+      const accessToken = getStorage("AccessToken");
+      if (accessToken) {
+        this.form.validateFields((err, values) => {
+          if (!err) {
+            console.log("Received values of form: ", values);
+            this.paramsPart1.trademarkExplain = values.explain;
+            this.paramsPart1.trademarkName = values.name;
+            this.paramsPart1.orderGoods = this.choosed;
+            switch (values.type) {
+              case "文字商标":
+                this.paramsPart1.trademarkStatus = "1";
+                break;
+              case "图形商标":
+                this.paramsPart1.trademarkStatus = "2";
+                break;
+              case "文字图形整合商标":
+                this.paramsPart1.trademarkStatus = "3";
+                break;
             }
-          });
-        }
-      });
-      }else{
-        this.$message.error('请先登录')
+            console.log(this.paramsPart1);
+            if (this.choosed.length > 0) {
+              this.$router.push({
+                path: "/trademarkBuy/chooseApplicant",
+                query: {
+                  paramsPart1: this.paramsPart1,
+                  totalPrice: this.totalPrice
+                }
+              });
+            }else{
+              this.$message.warning('请先选择商品')
+            }
+          }
+        });
+      } else {
+        this.$message.error("请先登录");
       }
     },
     picTypeChange(e) {
@@ -214,52 +181,15 @@ export default {
         this.$message.warning("请输入要填写的商标名称");
       }
     }, //
-    getExpandItem(value) {
-      console.log(value);
-      const originTreeData = getStorage("treeData");
-      const onExpandArray = [];
-      value.forEach(item => {
-        const onExpandItem = originTreeData.filter(treeDataItem => {
-          return treeDataItem.key === item;
-        });
-        onExpandArray.push(onExpandItem[0]);
-      });
-      console.log(onExpandArray);
-      this.onExpected = onExpandArray;
+    selectGoods(data) {
+      this.choosed = data;
+      console.log(data);
     },
-    getCheckItem(value) {
-      console.log(value);
-      this.paramsPart1.trademarkGroupIds = value;
-      const onExpected = this.onExpected;
-      const checkedArray = [];
-        value.forEach(item => {
-          onExpected.forEach(item2 => {
-            const onCheckItem = item2.children.filter(item3 => {
-              return item3.key === item;
-            });
-            checkedArray.push(onCheckItem[0]);
-          });
-        });
-        filterUnderfind(checkedArray);
-        console.log(checkedArray);
-        this.onChecked = checkedArray;
-        onExpected.forEach(item => {
-          const selectChild = [];
-          if (checkedArray.length > 0) {
-            checkedArray.forEach(item2 => {
-              if (item2.fatherId === item.id) {
-                selectChild.push(item2);
-                this.$set(item, "selectChild", selectChild);
-              }
-            });
-          }else{
-            this.$set(item,"selectChild",[])
-          }
-        });
-        this.CheckedItem = onExpected;
-        console.log(onExpected);
-      }
+    reduceGoods(data) {
+      console.log(data);
+      this.choosed = data;
     }
+  }
 };
 </script>
 

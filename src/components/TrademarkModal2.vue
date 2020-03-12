@@ -97,13 +97,20 @@ export default {
                   this.$message.success("提交成功");
                   this.visible = false;
                   this.$emit("toNextModal");
+                } else {
+                  if (res.data.code === "10004") {
+                    this.$message.error("当前用户已过期，请重新登录");
+                    setTimeout(() => {
+                      this.$router.push({ path: "/login" });
+                    }, 2000);
+                  }
                 }
               })
               .catch(err => {
                 console.log(err);
               });
-          }else{
-            this.$message.error('手机号格式错误')
+          } else {
+            this.$message.error("手机号格式错误");
           }
         }
       });
@@ -141,7 +148,7 @@ export default {
   .ant-form {
     margin-top: 10px;
     .modal-btn {
-      width: 100%;
+      width: 200px;
       height: 40px;
       background: rgba(253, 114, 55, 1);
       opacity: 1;
