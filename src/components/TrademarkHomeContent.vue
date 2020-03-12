@@ -151,7 +151,7 @@ export default {
 <style scope>
 .content {
   width: 100%;
-  min-width: 140px;
+  min-width: 1400px;
 }
 .content-1 {
   width: 100%;

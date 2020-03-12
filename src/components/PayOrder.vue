@@ -15,7 +15,7 @@
       </div>
     </div>
     <div class="payorder-part2">
-      <div class="payorder-part2-1">其他方式支付</div>
+      <div class="payorder-part2-1">选择方式支付</div>
       <a-radio-group :options="plainOptions" @change="handlePayTypeChange" />
       <div class="pay-img" v-if="isShowPayType">
         <img v-if="isPayTypeChange" src="../bannerAndIcon/alipay.png" />
@@ -75,8 +75,10 @@ export default {
       this.isShowPayType = true;
       if (e.target.value === "支付宝") {
         this.isShowCode = false;
-        this.$message.warning("抱歉,尚未开通支付保支付功能");
         this.isPayTypeChange = true;
+        console.log(this.orderNo)
+        // window.open(`https://www.tmwww.net/api/trademark/ali/aliPay?orderNo=${this.orderNo}`,"_blank")
+        window.location.href=`https://www.tmwww.net/api/trademark/ali/aliPay?orderNo=${this.orderNo}`
       }
       if (e.target.value === "微信") {
         this.isShowCode = true;
