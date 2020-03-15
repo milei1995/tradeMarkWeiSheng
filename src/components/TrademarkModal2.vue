@@ -49,11 +49,35 @@ export default {
     return {
       visible: false,
       formLayout: "horizontal",
+      isToken:false,
       form: this.$form.createForm(this)
     };
   },
   props: ["tradeMarkName", "tradeMarkRegNo"],
+  computed: {
+ 
+  },
+  mounted(){
+      this.isOverdue()
+  },
   methods: {
+     isOverdue() {
+      //token是否过期
+      const accessToken = getStorage("AccessToken");
+      const params = {
+        accessToken: accessToken
+      }
+      this.$axios({
+        method: "get",
+        url: "/api/trademark/user/checkToken",
+        params: params
+      }).then(res => {
+        console.log(res)
+        if (res.data.success) {
+           this.isToken= res.data.data.tokenType
+        }
+      });
+    },
     showModal() {
       this.visible = true;
     },
@@ -84,33 +108,40 @@ export default {
             accessToken: accessToken
           };
           const re = /^1\d{10}$/; //验证手机号
-          if (re.test(phone)) {
-            this.$axios({
-              method: "post",
-              url: url,
-              data: params,
-              headers: headers
-            })
-              .then(res => {
-                console.log(res);
-                if (res.data.success) {
-                  this.$message.success("提交成功");
-                  this.visible = false;
-                  this.$emit("toNextModal");
-                } else {
-                  if (res.data.code === "10004") {
-                    this.$message.error("当前用户已过期，请重新登录");
-                    setTimeout(() => {
-                      this.$router.push({ path: "/login" });
-                    }, 2000);
-                  }
-                }
+          if (this.isToken) {
+            if (re.test(phone)) {
+              this.$axios({
+                method: "post",
+                url: url,
+                data: params,
+                headers: headers
               })
-              .catch(err => {
-                console.log(err);
-              });
-          } else {
-            this.$message.error("手机号格式错误");
+                .then(res => {
+                  console.log(res);
+                  if (res.data.success) {
+                    this.$message.success("提交成功");
+                    this.visible = false;
+                    this.$emit("toNextModal");
+                  } else {
+                    if (res.data.code === "10004") {
+                      this.$message.error("当前用户已过期，请重新登录");
+                      setTimeout(() => {
+                        this.$router.push({ path: "/login" });
+                      }, 2000);
+                    }
+                  }
+                })
+                .catch(err => {
+                  console.log(err);
+                });
+            } else {
+              this.$message.error("手机号格式错误");
+            }
+          }else{
+            this.$message.error("当前用户已过期，请重新登录")
+             setTimeout(() => {
+                        this.$router.push({ path: "/login" });
+                      }, 2000);
           }
         }
       });

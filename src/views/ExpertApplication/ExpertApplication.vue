@@ -61,6 +61,7 @@ export default {
     return {
       formLayout: "horizontal",
       form: this.$form.createForm(this),
+      isToken:false,
       validatorRules: {
         phoneNumber: {
           rules: [{ required: true, message: "请输入手机号!" }]
@@ -77,7 +78,29 @@ export default {
       count: "" //初始化次数
     };
   },
+  computed: {
+  },
+  mounted(){
+    this.isOverdue()
+  },
   methods: {
+     isOverdue() {
+      //token是否过期
+      const accessToken = getStorage("AccessToken");
+      const params = {
+        accessToken: accessToken
+      }
+      this.$axios({
+        method: "get",
+        url: "/api/trademark/user/checkToken",
+        params: params
+      }).then(res => {
+        console.log(res)
+        if (res.data.success) {
+           this.isToken= res.data.data.tokenType
+        }
+      });
+    },
     handleSubmit(e) {
       e.preventDefault();
       this.form.validateFields((err, values) => {
@@ -85,33 +108,40 @@ export default {
           console.log("Received values of form: ", values);
           const accessToken = getStorage("AccessToken");
           if (accessToken) {
-            const url = "/api/trademark/applyNeeds/addApplyNeeds";
-            const headers = {
-              accessToken: accessToken
-            };
-            const params = {
-              applyType: "1",
-              phone: values.phoneNumber,
-              remark: values.needs,
-              smsCode: values.verificationCode
-            };
-            this.$axios({
-              method: "post",
-              url: url,
-              headers: headers,
-              data: params
-            })
-              .then(res => {
-                console.log(res);
-                if (res.data.success) {
-                  this.$message.info("提交成功");
-                } else {
-                  this.$message.error(res.data.msg);
-                }
+            if (this.isToken) {
+              const url = "/api/trademark/applyNeeds/addApplyNeeds";
+              const headers = {
+                accessToken: accessToken
+              };
+              const params = {
+                applyType: "1",
+                phone: values.phoneNumber,
+                remark: values.needs,
+                smsCode: values.verificationCode
+              };
+              this.$axios({
+                method: "post",
+                url: url,
+                headers: headers,
+                data: params
               })
-              .catch(err => {
-                console.log(err);
-              });
+                .then(res => {
+                  console.log(res);
+                  if (res.data.success) {
+                    this.$message.info("提交成功");
+                  } else {
+                    this.$message.error(res.data.msg);
+                  }
+                })
+                .catch(err => {
+                  console.log(err);
+                });
+            }else{
+                this.$message.error("当前用户已过期，请重新登录");
+                      setTimeout(() => {
+                        this.$router.push({ path: "/login" });
+                      }, 2000);
+            }
           } else {
             this.$message.error("请先登录");
           }

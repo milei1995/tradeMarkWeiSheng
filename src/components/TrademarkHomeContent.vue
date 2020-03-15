@@ -133,7 +133,7 @@ export default {
       this.$router.push({ path: "/trademarkCategory" });
     },
     toTrademarkBuy(){
-       this.$router.push({ path: "/trademarkBuy" });
+       this.$router.push({ path: "/trademarkBuy/writeTrademarkInfo" });
     },
     toExpertApplication(){
         this.$router.push({ path: "/expertApplication" });

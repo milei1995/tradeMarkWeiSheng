@@ -38,7 +38,7 @@ const routes = [
            {
                path:'/trademarkBuy',
                name:'trademarkBuy',
-               redirect:'/trademarkBuy/TrademarkInfo'
+               redirect: '/trademarkBuy/writeTrademarkInfo'
            },
            {
                path:'/trademarkBuy/writeTrademarkInfo',

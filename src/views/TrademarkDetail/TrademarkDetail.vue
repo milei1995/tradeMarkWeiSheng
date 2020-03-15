@@ -37,8 +37,8 @@
           </a-button>
         </div>
         <div class="detail-banner-part1-button">
-          <!-- <a-button class="detail-banner-part1-button1">求购咨询</a-button>
-          <a-button class="detail-banner-part1-button2">立即购买</a-button> -->
+          <a-button class="detail-banner-part1-button1" @click="goSearch">求购咨询</a-button>
+          <!-- <a-button class="detail-banner-part1-button2">立即购买</a-button> -->
         </div>
       </div>
     </div>
@@ -122,7 +122,8 @@ export default {
       categoryId: "", //当前分类id
       tradeMarkContent: {}, //商标内容
       useRange: "", //使用范围
-      currentGoods:[]//当前商标使用范围的数组 
+      currentGoods: [], //当前商标使用范围的数组
+      isToken: false
     };
   },
   mounted() {
@@ -130,12 +131,30 @@ export default {
     this.currentRegNo = this.$route.query.regNo;
     this.categoryId = this.$route.query.id;
     this.getDetail(this.currentRegNo, this.categoryId);
+    this.isOverdue();
   },
   watch: {
     //  currentRegNo(newNo,oldNo){
     //  }
   },
   methods: {
+    isOverdue() {
+      //token是否过期
+      const accessToken = getStorage("AccessToken");
+      const params = {
+        accessToken: accessToken
+      };
+      this.$axios({
+        method: "get",
+        url: "/api/trademark/user/checkToken",
+        params: params
+      }).then(res => {
+        console.log(res);
+        if (res.data.success) {
+          this.isToken = res.data.data.tokenType;
+        }
+      });
+    },
     getDetail(regNo, id) {
       const url = "/api/trademark/main/trademarkDetail";
       const params = {
@@ -176,6 +195,9 @@ export default {
     searchTradeMark() {
       this.$refs.modal2.showModal();
     },
+    goSearch() {
+      this.$refs.modal2.showModal();
+    },
     Consulteok() {
       this.$refs.modal3.showModal();
     },
@@ -183,38 +205,45 @@ export default {
       this.$refs.modal1.showModal();
     },
     collectTradeMark() {
-      console.log(this.tradeMarkContent.goods)
+      console.log(this.tradeMarkContent.goods);
       const url = "/api/trademark/trademarkCollection/addTrademarkCollection";
       const accessToken = getStorage("AccessToken");
       if (accessToken) {
-        const headers = {
-          accessToken: accessToken
-        };
-        const params = {
-          regNo: this.tradeMarkContent.regNo,
-          tmName:this.tradeMarkContent.tmName,
-          tmImg:'http://tmpic.tmkoo.com/'+this.tradeMarkContent.tmImg,
-          intCls:this.tradeMarkContent.intCls,
-          status:1,
-          goods:this.tradeMarkContent.goods
-        };
-        this.$axios({
-          method: "post",
-          url: url,
-          headers: headers,
-          data: params
-        })
-          .then(res => {
-            console.log(res);
-            if (res.data.success) {
-              this.$message.success("收藏成功");
-            }
+        if (this.isToken) {
+          const headers = {
+            accessToken: accessToken
+          };
+          const params = {
+            regNo: this.tradeMarkContent.regNo,
+            tmName: this.tradeMarkContent.tmName,
+            tmImg: "http://tmpic.tmkoo.com/" + this.tradeMarkContent.tmImg,
+            intCls: this.tradeMarkContent.intCls,
+            status: 1,
+            goods: this.tradeMarkContent.goods
+          };
+          this.$axios({
+            method: "post",
+            url: url,
+            headers: headers,
+            data: params
           })
-          .catch(err => {
-            console.log(err);
-          });
-      }else{
-        this.$message.error('请先登录')
+            .then(res => {
+              console.log(res);
+              if (res.data.success) {
+                this.$message.success("收藏成功");
+              }
+            })
+            .catch(err => {
+              console.log(err);
+            });
+        }else{
+           this.$message.error("当前用户已过期，请重新登录")
+             setTimeout(() => {
+                        this.$router.push({ path: "/login" });
+                      }, 2000);
+        }
+      } else {
+        this.$message.error("请先登录");
       }
     }
   }
@@ -361,8 +390,8 @@ export default {
             margin-left: 10px;
           }
           .des3-4 {
-            height: 30px;
-            overflow: hidden;
+            height: 50px;
+            overflow-x: auto;
             text-overflow: ellipsis;
             word-break: break-all;
           }

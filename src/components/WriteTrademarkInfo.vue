@@ -93,17 +93,19 @@ export default {
       choosed: [], //已经选中的
       paramsPart1: {
         orderType: "1"
-      } //请求时的参数
+      }, //请求时的参数
+      isToken: false
     };
   },
 
   mounted() {
     // this.getClassifyGoods()
+    this.isOverdue();
   },
   computed: {
     totalPrice() {
       const choosed = this.choosed;
-      let total=0 ;
+      let total = 0;
       choosed.forEach(item => {
         total += Number(item.totalPriceItem);
       });
@@ -116,6 +118,23 @@ export default {
     }
   },
   methods: {
+    isOverdue() {
+      //token是否过期
+      const accessToken = getStorage("AccessToken");
+      const params = {
+        accessToken: accessToken
+      };
+      this.$axios({
+        method: "get",
+        url: "/api/trademark/user/checkToken",
+        params: params
+      }).then(res => {
+        console.log(res);
+        if (res.data.success) {
+          this.isToken = res.data.data.tokenType;
+        }
+      });
+    },
     tradeMarkTypeChange(e) {
       console.log(e.target.value);
     },
@@ -127,37 +146,44 @@ export default {
     toNext() {
       const accessToken = getStorage("AccessToken");
       if (accessToken) {
-        this.form.validateFields((err, values) => {
-          if (!err) {
-            console.log("Received values of form: ", values);
-            this.paramsPart1.trademarkExplain = values.explain;
-            this.paramsPart1.trademarkName = values.name;
-            this.paramsPart1.orderGoods = this.choosed;
-            switch (values.type) {
-              case "文字商标":
-                this.paramsPart1.trademarkStatus = "1";
-                break;
-              case "图形商标":
-                this.paramsPart1.trademarkStatus = "2";
-                break;
-              case "文字图形整合商标":
-                this.paramsPart1.trademarkStatus = "3";
-                break;
+        if (this.isToken) {
+          this.form.validateFields((err, values) => {
+            if (!err) {
+              console.log("Received values of form: ", values);
+              this.paramsPart1.trademarkExplain = values.explain;
+              this.paramsPart1.trademarkName = values.name;
+              this.paramsPart1.orderGoods = this.choosed;
+              switch (values.type) {
+                case "文字商标":
+                  this.paramsPart1.trademarkStatus = "1";
+                  break;
+                case "图形商标":
+                  this.paramsPart1.trademarkStatus = "2";
+                  break;
+                case "文字图形整合商标":
+                  this.paramsPart1.trademarkStatus = "3";
+                  break;
+              }
+              console.log(this.paramsPart1);
+              if (this.choosed.length > 0) {
+                this.$router.push({
+                  path: "/trademarkBuy/chooseApplicant",
+                  query: {
+                    paramsPart1: this.paramsPart1,
+                    totalPrice: this.totalPrice
+                  }
+                });
+              } else {
+                this.$message.warning("请先选择商品");
+              }
             }
-            console.log(this.paramsPart1);
-            if (this.choosed.length > 0) {
-              this.$router.push({
-                path: "/trademarkBuy/chooseApplicant",
-                query: {
-                  paramsPart1: this.paramsPart1,
-                  totalPrice: this.totalPrice
-                }
-              });
-            }else{
-              this.$message.warning('请先选择商品')
-            }
-          }
-        });
+          });
+        } else {
+          this.$message.error("当前用户已过期，请重新登录");
+          setTimeout(() => {
+            this.$router.push({ path: "/login" });
+          }, 2000);
+        }
       } else {
         this.$message.error("请先登录");
       }
