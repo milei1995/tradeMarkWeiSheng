@@ -20,16 +20,15 @@
       <div class="category-part4-title">为什么购买已注册商标</div>
       <div class="category-part4-des">官方服务，品质保证，节约时间成本</div>
       <div class="category-part4-bg">
-        <img class='category-part4-bg-img' src='../../bannerAndIcon/category-bg1.png' />
+        <img class="category-part4-bg-img" src="../../bannerAndIcon/category-bg1.png" />
       </div>
     </div>
     <div class="category-part5">
-       <div class='category-part5-title'>商标交易流程</div>
-       <div class='category-part5-des'>有我们，商标转让就是这么简单</div>
-       <div class='category-part5-bg'>
-         <img class='category-part5-bg-img' src='../../bannerAndIcon/category-bg2.png' />
-       </div>
-
+      <div class="category-part5-title">商标交易流程</div>
+      <div class="category-part5-des">有我们，商标转让就是这么简单</div>
+      <div class="category-part5-bg">
+        <img class="category-part5-bg-img" src="../../bannerAndIcon/category-bg2.png" />
+      </div>
     </div>
     <div class="category-part6">
       <div class="category-part6-title">填写商标需求，即刻享受专属服务</div>
@@ -62,6 +61,7 @@ export default {
       searchTitle: "知识产权服务",
       searchTitleResult: "商标优选",
       needServe: "",
+      isToken: false,
       mobilePhone: "",
       category: [
         {
@@ -292,7 +292,27 @@ export default {
       ]
     };
   },
+  mounted() {
+    this.isOverdue();
+  },
   methods: {
+    isOverdue() {
+      //token是否过期
+      const accessToken = getStorage("AccessToken");
+      const params = {
+        accessToken: accessToken
+      };
+      this.$axios({
+        method: "get",
+        url: "/api/trademark/user/checkToken",
+        params: params
+      }).then(res => {
+        console.log(res);
+        if (res.data.success) {
+          this.isToken = res.data.data.tokenType;
+        }
+      });
+    },
     toTrademarkList(id) {
       const keyword = this.$store.state.keyword;
       const searchType = this.$store.state.searchType;
@@ -307,38 +327,45 @@ export default {
       } else {
         var re = /^1\d{10}$/; //验证手机号
         if (re.test(this.mobilePhone)) {
-          const accessToken = getStorage("AccessToken");
-          const url = "/api/trademark/applyNeeds/addApplyNeeds";
-          const headers = {
-            accessToken: accessToken
-          };
-          const params = {
-            phone: this.mobilePhone,
-            applyType: "2",
-            remark: this.needServe
-          };
-          this.$axios({
-            method: "post",
-            url: url,
-            headers: headers,
-            data: params
-          })
-            .then(res => {
-              console.log(res);
-              if (res.data.success) {
-                this.$message.success("商标需求提交成功");
-              }else{
-                if(res.data.code==='10004'){
-                  this.$message.error('当前用户已过期，请重新登录')
-                  setTimeout(()=>{
-                    this.$router.push({path:'/login'})
-                  },2000)
-                }
-              }
+          if (this.isToken) {
+            const accessToken = getStorage("AccessToken");
+            const url = "/api/trademark/applyNeeds/addApplyNeeds";
+            const headers = {
+              accessToken: accessToken
+            };
+            const params = {
+              phone: this.mobilePhone,
+              applyType: "2",
+              remark: this.needServe
+            };
+            this.$axios({
+              method: "post",
+              url: url,
+              headers: headers,
+              data: params
             })
-            .catch(err => {
-              console.log(err);
-            });
+              .then(res => {
+                console.log(res);
+                if (res.data.success) {
+                  this.$message.success("商标需求提交成功");
+                } else {
+                  if (res.data.code === "10004") {
+                    this.$message.error("当前用户已过期，请重新登录");
+                    setTimeout(() => {
+                      this.$router.push({ path: "/login" });
+                    }, 2000);
+                  }
+                }
+              })
+              .catch(err => {
+                console.log(err);
+              });
+          }else{
+             this.$message.error("当前用户已过期，请重新登录");
+                    setTimeout(() => {
+                      this.$router.push({ path: "/login" });
+                    }, 2000);
+          }
         } else {
           this.$message.error("手机号码错误");
         }
@@ -417,24 +444,24 @@ export default {
   color: rgba(102, 102, 102, 1);
   opacity: 1;
 }
-.category-part4-bg{
-  width:80%;
-  height:300px;
-  margin:10px auto 0px;
+.category-part4-bg {
+  width: 80%;
+  height: 300px;
+  margin: 10px auto 0px;
 }
-.category-part4-bg-img{
-  width:100%;
-  height:100%;
+.category-part4-bg-img {
+  width: 100%;
+  height: 100%;
 }
 
 .category-part5 {
   height: 300px;
   text-align: center;
-  margin-top:20px;
+  margin-top: 20px;
   /* background: url("../../assets/category-bg2.jpg") no-repeat center;
   background-size: cover; */
 }
-.category-part5-title{
+.category-part5-title {
   font-size: 28px;
   font-family: Source Han Sans CN;
   font-weight: 500;
@@ -442,7 +469,7 @@ export default {
   color: rgba(51, 51, 51, 1);
   opacity: 1;
 }
-.category-part5-des{
+.category-part5-des {
   font-size: 14px;
   font-family: Source Han Sans CN;
   font-weight: 400;
@@ -450,14 +477,14 @@ export default {
   color: rgba(102, 102, 102, 1);
   opacity: 1;
 }
-.category-part5-bg{
-  width:80%;
-  height:150px;
-  margin:10px auto 0px;
+.category-part5-bg {
+  width: 80%;
+  height: 150px;
+  margin: 10px auto 0px;
 }
-.category-part5-bg-img{
-  width:100%;
-  height:100%;
+.category-part5-bg-img {
+  width: 100%;
+  height: 100%;
 }
 .category-part6 {
   padding-top: 1px;
