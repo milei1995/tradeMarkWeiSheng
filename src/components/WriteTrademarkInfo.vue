@@ -1,5 +1,6 @@
 <template>
   <div class="info">
+      <reminder></reminder>
     <a-form :form="form">
       <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="商标类型">
         <a-radio-group
@@ -54,6 +55,7 @@
 import { getStorage } from "../mixin/storage";
 import UploadPic from "./UploadPic";
 import TradeMarkCategory from "./tradeMarkCategory/index";
+import Reminder from "./Reminder"
 // import TrademarkTree from "./TrademarkTree";
 // import { filterUnderfind } from "../untils/filterUnderfind";
 // import closeWriteTradeMarkInfo from "./closeWriteTradeMarkInfo"
@@ -61,7 +63,8 @@ export default {
   name: "info",
   components: {
     UploadPic,
-    TradeMarkCategory
+    TradeMarkCategory,
+    Reminder
     // TrademarkTree,
     // closeWriteTradeMarkInfo
   },
