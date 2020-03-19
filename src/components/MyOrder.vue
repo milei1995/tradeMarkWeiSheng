@@ -6,11 +6,18 @@
           <div class='tobuy' @click='tobuy'>
             去购买
             </div>
-     </div>
+          <div class='openOrderDetail' @click='searchDetail'>
+            查看详情
+          </div>
+           <div v-if='hasDetail'>
+             <order-detail :currentRecord="selectRows" ref='orderDetailModal'></order-detail>
+          </div>
+     </div>    
   </div>
 </template>
 
 <script>
+import OrderDetail from './orderDetail'
 const columns = [
   {
   title: '订单号',
@@ -19,40 +26,40 @@ const columns = [
 }, {
   title: '商标名',
   className: 'column-money',
-  dataIndex: 'production',
+  dataIndex: 'trademarkName',
 }, 
 {
   title:'状态',
-  dataIndex:'state'
+  dataIndex:'payStatus',
+    customRender: text => {
+      let res = "";
+      if (text === 0) {
+        res = "未支付";
+      }
+      if (text === 1) {
+        res = "支付成功";
+      }
+      if (text === 2) {
+        res = "退款";
+      }
+      return res;
+    }
 },{
   title:'支付/开通时间',
   dataIndex:'createTime'
 },{
   title:'应付金额',
-  dataIndex:'payMoney'
+  dataIndex:'totalPrice'
 }
 
 ];
 
-// const data = [{
-//   key: '1',
-//   name: 'John Brown',
-//   money: '￥300,000.00',
-//   address: 'New York No. 1 Lake Park',
-// }, {
-//   key: '2',
-//   name: 'Jim Green',
-//   money: '￥1,256,000.00',
-//   address: 'London No. 1 Lake Park',
-// }, {
-//   key: '3',
-//   name: 'Joe Black',
-//   money: '￥120,000.00',
-//   address: 'Sidney No. 1 Lake Park',
-// }];
 import { getStorage } from '../mixin/storage'
 export default {
    name:'myOrder',
+   components:{
+      OrderDetail
+   },
    data(){
      return{
        columns,//表头
@@ -62,15 +69,16 @@ export default {
          total:null,
          pageSize:5,
          onChange:this.pageChange
-       },
-      selectRows:{}//单选的订单信息
-
+       },   
+      selectRows:{},//单选的订单信息
+      hasDetail:false
      }
    },
    computed:{
      rowSelection() {
       return {
         type:'radio',
+        defaultValue:0,
         onChange: this.onSelectChange,
         getCheckboxProps: record => ({
           props: {
@@ -87,10 +95,10 @@ export default {
    methods:{
      onSelectChange(selectedRowKeys, selectedRows){
        console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-        this.selectedRows=selectedRows[0]
-        console.log(this.selectedRows)
+        this.selectRows=selectedRows[0]
+        console.log(this.currentRecord)
      },
-     
+    
      getOrderData(page){
        const url='/api/trademark/trademarkOrder/selectOrderPageList'
        const accessToken=getStorage('AccessToken')
@@ -109,28 +117,8 @@ export default {
        }).then(res=>{
          console.log(res)
          if(res.data.success){
-            const dataArray=[]
-            res.data.data.orderList.forEach(item=>{
-               const obj={
-                 orderNo:item.orderNo,
-                 createTime:item.createTime,
-                 production:item.trademarkName,
-                 payMoney:item.totalPrice
-               }
-               if(item.payStatus===0){
-                 obj.state='未支付'
-               }
-               if(item.payStatus===1){
-                 obj.state='已支付'
-               }
-               if(item.payStatus===3){
-                 obj.state='退款'
-               }
-               dataArray.push(obj)
-               this.data=dataArray
-               this.pagination.total=res.data.data.total
-              //  this.pagination.pageSize=Math.ceil(res.data.data.total/5)
-            })
+            this.pagination.total=res.data.data.total
+            this.data=res.data.data.list
          }
        })
      },
@@ -140,15 +128,30 @@ export default {
         this.getOrderData(page)
      },
      tobuy(){
-       const selectedRows=this.selectedRows
-      if(selectedRows===undefined){
+       const selectedRows=this.selectRows
+       console.log(selectedRows)
+      if(JSON.stringify(selectedRows) === '{}'){
         this.$message.error('请选择订单号')
       }else{
-        this.$router.push({path:'/trademarkBuy/payOrder',query:{orderNo:selectedRows.orderNo,payType:'1',orderType:'2'} })
+        console.log(selectedRows)
+        if(selectedRows.payStatus===0){
+          this.$router.push({path:'/trademarkBuy/payOrder',query:{orderNo:selectedRows.orderNo,payType:'1',orderType:'2'} })
+        }else{
+          this.$message.warning('此订单已经付款')
+        }
       }
-      
+     },
+     searchDetail(){
+        const selectedRows=this.selectRows
+      if(JSON.stringify(selectedRows) === '{}'){
+        this.hasDetail=false
+        this.$message.error('请选择订单号')
+      }else{
+        this.hasDetail=true
+        this.$refs.orderDetailModal.showModal()
+      }
      }
-    
+
    }
 }
 </script>
@@ -182,6 +185,19 @@ export default {
         line-height: 30px;
         text-align:center;
         background:rgba(255,90,96,1);
+        opacity:1;
+        color:#fffeff;
+        cursor: pointer;
+      }
+      .openOrderDetail{
+         position:absolute;
+        bottom:35px;
+        left:220px;
+        width:100px;
+        height:30px;
+        line-height: 30px;
+        text-align:center;
+        background:#007ACC;
         opacity:1;
         color:#fffeff;
         cursor: pointer;
