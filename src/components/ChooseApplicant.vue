@@ -230,7 +230,8 @@ export default {
       params: {}, //支付请求的参数
       paramsPart1: null, //接收参数1
       paramsPart2: {
-        payType: "1" //默认微信支付
+        payType: "1", //默认微信支付
+        powerOfAttorney:''//委托书图片地址
       }, //请求参数2
       isSave: false, //是否保存
       totalPrice: "" //总价
@@ -296,6 +297,7 @@ export default {
     },
     getImageUrl6(imageUrl) {
       this.imgUrl6 = imageUrl;
+      this.paramsPart2.powerOfAttorney=imageUrl
     },
     onChange1(value) {
       console.log(value);
@@ -316,14 +318,11 @@ export default {
             const currentType = this.currentType;
             console.log(currentType);
             if (currentType === "企业单位") {
-              (this.paramsPart2.companyConfigId = "1"),
-                (this.paramsPart2.userConfigId = "0");
               console.log(this.writeInfo);
               const url = "/api/trademark/configApply/addConfigCompanyApply";
               const applyType = this.writeInfo.applyType;
               const companyName = this.writeInfo.bussinessName;
               const companyProveImage = this.imgUrl1;
-              const powerOfAttorney = this.imgUrl6;
               const province = this.writeInfo.licenseArea[0];
               const city = this.writeInfo.licenseArea[1];
               const district = this.writeInfo.licenseArea[2];
@@ -337,7 +336,6 @@ export default {
                 companyName: companyName,
                 companyProveImage: companyProveImage,
                 province: province,
-                powerOfAttorney: powerOfAttorney,
                 city: city,
                 district: district,
                 businessLicenseAddress: businessLicenseAddress,
@@ -361,6 +359,8 @@ export default {
                   console.log(res);
                   if (res.data.success) {
                     this.$message.success("保存成功");
+                     this.paramsPart2.companyConfigId = res.data.data.configCompanyId,
+                     this.paramsPart2.userConfigId = 0;
                     this.isSave = true;
                   } else {
                     if (res.data.code === "10004") {
@@ -376,8 +376,6 @@ export default {
                 });
             }
             if (currentType === "自然人") {
-              (this.paramsPart2.companyConfigId = "0"),
-                (this.paramsPart2.userConfigId = "1");
               console.log(this.writeInfo);
               const url = "/api/trademark/configApply/addConfigUserApply";
               const headers = {
@@ -389,7 +387,6 @@ export default {
               const idCardFront = this.imgUrl2;
               const idCardReverse = this.imgUrl3;
               const companyProveImage = this.imgUrl4;
-              const powerOfAttorney = this.imgUrl6;
               const province = this.writeInfo.personArea[0];
               const city = this.writeInfo.personArea[1];
               const district = this.writeInfo.personArea[2];
@@ -406,7 +403,6 @@ export default {
                 idCardReverse: idCardReverse,
                 companyProveImage: companyProveImage,
                 province: province,
-                powerOfAttorney: powerOfAttorney,
                 city: city,
                 district: district,
                 idCardAddress: idCardAddress,
@@ -427,6 +423,8 @@ export default {
                   if (res.data.success) {
                     this.$message.success("保存成功");
                     this.isSave = true;
+                    this.paramsPart2.companyConfigId = 0,
+                    this.paramsPart2.userConfigId = res.data.data.configUserId;
                   } else {
                     if (res.data.code === "10004") {
                       this.$message.error("当前用户已过期，请重新登录");

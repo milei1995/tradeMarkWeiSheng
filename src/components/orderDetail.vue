@@ -50,6 +50,21 @@
                 />
               </div>
             </a-popover>
+              <a-popover title="图片详情" placement="right">
+              <template slot="content">
+                <img
+                  style="width:500px;height:600px;"
+                  :src="currentRecord.powerOfAttorney"
+                />
+              </template>
+              <div class="detail1-part-img">
+                委托书证明文件：
+                <img
+                  class="detail-img"
+                  :src="currentRecord.powerOfAttorney"
+                />
+              </div>
+            </a-popover>
             <div
               class="detail1-part"
             >省市区：{{currentRecord.configCompanyApply.province}}--{{currentRecord.configCompanyApply.city}}--{{currentRecord.configCompanyApply.district}}</div>
@@ -108,6 +123,23 @@
                   <img
                     class="detail-img"
                     :src="currentRecord.configUserApply.companyProveImage"
+                  />
+                </div>
+              </a-popover>
+            </div>
+             <div class="detail1-part-img">
+              <a-popover title="图片详情" placement="right">
+                <template slot="content">
+                  <img
+                    style="width:500px;height:600px;"
+                    :src="currentRecord.powerOfAttorney"
+                  />
+                </template>
+                <div class="detail1-part-img">
+                  委托书证明文件：
+                  <img
+                    class="detail-img"
+                    :src="currentRecord.powerOfAttorney"
                   />
                 </div>
               </a-popover>
