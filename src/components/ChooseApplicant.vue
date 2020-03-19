@@ -107,6 +107,7 @@
           <a-input placeholder="请填写联系人" v-decorator="[ 'contacts', validatorRules.contacts]" />
         </a-form-item>
       </template>
+
       <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="联系人电话">
         <a-input placeholder="请填写联系人电话" v-decorator="[ 'phone', validatorRules.phone]" />
       </a-form-item>
@@ -115,6 +116,19 @@
       </a-form-item>
       <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="联系人邮件">
         <a-input placeholder="请填写联系人邮件" v-decorator="[ 'mail', validatorRules.mail]" />
+      </a-form-item>
+      <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="下载委托书">
+        <a
+          href="http://wssbw-images.oss-cn-hangzhou.aliyuncs.com/trademark/web/cdf99a33-7206-40e6-ba52-5b5dcbea12ec.docx"
+        >点击下载委托书</a>
+        <upload-pic :type="'下载委托书'" @getImageUrl6="getImageUrl6" />
+        <div style="color:rgb(253, 114, 55);">请上传委托书！</div>
+        <div style="color:red;">
+         <p style='line-height:15px;'> 重要提示：
+          请确保上传委托书模板图片分辨率在800*800-3900*3900之间；</p>
+          <p style='line-height:15px;'>请确保上传委托书模板图片大小不能超过2000K的JPG或JPEG格式图片；</p>
+          <p style='line-height:15px;'>扫描或拍照前，请确保委托书模板纸面工整顺平，不能有褶皱、反光等；</p>
+        </div>
       </a-form-item>
       <a-button html-type="submit">保存</a-button>
     </a-form>
@@ -212,6 +226,7 @@ export default {
       imgUrl2: "", //身份证正面
       imgUrl3: "", //身份证反面
       imgUrl4: "", //个体户证明资料
+      imgUrl6: "", //下载委托书
       params: {}, //支付请求的参数
       paramsPart1: null, //接收参数1
       paramsPart2: {
@@ -279,6 +294,9 @@ export default {
     getImageUrl4(imageUrl) {
       this.imgUrl4 = imageUrl;
     },
+    getImageUrl6(imageUrl) {
+      this.imgUrl6 = imageUrl;
+    },
     onChange1(value) {
       console.log(value);
     },
@@ -305,6 +323,7 @@ export default {
               const applyType = this.writeInfo.applyType;
               const companyName = this.writeInfo.bussinessName;
               const companyProveImage = this.imgUrl1;
+              const powerOfAttorney = this.imgUrl6;
               const province = this.writeInfo.licenseArea[0];
               const city = this.writeInfo.licenseArea[1];
               const district = this.writeInfo.licenseArea[2];
@@ -318,6 +337,7 @@ export default {
                 companyName: companyName,
                 companyProveImage: companyProveImage,
                 province: province,
+                powerOfAttorney: powerOfAttorney,
                 city: city,
                 district: district,
                 businessLicenseAddress: businessLicenseAddress,
@@ -369,6 +389,7 @@ export default {
               const idCardFront = this.imgUrl2;
               const idCardReverse = this.imgUrl3;
               const companyProveImage = this.imgUrl4;
+              const powerOfAttorney = this.imgUrl6;
               const province = this.writeInfo.personArea[0];
               const city = this.writeInfo.personArea[1];
               const district = this.writeInfo.personArea[2];
@@ -385,6 +406,7 @@ export default {
                 idCardReverse: idCardReverse,
                 companyProveImage: companyProveImage,
                 province: province,
+                powerOfAttorney: powerOfAttorney,
                 city: city,
                 district: district,
                 idCardAddress: idCardAddress,

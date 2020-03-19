@@ -92,6 +92,9 @@ export default {
                   break
                 case '修改个人头像':
                   this.$emit("getImageUrl5",this.imageUrl)
+                  break
+                case '下载委托书':
+                  this.$emit("getImageUrl6",this.imageUrl)
               }
              
             }

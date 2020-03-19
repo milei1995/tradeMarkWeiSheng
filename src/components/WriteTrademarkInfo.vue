@@ -19,6 +19,7 @@
         <a-radio-group
           :options="picOptions"
           @change="picTypeChange"
+          :disabled="isDisablePic"
           v-decorator="[ 'pic', validatorRules.pic]"
         />
         <!-- 自动生成 -->
@@ -26,7 +27,7 @@
           <div class="pic-area">
             <span>{{autoContent}}</span>
           </div>
-          <a-button @click="autoCreatePic">生成图片</a-button>
+          <a-button @click="autoCreatePic" v-if="validatorRules.type.initialValue=='文字商标'" >生成图片</a-button>
         </div>
         <!-- 手动生成 -->
         <div v-else class="pic-area-manual">
@@ -90,6 +91,7 @@ export default {
       },
       plainOptions: ["文字商标", "图形商标", "文字图形组合商标"],
       picOptions: ["自动生成", "手动上传"],
+      isDisablePic:false,//是否禁用商标图案选择框
       isAutoPic: true, //自动生成图片or手动生成图片
       autoContent: "", //自动生成内容
       ManualImgUrl: "", //手动上传图片url
@@ -140,6 +142,15 @@ export default {
     },
     tradeMarkTypeChange(e) {
       console.log(e.target.value);
+      this.validatorRules.type.initialValue=e.target.value
+      if(e.target.value==='文字商标'){
+        this.isDisablePic=false
+        this.isAutoPic=true
+      }
+      if(e.target.value==="图形商标" ||e.target.value==="文字图形组合商标"){
+        this.isDisablePic=true
+        this.isAutoPic=false
+      }
     },
     getUploadImageUrl(imgUrl) {
       //获取手动上传的图片Url
