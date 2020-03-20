@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <global-header></global-header>
-     <router-view></router-view>
+     <router-view v-if='isRouterAlive'></router-view>
      <global-footer></global-footer>
   </div>
 </template>
@@ -11,8 +11,23 @@
 
 export default {
   name: 'app',
-  components: {
-    
+  provide(){
+    return {
+      reload:this.reload
+    }
+  },
+  data(){
+   return {
+     isRouterAlive:true
+   }
+  },
+  methods:{
+    reload(){
+      this.isRouterAlive=false
+      this.$nextTick(()=>{
+        this.isRouterAlive=true
+      })
+    }
   }
 }
 </script>

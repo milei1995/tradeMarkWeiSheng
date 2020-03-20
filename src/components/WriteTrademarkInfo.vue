@@ -1,6 +1,6 @@
 <template>
   <div class="info">
-      <reminder></reminder>
+    <reminder></reminder>
     <a-form :form="form">
       <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="商标类型">
         <a-radio-group
@@ -25,9 +25,9 @@
         <!-- 自动生成 -->
         <div v-if="isAutoPic" class="creatpicture">
           <div class="pic-area">
-            <span>{{autoContent}}</span>
+            <span ref="autoTradeName" :style="autoFontStyle">{{autoContent}}</span>
           </div>
-          <a-button @click="autoCreatePic" v-if="validatorRules.type.initialValue=='文字商标'" >生成图片</a-button>
+          <a-button @click="autoCreatePic" v-if="validatorRules.type.initialValue=='文字商标'" style='margin-left:5px;'>生成图片</a-button>
         </div>
         <!-- 手动生成 -->
         <div v-else class="pic-area-manual">
@@ -56,11 +56,13 @@
 import { getStorage } from "../mixin/storage";
 import UploadPic from "./UploadPic";
 import TradeMarkCategory from "./tradeMarkCategory/index";
-import Reminder from "./Reminder"
+import Reminder from "./Reminder";
+import { strLength } from "../untils/strLength";
 // import TrademarkTree from "./TrademarkTree";
 // import { filterUnderfind } from "../untils/filterUnderfind";
 // import closeWriteTradeMarkInfo from "./closeWriteTradeMarkInfo"
 export default {
+  inject: ["reload"],
   name: "info",
   components: {
     UploadPic,
@@ -91,18 +93,21 @@ export default {
       },
       plainOptions: ["文字商标", "图形商标", "文字图形组合商标"],
       picOptions: ["自动生成", "手动上传"],
-      isDisablePic:false,//是否禁用商标图案选择框
+      isDisablePic: false, //是否禁用商标图案选择框
       isAutoPic: true, //自动生成图片or手动生成图片
-      autoContent: "", //自动生成内容
+      autoContent: "自动生成图片内容", //自动生成内容
       ManualImgUrl: "", //手动上传图片url
       choosed: [], //已经选中的
       paramsPart1: {
         orderType: "1"
       }, //请求时的参数
-      isToken: false
+      isToken: false,
+      autoFontStyle:{
+        fontSize:'10px'
+      }
     };
   },
-
+  created() {},
   mounted() {
     // this.getClassifyGoods()
     this.isOverdue();
@@ -116,10 +121,15 @@ export default {
       });
       return total.toFixed(2);
     }
+    // eslint-disable-next-line vue/return-in-computed-property
   },
   watch: {
     CheckedItem(newChecked, oldChecked) {
       console.log(newChecked, oldChecked);
+    },
+    autoContent(newContent,oldContent){
+      console.log(newContent,oldContent)
+      this.autoTradeFontSize()
     }
   },
   methods: {
@@ -142,14 +152,17 @@ export default {
     },
     tradeMarkTypeChange(e) {
       console.log(e.target.value);
-      this.validatorRules.type.initialValue=e.target.value
-      if(e.target.value==='文字商标'){
-        this.isDisablePic=false
-        this.isAutoPic=true
+      this.validatorRules.type.initialValue = e.target.value;
+      if (e.target.value === "文字商标") {
+        this.isDisablePic = false;
+        this.isAutoPic = true;
       }
-      if(e.target.value==="图形商标" ||e.target.value==="文字图形组合商标"){
-        this.isDisablePic=true
-        this.isAutoPic=false
+      if (
+        e.target.value === "图形商标" ||
+        e.target.value === "文字图形组合商标"
+      ) {
+        this.isDisablePic = true;
+        this.isAutoPic = false;
       }
     },
     getUploadImageUrl(imgUrl) {
@@ -221,6 +234,41 @@ export default {
         this.$message.warning("请输入要填写的商标名称");
       }
     }, //
+    autoTradeFontSize() {
+      //根据字符串长度来改变字体大小
+      var len=0;
+      this.$nextTick(() => {
+        var dom = this.$refs.autoTradeName.innerHTML;
+       len = strLength(dom);
+        // console.log(len)
+        if (dom !== undefined) {
+          if (len > 0 && len <= 5) {
+             this.autoFontStyle={
+               fontSize:'30px',
+               fontWeight:'bold'
+             }
+          }
+          if (len > 5 && len <= 10) {
+             this.autoFontStyle={
+               fontSize:'20px',
+               fontWeight:'500'
+             }
+          }
+          if(len > 10 && len <=20){
+            this.autoFontStyle={
+              fontSize:'15px',
+            }
+          }
+          if(len>20){
+             this.autoFontStyle={
+              fontSize:'10px',
+            }
+          }
+        } else {
+          return false;
+        }
+      });
+    },
     selectGoods(data) {
       this.choosed = data;
       console.log(data);
@@ -251,18 +299,23 @@ export default {
       }
     }
     .pic-area {
-      width: 104px;
-      height: 104px;
+      width: 200px;
+      height: 150px;
       border: 1px dashed #d9d9d9;
       span {
         display: block;
         width: 100%;
-        height: 100px;
-        font-size: 20px;
-        font-weight: bold;
-        line-height: 100px;
+        height: 150px;
+        line-height: 150px;
         text-align: center;
+        // font-size: 20px;
+        // font-weight: bold;
         font-family: Arial, Helvetica, sans-serif;
+        // word-wrap: break-word;
+        // word-break: break-all;
+        // display: flex;
+        // align-items: center;
+        // justify-content: center;
         overflow: hidden;
       }
     }

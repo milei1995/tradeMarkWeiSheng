@@ -128,6 +128,13 @@ export default {
     this.getCategory(1, "");
     this.getPriceConfig()
   },
+  destroyed(){
+    console.log('关闭了')
+    groupArray=[]
+    chooseGroup=[]
+
+
+  },
   methods: {
     callback(e) {
       //   this.currentActiveKey = e;
@@ -136,6 +143,9 @@ export default {
         currentSelectedClass = {};
         chooseGroup = [];
         groupArray = [];
+        currentSelectedClass={}
+        this.selected=[]
+        this.selectedClone=[]
       }
       if (e == "2") {
         console.log(this.selected);
