@@ -25,7 +25,10 @@
         <!-- 自动生成 -->
         <div v-if="isAutoPic" class="creatpicture">
           <div class="pic-area">
-            <span ref="autoTradeName" :style="autoFontStyle">{{autoContent}}</span>
+            <span ref="autoTradeName" >
+              <p v-if="autoImg===''">自动生成图片内容</p>
+              <img  v-else :src='autoImg' style='width:100%;height:100%;' />
+            </span>
           </div>
           <a-button @click="autoCreatePic" v-if="validatorRules.type.initialValue=='文字商标'" style='margin-left:5px;'>生成图片</a-button>
         </div>
@@ -95,7 +98,7 @@ export default {
       picOptions: ["自动生成", "手动上传"],
       isDisablePic: false, //是否禁用商标图案选择框
       isAutoPic: true, //自动生成图片or手动生成图片
-      autoContent: "自动生成图片内容", //自动生成内容
+      autoImg: "", //自动生成内容
       ManualImgUrl: "", //手动上传图片url
       choosed: [], //已经选中的
       paramsPart1: {
@@ -127,9 +130,9 @@ export default {
     CheckedItem(newChecked, oldChecked) {
       console.log(newChecked, oldChecked);
     },
-    autoContent(newContent,oldContent){
-      console.log(newContent,oldContent)
-      this.autoTradeFontSize()
+    autoImg(newImg,oldImg){
+      console.log(newImg,oldImg)
+      // this.autoTradeFontSize()
     }
   },
   methods: {
@@ -228,8 +231,19 @@ export default {
       const tradeMarkname = this.form.getFieldValue(["name"]).me;
       console.log(tradeMarkname);
       if (tradeMarkname !== undefined) {
-        this.autoContent = tradeMarkname;
-        this.paramsPart1.trademarkImage = "";
+        this.$axios({
+          method:'get',
+          url:'/api/trademark/image/createImage',
+          params:{
+            name:tradeMarkname
+          }
+        }).then(res=>{
+          console.log(res)
+          if(res.data.success){
+            this.autoImg=res.data.data.imagePath
+            this.paramsPart1.trademarkImage = res.data.data.imagePath;
+          }
+        })
       } else {
         this.$message.warning("请输入要填写的商标名称");
       }
