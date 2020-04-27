@@ -143,9 +143,8 @@ export default {
         currentSelectedClass = {};
         chooseGroup = [];
         groupArray = [];
-        currentSelectedClass={}
-        this.selected=[]
-        this.selectedClone=[]
+        // this.selected=[]
+        // this.selectedClone=[]
       }
       if (e == "2") {
         console.log(this.selected);

@@ -126,7 +126,8 @@ export default {
       form: this.$form.createForm(this),
       formItemLayout,
       isChangeHeader: true,
-      headerImgUrl: "" //头像地址
+      headerImgUrl: "", //头像地址
+      isToken: false
     };
   },
   mounted() {
@@ -134,8 +135,26 @@ export default {
     console.log(userName);
     this.form.setFieldsValue({ ["username"]: userName });
     this.getOriginData();
+    this.isOverdue()
   },
   methods: {
+    isOverdue() {
+      //token是否过期
+      const accessToken = getStorage("AccessToken");
+      const params = {
+        accessToken: accessToken
+      };
+      this.$axios({
+        method: "get",
+        url: "/api/trademark/user/checkToken",
+        params: params
+      }).then(res => {
+        console.log(res);
+        if (res.data.success) {
+          this.isToken = res.data.data.tokenType;
+        }
+      });
+    },
     getHeaderUrl(imgUrl) {
       console.log(imgUrl);
       this.headerImgUrl = imgUrl;
@@ -155,7 +174,9 @@ export default {
         console.log(res);
         if (res.data.success) {
           this.form.setFieldsValue({ ["realname"]: res.data.data.realName });
-          this.form.setFieldsValue({ ["sex"]: res.data.data.userSex.toString() });
+          this.form.setFieldsValue({
+            ["sex"]: res.data.data.userSex.toString()
+          });
           this.form.setFieldsValue({ ["qqnumber"]: res.data.data.qqAccount });
           this.form.setFieldsValue({ ["wechat"]: res.data.data.wxAccount });
           this.form.setFieldsValue({ ["mobile"]: res.data.data.phone });
@@ -169,28 +190,35 @@ export default {
       const values = this.form.getFieldsValue();
       const accessToken = getStorage("AccessToken");
       const url = "/api/trademark/user/updateUser";
-      const headers = {
-        accessToken: accessToken
-      };
-      const params = {
-        realName: values.realname,
-        userSex: values.sex,
-        qqAcount: values.qqnumber,
-        wxAccount: values.wechat,
-        birthday: values.birthday,
-        headImage: this.headerImgUrl
-      };
-      this.$axios({
-        method: "post",
-        url: url,
-        data: params,
-        headers: headers
-      }).then(res => {
-        console.log(res);
-        if (res.data.success) {
-          this.$message.success("保存成功,请重新进入个人中心");
-        }
-      });
+      if (this.isToken) {
+        const headers = {
+          accessToken: accessToken
+        };
+        const params = {
+          realName: values.realname,
+          userSex: values.sex,
+          qqAcount: values.qqnumber,
+          wxAccount: values.wechat,
+          birthday: values.birthday,
+          headImage: this.headerImgUrl
+        };
+        this.$axios({
+          method: "post",
+          url: url,
+          data: params,
+          headers: headers
+        }).then(res => {
+          console.log(res);
+          if (res.data.success) {
+            this.$message.success("保存成功,请重新进入个人中心");
+          }
+        });
+      } else {
+        this.$message.error("当前用户已过期，请重新登录");
+        setTimeout(() => {
+          this.$router.push({ path: "/login" });
+        }, 2000);
+      }
     },
     cancel() {
       this.form.resetFields([
