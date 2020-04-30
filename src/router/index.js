@@ -4,6 +4,8 @@ import Home from '../views/Home/Home.vue'
 import Login from  '../views/Login/Login.vue'
 import TrademarkBuy from '../views/TrademarkBuy/TrademarkBuy.vue'
 import TrademarkCategory from '../views/TrademarkCategory/TrademarkCategory.vue'
+import TrademarkSelection from '../views/TrademarkSelection/TrademarkSelection.vue'
+import TrademarkSelectionDetail from '../views/TrademarkSelectDetail/TrademarkSelectDetail.vue'
 import UserRegister from '../views/UserRegister/UserRegister.vue'
 import TrademarkList from '../views/TrademarkList/TrademarkList.vue'
 import TrademarkDetail from '../views/TrademarkDetail/TrademarkDetail.vue'
@@ -17,6 +19,8 @@ import PersonCenter from '../views/PersonCenter/PersonCenter.vue'
 import PersonalSetting from '../components/PersonalSetting.vue'
 import MyOrder from '../components/MyOrder.vue'
 import MyCollect from '../components/MyCollect.vue'
+import TradeMarkUpload from '../components/TrademarkUpload.vue'
+
 
 Vue.use(Router)
 
@@ -73,6 +77,16 @@ const routes = [
        component:ExpertApplication
     },
     {
+       path:'/trademarkSelection',
+       name:'trademarkSelection',
+       component:TrademarkSelection
+    },
+    {
+      path:'/trademarkSelectionDetail',
+      name:'trademarkSelectionDetail',
+      component:TrademarkSelectionDetail
+    },
+    {
        path:'/trademarkCategory',
        name:'trademarkCategory',
        component:TrademarkCategory
@@ -121,6 +135,11 @@ const routes = [
                path:'/personCenter/myCollect',
                name:'myCollect',
                component:MyCollect
+           },
+           {
+               path:'/personCenter/trademarkUpload',
+               name:'trademarkUpload',
+               component:TradeMarkUpload
            }
         ]
     }

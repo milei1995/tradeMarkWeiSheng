@@ -53,6 +53,10 @@ export default {
           path: "/trademarkList"
         },
         {
+          name:'商标精选',
+          path:'/trademarkSelection'
+        },
+        {
           name: "商标注册",
           path: "/trademarkBuy/writeTrademarkInfo"
         },

@@ -18,6 +18,9 @@
           <a-menu-item key="3" @click='toMyCollect'>
             <a-icon type="database" />我的收藏
           </a-menu-item>
+          <a-menu-item key="4" @click="toTrademarkUpload" >
+            <a-icon type="upload"  />商标转让
+          </a-menu-item>
         </a-menu>
       </div>
     </div>
@@ -56,6 +59,10 @@ export default {
       },
       toMyCollect(){
           this.$router.push({path:'/personCenter/myCollect'})
+      },
+      toTrademarkUpload(){
+        console.log(1)
+          this.$router.push({path:'/personCenter/trademarkUpload'})
       }
   }
 };
