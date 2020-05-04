@@ -26,14 +26,22 @@ export default {
   data() {
     return {
       loading: false,
-      imageUrl: ""
+      imageUrl: this.imageUrlFromParent
     };
   },
   props:{
     type:{
-      type:String,
-      dafault:''
+      type:String
+    },
+    imageUrlFromParent:{
+      type:String
     }
+  },
+  watch:{
+     imageUrlFromParent(newPic,oldPic){
+       console.log('&&&&&&&&&&&&&&&')
+       console.log(newPic,oldPic)
+     }
   },
   methods: {
     handleChange(info) {
@@ -95,6 +103,10 @@ export default {
                   break
                 case '下载委托书':
                   this.$emit("getImageUrl6",this.imageUrl)
+                  break
+                case '商标上传':
+                  this.$emit('getImageUrl7',this.imageUrl)
+                  break  
               }
              
             }

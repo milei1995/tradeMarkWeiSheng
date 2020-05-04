@@ -105,12 +105,31 @@ export default {
       selected: [], //挑选的整体数组
       selectedClone: [], // 深度克隆selected
       totalSelectItemArray: [], //将选择所有的小类放入一个数组
-      tradeMarkPriceConfig:{
-        freeNumber:null,//大类免费选择几项
-        classifyPrice:null,//大类的价格
-        extraPrice:null//超出部分外加费用
+      tradeMarkPriceConfig: {
+        freeNumber: null, //大类免费选择几项
+        classifyPrice: null, //大类的价格
+        extraPrice: null //超出部分外加费用
       }
     };
+  },
+  props: {
+    currentOrderGoods: {
+      type: Array,
+      default: () => {
+        return [];
+      }
+    }
+  },
+  watch: {
+    'currentOrderGoods': {
+      handler(newGoods,oldGoods){
+      console.log(newGoods, oldGoods);
+      this.selected = newGoods;
+      this.selectedClone = newGoods;
+      },
+      immediate:true,
+      deep:true
+    }
   },
   computed: {
     isSelected() {
@@ -125,15 +144,14 @@ export default {
     }
   },
   mounted() {
+    console.log(this.currentOrderGoods)
     this.getCategory(1, "");
-    this.getPriceConfig()
+    this.getPriceConfig();
   },
-  destroyed(){
-    console.log('关闭了')
-    groupArray=[]
-    chooseGroup=[]
-
-
+  destroyed() {
+    console.log("关闭了");
+    groupArray = [];
+    chooseGroup = [];
   },
   methods: {
     callback(e) {
@@ -167,23 +185,24 @@ export default {
         }
       }
     },
-    getPriceConfig(){//获取价格配置
-       this.$axios({
-         method:'get',
-         url:'/api/trademark/trademarkClassifyGoods/findTrademarkGoodsConfig'
-       }).then(res=>{
-         if(res.data.success){
-              res.data.data.list.forEach(item=>{
-                if(item.type===1){
-                  this.tradeMarkPriceConfig.classifyPrice=item.price
-                }
-                if(item.type===2){
-                  this.tradeMarkPriceConfig.freeNumber=item.freeNumber
-                  this.tradeMarkPriceConfig.extraPrice=item.price
-                }
-              })
-         }
-       })
+    getPriceConfig() {
+      //获取价格配置
+      this.$axios({
+        method: "get",
+        url: "/api/trademark/trademarkClassifyGoods/findTrademarkGoodsConfig"
+      }).then(res => {
+        if (res.data.success) {
+          res.data.data.list.forEach(item => {
+            if (item.type === 1) {
+              this.tradeMarkPriceConfig.classifyPrice = item.price;
+            }
+            if (item.type === 2) {
+              this.tradeMarkPriceConfig.freeNumber = item.freeNumber;
+              this.tradeMarkPriceConfig.extraPrice = item.price;
+            }
+          });
+        }
+      });
     },
 
     chooseTrade(code, name) {
@@ -201,7 +220,7 @@ export default {
         this.selected.push(currentSelectedClass);
       } else {
         currentSelectedClass = isExist;
-        chooseGroup=isExist.chooseGroup
+        chooseGroup = isExist.chooseGroup;
       }
     },
     chooseTrade2(groupsNum) {
@@ -237,17 +256,24 @@ export default {
         });
         currentSelectedClass.totalArray = totalArray;
         // console.log(currentSelectedClass);
-        this.selected.forEach(item=>{
-          if(item.totalArray.length>this.tradeMarkPriceConfig.freeNumber){
-            item.totalPriceItem=(this.tradeMarkPriceConfig.classifyPrice+(item.totalArray.length-this.tradeMarkPriceConfig.freeNumber)*this.tradeMarkPriceConfig.extraPrice).toFixed(2)
-          }else{
-            item.totalPriceItem=this.tradeMarkPriceConfig.classifyPrice
-          }
-        })
+        if (this.selected.length > 0) {
+          this.selected.forEach(item => {
+            if (item.totalArray.length > this.tradeMarkPriceConfig.freeNumber) {
+              item.totalPriceItem = (
+                this.tradeMarkPriceConfig.classifyPrice +
+                (item.totalArray.length -
+                  this.tradeMarkPriceConfig.freeNumber) *
+                  this.tradeMarkPriceConfig.extraPrice
+              ).toFixed(2);
+            } else {
+              item.totalPriceItem = this.tradeMarkPriceConfig.classifyPrice;
+            }
+          });
+        }
         // console.log(this.selected);
         this.selectedClone = deepClone(this.selected, []);
         // console.log(this.selectedClone);
-        this.$emit('selectGoods',this.selectedClone)
+        this.$emit("selectGoods", this.selectedClone);
       }
     },
     reduce(val) {
@@ -297,14 +323,18 @@ export default {
       if (index5 > -1) {
         this.totalSelectItemArray.splice(index5, 1);
       }
-        this.selectedClone.forEach(item=>{
-          if(item.totalArray.length>this.tradeMarkPriceConfig.freeNumber){
-            item.totalPriceItem=(this.tradeMarkPriceConfig.classifyPrice+(item.totalArray.length-this.tradeMarkPriceConfig.freeNumber)*this.tradeMarkPriceConfig.extraPrice).toFixed(2)
-          }else{
-            item.totalPriceItem=this.tradeMarkPriceConfig.classifyPrice
-          }
-        })
-      this.$emit('reduceGoods',this.selectedClone)
+      this.selectedClone.forEach(item => {
+        if (item.totalArray.length > this.tradeMarkPriceConfig.freeNumber) {
+          item.totalPriceItem = (
+            this.tradeMarkPriceConfig.classifyPrice +
+            (item.totalArray.length - this.tradeMarkPriceConfig.freeNumber) *
+              this.tradeMarkPriceConfig.extraPrice
+          ).toFixed(2);
+        } else {
+          item.totalPriceItem = this.tradeMarkPriceConfig.classifyPrice;
+        }
+      });
+      this.$emit("reduceGoods", this.selectedClone);
     },
     getCategory(queryType, code) {
       const url =
@@ -403,7 +433,7 @@ export default {
             .content-item {
               margin-left: 20px;
               height: 25px;
-              margin-top:4px;
+              margin-top: 4px;
               cursor: pointer;
               line-height: 25px;
             }
@@ -421,7 +451,7 @@ export default {
           }
           .notNorm-tip {
             width: 100%;
-            margin-top:5px;
+            margin-top: 5px;
             color: azure;
             text-indent: 20px;
             background-color: #b8c5ca;
