@@ -123,9 +123,12 @@ export default {
   watch: {
     'currentOrderGoods': {
       handler(newGoods,oldGoods){
-      console.log(newGoods, oldGoods);
-      this.selected = newGoods;
-      this.selectedClone = newGoods;
+      console.log(JSON.parse(JSON.stringify(newGoods)), oldGoods);
+      this.selected = JSON.parse(JSON.stringify(newGoods));
+      this.selectedClone = JSON.parse(JSON.stringify(newGoods));
+      JSON.parse(JSON.stringify(newGoods)).forEach(item=>{
+        this.totalSelectItemArray.push(...item.totalArray)
+      })
       },
       immediate:true,
       deep:true
