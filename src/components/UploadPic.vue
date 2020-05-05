@@ -40,7 +40,9 @@ export default {
   watch:{
      imageUrlFromParent(newPic,oldPic){
        console.log('&&&&&&&&&&&&&&&')
-       console.log(newPic,oldPic)
+       console.log(newPic)
+       this.imageUrl=newPic
+       console.log(oldPic)
      }
   },
   methods: {

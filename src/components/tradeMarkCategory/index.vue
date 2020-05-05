@@ -126,6 +126,7 @@ export default {
       console.log(JSON.parse(JSON.stringify(newGoods)), oldGoods);
       this.selected = JSON.parse(JSON.stringify(newGoods));
       this.selectedClone = JSON.parse(JSON.stringify(newGoods));
+      this.totalSelectItemArray=[]
       JSON.parse(JSON.stringify(newGoods)).forEach(item=>{
         this.totalSelectItemArray.push(...item.totalArray)
       })
@@ -247,7 +248,10 @@ export default {
       const isExist = groupArray.find(n => n == goods);
       if (!isExist) {
         groupArray.push(goods);
-        this.totalSelectItemArray.push(goods);
+        const isExistInTotaalArray=this.totalSelectItemArray.find(n=>n==goods)
+        if(!isExistInTotaalArray){
+          this.totalSelectItemArray.push(goods);
+        }
         const target = currentSelectedClass.chooseGroup.find(
           n => n.groupsNum == groupsNum
         );

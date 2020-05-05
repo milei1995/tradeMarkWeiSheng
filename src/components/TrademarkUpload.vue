@@ -60,7 +60,6 @@
           <a-col :span="8">
             <a-form-item style="display:flex;" label="商标状态">
               <a-select
-                default-value="4"
                 v-decorator="['currentStatus',validatorRules.currentStatus]"
                 style="width:150px;"
               >
@@ -90,13 +89,24 @@
         <a-row :gutter="24">
           <a-col :span="10">
             <a-form-item style="display:flex;" label="图片上传">
-              <upload-pic :type="'商标上传'"  @getImageUrl7="setUploadImg" :imageUrlFromParent="imgUrl" ref='uploadPic' />
+              <upload-pic
+                :type="'商标上传'"
+                @getImageUrl7="setUploadImg"
+                :imageUrlFromParent="imgUrl"
+                ref="uploadPic"
+              />
             </a-form-item>
           </a-col>
         </a-row>
       </a-form>
       <div>
-        <trade-mark-category @selectGoods="selectGoods" @reduceGoods="reduceGoods"  :currentOrderGoods="orderGoods" ref="goodsSelectModal" />
+        <trade-mark-category
+          v-if="hackReset"
+          @selectGoods="selectGoods"
+          @reduceGoods="reduceGoods"
+          :currentOrderGoods="currentOrderGoods"
+          ref="goodsSelectModal"
+        />
       </div>
     </a-modal>
   </div>
@@ -140,9 +150,9 @@ const columns = [
 ];
 import { getStorage } from "../mixin/storage";
 const accessToken = getStorage("AccessToken");
-const headers={
-   accessToken:accessToken
-}
+const headers = {
+  accessToken: accessToken
+};
 export default {
   name: "trademarkUpload",
   components: {
@@ -154,8 +164,9 @@ export default {
       columns,
       type: "", //是新增还是编辑
       data: [], //表格数据
-      imgUrl:'', //图片url
-      currentRecored:{},//当前选中的商标详情
+      imgUrl: "", //图片url
+      currentRecored: {}, //当前选中的商标详情
+      currentOrderGoods: [], //当前选中的商标详情里的选择商品
       pagination: {
         current: 1,
         total: null,
@@ -178,7 +189,8 @@ export default {
           rules: [{ require: false }]
         },
         currentStatus: {
-          rules: [{ required: true, message: "请选择商标状态" }]
+          rules: [{ required: true, message: "请选择商标状态" }],
+          initialValue: "4"
         },
         remark: {
           rules: [{ required: false }]
@@ -190,14 +202,15 @@ export default {
           rules: [{ required: true, message: "请输入价格" }]
         }
       },
-      orderGoods: [] //选择的商标
+      orderGoods: [], //选择的商标
+      hackReset: true ///
     };
   },
   mounted() {
     this.getUploadData(1);
   },
   methods: {
-     getCurrentData(){
+    getCurrentData() {
       return new Date().toLocaleDateString();
     },
     getUploadData(page) {
@@ -227,53 +240,56 @@ export default {
     handleOk() {
       this.tradeMarkForm.validateFields((err, value) => {
         if (!err) {
-          const values=value
+          const values = value;
           // values.regDate=(value.regDate).formart("YYYY-MM-DD")
           if (this.type === "add") {
-            const url="/api/trademark/carefullyChosenTrademark/addCarefullyChosenTrademark"
-            const params={
-               orderGoods:this.orderGoods,
-               tmImg:this.imgUrl,
-               ...values
-            }
-            console.log(params)
+            const url =
+              "/api/trademark/carefullyChosenTrademark/addCarefullyChosenTrademark";
+            const params = {
+              orderGoods: this.orderGoods,
+              tmImg: this.imgUrl,
+              ...values
+            };
+            console.log(params);
             this.$axios({
-              method:'post',
-              url:url,
-              data:JSON.stringify(params),
-              headers:headers
-            }).then(res=>{
-              console.log(res)
-              if(res.data.success){
-                this.$message.success('添加成功')
-                this.getUploadData(1)
-                this.visible=false
+              method: "post",
+              url: url,
+              data: JSON.stringify(params),
+              headers: headers
+            }).then(res => {
+              console.log(res);
+              if (res.data.success) {
+                this.$message.success("添加成功");
+                this.getUploadData(1);
+                this.visible = false;
               }
-            })
+            });
           }
           if (this.type === "edit") {
-            console.log('edit')
-            const url="/api/trademark/carefullyChosenTrademark/updateCarefullyChosenTrademark"
-             const params={
-               orderGoods:this.orderGoods,
-               tmImg:this.imgUrl,
-               ...values,
-               trademarCarefullyChosenId:this.currentRecored.trademarCarefullyChosenId
-            }
-            console.log(params)
+            console.log("edit");
+            const url =
+              "/api/trademark/carefullyChosenTrademark/updateCarefullyChosenTrademark";
+            const params = {
+              orderGoods: this.orderGoods,
+              tmImg: this.imgUrl,
+              ...values,
+              trademarCarefullyChosenId: this.currentRecored
+                .trademarCarefullyChosenId
+            };
+            console.log(params);
             this.$axios({
-               method:'post',
-              url:url,
-              data:JSON.stringify(params),
-              headers:headers
-            }).then(res=>{
-              console.log(res)
-              if(res.data.success){
-                this.$message.success('修改成功')
-                this.getUploadData(1)
-                this.visible=false
+              method: "post",
+              url: url,
+              data: JSON.stringify(params),
+              headers: headers
+            }).then(res => {
+              console.log(res);
+              if (res.data.success) {
+                this.$message.success("修改成功");
+                this.getUploadData(1);
+                this.visible = false;
               }
-            })
+            });
           }
         }
       });
@@ -284,59 +300,76 @@ export default {
       this.visible = false;
     },
     edit(record) {
+      this.hackReset = false;
+      this.$nextTick(() => {
+        this.hackReset = true;
+      });
       console.log(record);
-      this.orderGoods=record.orderGoods
-          // this.tradeMarkForm.setFieldsValue({['regNo']:record.regNo})
-          this.validatorRules.regNo.initialValue=record.regNo
-          this.validatorRules.tmName.initialValue=record.tmName
-          this.validatorRules.regDate.initialValue=record.regDate
-          this.validatorRules.agency.initialValue=record.agency
-          this.validatorRules.currentStatus.initialValue=record.currentStatus
-          this.validatorRules.remark.initialValue=record.remark
-          this.validatorRules.registerAddress.initialValue=record.registerAddress
-          this.validatorRules.tmPrice.initialValue=record.tmPrice
-          this.imgUrl=record.tmImg
-          console.log(this.imgUrl)
-          // this.$refs.goodsSelectModal.selectedClone=record.orderGoods
-          // this.$refs.goodsSelectModal.selected=record.orderGoods
-          // this.$refs.uploadPic.imageUrl=record.tmImg
-      this.visible=true
+      this.currentOrderGoods = record.orderGoods;
+      this.orderGoods = record.orderGoods;
+      // this.tradeMarkForm.setFieldsValue({['regNo']:record.regNo})
+      this.validatorRules.regNo.initialValue = record.regNo;
+      this.validatorRules.tmName.initialValue = record.tmName;
+      this.validatorRules.regDate.initialValue = record.regDate;
+      this.validatorRules.agency.initialValue = record.agency;
+      this.validatorRules.currentStatus.initialValue = record.currentStatus;
+      this.validatorRules.remark.initialValue = record.remark;
+      this.validatorRules.registerAddress.initialValue = record.registerAddress;
+      this.validatorRules.tmPrice.initialValue = record.tmPrice;
+      this.imgUrl = record.tmImg;
+      console.log(this.imgUrl);
+      // this.$refs.goodsSelectModal.selectedClone=record.orderGoods
+      // this.$refs.goodsSelectModal.selected=record.orderGoods
+      // this.$refs.uploadPic.imageUrl=record.tmImg
+      this.visible = true;
       this.type = "edit";
-      this.currentRecored=record
+      this.currentRecored = record;
 
       // this.visible = true;
     },
     handleDelete(record) {
       console.log(record);
-      const url='/api/trademark/carefullyChosenTrademark/deleteCarefullyChosenTrademark'
-      const params={
-        trademarCarefullyChosenId:record.trademarCarefullyChosenId
-      }
+      const url =
+        "/api/trademark/carefullyChosenTrademark/deleteCarefullyChosenTrademark";
+      const params = {
+        trademarCarefullyChosenId: record.trademarCarefullyChosenId
+      };
       this.$axios({
-        method:'post',
-        url:url,
-        data:params,
-        headers:headers
-      }).then(res=>{
-        console.log(res)
-        if(res.data.success){
-          this.$message.success('删除成功')
-          this.getUploadData(1)
+        method: "post",
+        url: url,
+        data: params,
+        headers: headers
+      }).then(res => {
+        console.log(res);
+        if (res.data.success) {
+          this.$message.success("删除成功");
+          this.getUploadData(1);
         }
-      })
+      });
     },
     handleAdd() {
       //新增
+      this.currentOrderGoods = [];
+      this.orderGoods = [];
       this.type = "add";
-      this.$nextTick(()=>{
-        console.log(1)
-          this.tradeMarkForm.resetFields()
-      })
+      this.hackReset = false;
+      this.$nextTick(() => {
+        this.hackReset = true; //强制刷新子组件
+      });
+      this.validatorRules.regNo.initialValue = '';
+      this.validatorRules.tmName.initialValue = '';
+      this.validatorRules.regDate.initialValue = '';
+      this.validatorRules.agency.initialValue = '';
+      this.validatorRules.currentStatus.initialValue = '';
+      this.validatorRules.remark.initialValue = '';
+      this.validatorRules.registerAddress.initialValue = '';
+      this.validatorRules.tmPrice.initialValue = '';
+      this.imgUrl=''
       this.visible = true;
     },
     setUploadImg(imgUrl) {
-      console.log(imgUrl)
-     this.imgUrl=imgUrl
+      console.log(imgUrl);
+      this.imgUrl = imgUrl;
     },
     selectGoods(goods) {
       console.log(goods);
