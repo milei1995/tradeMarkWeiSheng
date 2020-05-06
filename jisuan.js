@@ -10,7 +10,8 @@ const selected = [{
                 groupArray: ['商品4', '商品5']
             }
         ],
-        totalArray: []
+        totalArray: [],
+        totalPriceItem:''
     }, {
         className: '服装鞋帽',
         classNum: '17',
@@ -23,6 +24,7 @@ const selected = [{
                 groupArray: ['商品9', '商品10']
             }
         ],
-        totalArray: []
+        totalArray: [],
+        totalPriceItem: ''
     }
 ]

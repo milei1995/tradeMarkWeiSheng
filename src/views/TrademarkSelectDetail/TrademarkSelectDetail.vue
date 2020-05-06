@@ -68,6 +68,7 @@
       ref="modal2"
       :tradeMarkName="tradeMarkContent.tmName"
       :tradeMarkRegNo="tradeMarkContent.regNo"
+      :applyTypeNumber="'4'"
       @toNextModal="Consulteok"
     />
     <trademark-modal3 ref="modal3" @toNextModal2="toNextModal2" />

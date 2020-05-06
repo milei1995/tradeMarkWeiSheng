@@ -53,7 +53,7 @@ export default {
       form: this.$form.createForm(this)
     };
   },
-  props: ["tradeMarkName", "tradeMarkRegNo"],
+  props: ["tradeMarkName", "tradeMarkRegNo","applyTypeNumber"],
   computed: {
  
   },
@@ -93,7 +93,7 @@ export default {
           console.log("Received values of form: ", values);
           const phone = values.mobile;
           const userName = values.user;
-          const applyType = "3"; //商标咨询
+          const applyType = this.applyTypeNumber; // 3商标咨询 4//精选商标
           const regNo = this.tradeMarkRegNo;
           const params = {
             phone: phone,

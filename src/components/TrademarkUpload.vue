@@ -23,13 +23,22 @@
         <span slot="action" slot-scope="text, record">
           <a @click="edit(record)">编辑</a>
           <a-divider type="vertical" />
-          <a @click="handleDelete(record)">删除</a>
+
+          <a-popconfirm
+            title="确认要删除吗"
+            ok-text="确定"
+            cancel-text="取消"
+            @confirm="handleDelete(record)"
+            @cancel="cancel"
+          >
+            <a >删除</a>
+          </a-popconfirm>
         </span>
       </a-table>
     </div>
     <a-modal
       :visible="visible"
-      :title="type==='add'?'精选商标新增':'精选商标编辑'"
+      :title="type === 'add' ? '精选商标新增' : '精选商标编辑'"
       width="1400px"
       @ok="handleOk"
       @cancel="handleCancel"
@@ -38,29 +47,29 @@
         <a-row :gutter="24">
           <a-col :span="8">
             <a-form-item style="display:flex;" label="商标注册号">
-              <a-input v-decorator="['regNo',validatorRules.regNo]" />
+              <a-input v-decorator="['regNo', validatorRules.regNo]" />
             </a-form-item>
           </a-col>
           <a-col :span="8">
             <a-form-item style="display:flex;" label="商标名称">
-              <a-input v-decorator="['tmName',validatorRules.tmName]" />
+              <a-input v-decorator="['tmName', validatorRules.tmName]" />
             </a-form-item>
           </a-col>
           <a-col :span="8">
             <a-form-item style="display:flex;" label="注册公告日期">
               <!-- <a-date-picker :defaultValue="moment(getCurrentData(), 'YYYY-MM-DD')" v-decorator="['regDate',validatorRules.regDate]" /> -->
-              <a-input v-decorator="['regDate',validatorRules.regDate]" />
+              <a-input v-decorator="['regDate', validatorRules.regDate]" />
             </a-form-item>
           </a-col>
           <a-col :span="8">
             <a-form-item style="display:flex;" label="公司名称">
-              <a-input v-decorator="['agency',validatorRules.agency]" />
+              <a-input v-decorator="['agency', validatorRules.agency]" />
             </a-form-item>
           </a-col>
           <a-col :span="8">
             <a-form-item style="display:flex;" label="商标状态">
               <a-select
-                v-decorator="['currentStatus',validatorRules.currentStatus]"
+                v-decorator="['currentStatus', validatorRules.currentStatus]"
                 style="width:150px;"
               >
                 <a-select-option :value="'1'">商标审查</a-select-option>
@@ -72,17 +81,22 @@
           </a-col>
           <a-col :span="8">
             <a-form-item style="display:flex;" label="商标注册地址">
-              <a-input v-decorator="['registerAddress',validatorRules.registerAddress]" />
+              <a-input
+                v-decorator="[
+                  'registerAddress',
+                  validatorRules.registerAddress,
+                ]"
+              />
             </a-form-item>
           </a-col>
           <a-col :span="8">
             <a-form-item style="display:flex;" label="商标价格">
-              <a-input v-decorator="['tmPrice',validatorRules.tmPrice]" />
+              <a-input v-decorator="['tmPrice', validatorRules.tmPrice]" />
             </a-form-item>
           </a-col>
           <a-col :span="8">
             <a-form-item style="display:flex;" label="备注">
-              <a-input v-decorator="['remark',validatorRules.remark]" />
+              <a-input v-decorator="['remark', validatorRules.remark]" />
             </a-form-item>
           </a-col>
         </a-row>
@@ -90,6 +104,7 @@
           <a-col :span="10">
             <a-form-item style="display:flex;" label="图片上传">
               <upload-pic
+                v-if="hackReset"
                 :type="'商标上传'"
                 @getImageUrl7="setUploadImg"
                 :imageUrlFromParent="imgUrl"
@@ -123,14 +138,14 @@ const columns = [
     title: "商标图片",
     dataIndex: "tmImg",
     width: 100,
-    scopedSlots: { customRender: "imgSlot" }
+    scopedSlots: { customRender: "imgSlot" },
   },
   { title: "商标价格", dataIndex: "tmPrice", width: 80 },
   {
     title: "审核状态",
     dataIndex: "verifyStatus",
     width: 80,
-    customRender: text => {
+    customRender: (text) => {
       let res = "";
       if (text === 0) {
         res = "审核中";
@@ -139,25 +154,25 @@ const columns = [
         res = "审核成功";
       }
       return res;
-    }
+    },
   },
   {
     title: "操作",
     dataIndex: "action",
     width: 150,
-    scopedSlots: { customRender: "action" }
-  }
+    scopedSlots: { customRender: "action" },
+  },
 ];
 import { getStorage } from "../mixin/storage";
 const accessToken = getStorage("AccessToken");
 const headers = {
-  accessToken: accessToken
+  accessToken: accessToken,
 };
 export default {
   name: "trademarkUpload",
   components: {
     UploadPic,
-    TradeMarkCategory
+    TradeMarkCategory,
   },
   data() {
     return {
@@ -168,42 +183,49 @@ export default {
       currentRecored: {}, //当前选中的商标详情
       currentOrderGoods: [], //当前选中的商标详情里的选择商品
       pagination: {
-        current: 1,
+        current: null,
         total: null,
-        pageSize: 5,
+        pageSize: 4,
         onChange: this.pageChange
       },
       visible: false,
       tradeMarkForm: this.$form.createForm(this),
       validatorRules: {
         regNo: {
-          rules: [{ required: true, message: "请填写商标注册号" }]
+          rules: [{ required: true, message: "请填写商标注册号" }],
+          initialValue: "",
         },
         tmName: {
-          rules: [{ required: true, message: "请填写商标名称" }]
+          rules: [{ required: true, message: "请填写商标名称" }],
+          initialValue: "",
         },
         regDate: {
-          rules: [{ required: false }]
+          rules: [{ required: false }],
+          initialValue: "",
         },
         agency: {
-          rules: [{ require: false }]
+          rules: [{ require: false }],
+          initialValue: "",
         },
         currentStatus: {
           rules: [{ required: true, message: "请选择商标状态" }],
-          initialValue: "4"
+          initialValue: "4",
         },
         remark: {
-          rules: [{ required: false }]
+          rules: [{ required: false }],
+          initialValue: "",
         },
         registerAddress: {
-          rules: [{ required: false }]
+          rules: [{ required: false }],
+          initialValue: "",
         },
         tmPrice: {
-          rules: [{ required: true, message: "请输入价格" }]
-        }
+          rules: [{ required: true, message: "请输入价格" }],
+          initialValue: "",
+        },
       },
       orderGoods: [], //选择的商标
-      hackReset: true ///
+      hackReset: true, ///
     };
   },
   mounted() {
@@ -217,18 +239,18 @@ export default {
       const url =
         "/api/trademark/carefullyChosenTrademark/queryCarefullyChosenTrademarkList";
       const headers = {
-        accessToken: accessToken
+        accessToken: accessToken,
       };
       const params = {
         page: page,
-        pageSize: 5
+        pageSize: 4,
       };
       this.$axios({
         method: "post",
         url: url,
         data: params,
-        headers: headers
-      }).then(res => {
+        headers: headers,
+      }).then((res) => {
         console.log(res);
         if (res.data.success) {
           this.pagination.total = res.data.data.total;
@@ -236,7 +258,11 @@ export default {
         }
       });
     },
-    pageChange() {},
+    pageChange(page) {
+       console.log(page)
+       this.pagination.current=page
+       this.getUploadData(page)
+    },
     handleOk() {
       this.tradeMarkForm.validateFields((err, value) => {
         if (!err) {
@@ -248,15 +274,15 @@ export default {
             const params = {
               orderGoods: this.orderGoods,
               tmImg: this.imgUrl,
-              ...values
+              ...values,
             };
             console.log(params);
             this.$axios({
               method: "post",
               url: url,
               data: JSON.stringify(params),
-              headers: headers
-            }).then(res => {
+              headers: headers,
+            }).then((res) => {
               console.log(res);
               if (res.data.success) {
                 this.$message.success("添加成功");
@@ -274,15 +300,15 @@ export default {
               tmImg: this.imgUrl,
               ...values,
               trademarCarefullyChosenId: this.currentRecored
-                .trademarCarefullyChosenId
+                .trademarCarefullyChosenId,
             };
             console.log(params);
             this.$axios({
               method: "post",
               url: url,
               data: JSON.stringify(params),
-              headers: headers
-            }).then(res => {
+              headers: headers,
+            }).then((res) => {
               console.log(res);
               if (res.data.success) {
                 this.$message.success("修改成功");
@@ -298,6 +324,9 @@ export default {
     },
     handleCancel() {
       this.visible = false;
+    },
+    cancel(){
+
     },
     edit(record) {
       this.hackReset = false;
@@ -332,14 +361,14 @@ export default {
       const url =
         "/api/trademark/carefullyChosenTrademark/deleteCarefullyChosenTrademark";
       const params = {
-        trademarCarefullyChosenId: record.trademarCarefullyChosenId
+        trademarCarefullyChosenId: record.trademarCarefullyChosenId,
       };
       this.$axios({
         method: "post",
         url: url,
         data: params,
-        headers: headers
-      }).then(res => {
+        headers: headers,
+      }).then((res) => {
         console.log(res);
         if (res.data.success) {
           this.$message.success("删除成功");
@@ -348,24 +377,26 @@ export default {
       });
     },
     handleAdd() {
-      //新增
-      this.currentOrderGoods = [];
-      this.orderGoods = [];
-      this.type = "add";
       this.hackReset = false;
       this.$nextTick(() => {
         this.hackReset = true; //强制刷新子组件
+        this.currentOrderGoods = [];
+        this.orderGoods = [];
+        this.type = "add";
+        console.log(111);
+        this.validatorRules.regNo.initialValue = null;
+        this.validatorRules.tmName.initialValue = "";
+        this.validatorRules.regDate.initialValue = "";
+        this.validatorRules.agency.initialValue = "";
+        this.validatorRules.currentStatus.initialValue = "";
+        this.validatorRules.remark.initialValue = "";
+        this.validatorRules.registerAddress.initialValue = "";
+        this.validatorRules.tmPrice.initialValue = "";
+        this.tradeMarkForm.resetFields();
+        this.imgUrl = "";
+        this.visible = true;
       });
-      this.validatorRules.regNo.initialValue = '';
-      this.validatorRules.tmName.initialValue = '';
-      this.validatorRules.regDate.initialValue = '';
-      this.validatorRules.agency.initialValue = '';
-      this.validatorRules.currentStatus.initialValue = '';
-      this.validatorRules.remark.initialValue = '';
-      this.validatorRules.registerAddress.initialValue = '';
-      this.validatorRules.tmPrice.initialValue = '';
-      this.imgUrl=''
-      this.visible = true;
+      //新增
     },
     setUploadImg(imgUrl) {
       console.log(imgUrl);
@@ -378,12 +409,12 @@ export default {
     reduceGoods(goods) {
       console.log(goods);
       this.orderGoods = goods;
-    }
-  }
+    },
+  },
 };
 </script>
 
-<style  scoped>
+<style scoped>
 .trademarkUpload {
   width: 100%;
 }
