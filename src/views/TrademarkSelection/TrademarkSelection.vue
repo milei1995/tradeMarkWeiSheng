@@ -1,12 +1,10 @@
 <template>
   <div class="list">
     <div class="list-banner">
-       <div class="banner-search">
+      <!-- <div class="banner-search">
           <a-input  placeholder="请输入相关搜索内容"/>
           <a-button @click='handleSearch'>搜索</a-button>
-       </div>
-      <div class="list-banner-title">全行业覆盖</div>
-      <div class="list-banner-des">为您量身定制商标注册方案</div>
+       </div>-->
     </div>
     <div class="list-content">
       <div class="list-content-result">
@@ -112,7 +110,7 @@ export default {
   width: 100%;
   height: 350px;
   min-width: 1400px;
-  background: url("http://wssbw-images.oss-cn-hangzhou.aliyuncs.com/trademark/web/b8c0a85d-6832-4518-b632-cf42ccfb4c0c.png") no-repeat center;
+  background: url("http://wssbw-images.oss-cn-hangzhou.aliyuncs.com/trademark/web/1180d04d-e0ef-4875-87eb-ef26cb89b2fe.png") no-repeat center;
   background-size: cover;
 }
 .banner-search{
@@ -163,7 +161,7 @@ export default {
 }
 .result-item-img img {
   width: 100%;
-  height: 130px;
+  height: 150px;
   border: 1px dashed black;
   cursor: pointer;
 }
