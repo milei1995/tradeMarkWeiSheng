@@ -31,7 +31,7 @@
             @confirm="handleDelete(record)"
             @cancel="cancel"
           >
-            <a >删除</a>
+            <a>删除</a>
           </a-popconfirm>
         </span>
       </a-table>
@@ -186,7 +186,7 @@ export default {
         current: null,
         total: null,
         pageSize: 4,
-        onChange: this.pageChange
+        onChange: this.pageChange,
       },
       visible: false,
       tradeMarkForm: this.$form.createForm(this),
@@ -226,42 +226,69 @@ export default {
       },
       orderGoods: [], //选择的商标
       hackReset: true, ///
+      isToken: true,
     };
   },
+  created() {},
   mounted() {
+    this.isOverdue();
     this.getUploadData(1);
   },
   methods: {
+    isOverdue() {
+      //token是否过期
+      const accessToken = getStorage("AccessToken");
+      const params = {
+        accessToken: accessToken,
+      };
+      this.$axios({
+        method: "get",
+        url: "/api/trademark/user/checkToken",
+        params: params,
+      }).then((res) => {
+        console.log(res);
+        if (res.data.success) {
+          this.isToken = res.data.data.tokenType;
+        }
+      });
+    },
     getCurrentData() {
       return new Date().toLocaleDateString();
     },
     getUploadData(page) {
-      const url =
-        "/api/trademark/carefullyChosenTrademark/queryCarefullyChosenTrademarkList";
-      const headers = {
-        accessToken: accessToken,
-      };
-      const params = {
-        page: page,
-        pageSize: 4,
-      };
-      this.$axios({
-        method: "post",
-        url: url,
-        data: params,
-        headers: headers,
-      }).then((res) => {
-        console.log(res);
-        if (res.data.success) {
-          this.pagination.total = res.data.data.total;
-          this.data = res.data.data.list;
-        }
-      });
+      if (this.isToken) {
+        const url =
+          "/api/trademark/carefullyChosenTrademark/queryCarefullyChosenTrademarkList";
+        const headers = {
+          accessToken: accessToken,
+        };
+        const params = {
+          page: page,
+          pageSize: 4,
+        };
+        this.$axios({
+          method: "post",
+          url: url,
+          data: params,
+          headers: headers,
+        }).then((res) => {
+          console.log(res);
+          if (res.data.success) {
+            this.pagination.total = res.data.data.total;
+            this.data = res.data.data.list;
+          }
+        });
+      } else {
+        this.$message.error("当前用户已过期，请重新登录");
+        setTimeout(() => {
+          this.$router.push({ path: "/login" });
+        }, 2000);
+      }
     },
     pageChange(page) {
-       console.log(page)
-       this.pagination.current=page
-       this.getUploadData(page)
+      console.log(page);
+      this.pagination.current = page;
+      this.getUploadData(page);
     },
     handleOk() {
       this.tradeMarkForm.validateFields((err, value) => {
@@ -325,9 +352,7 @@ export default {
     handleCancel() {
       this.visible = false;
     },
-    cancel(){
-
-    },
+    cancel() {},
     edit(record) {
       this.hackReset = false;
       this.$nextTick(() => {

@@ -38,6 +38,9 @@
         </div>
         <div class="detail-banner-part1-button">
           <a-button class="detail-banner-part1-button1" @click="goSearch">求购咨询</a-button>
+           <a target="_blank" href="http://wpa.qq.com/msgrd?v=3&uin=2794614592&site=qq&menu=yes" style="height:35px;margin-left:15px;" >
+             <img border="0" style="width:100%;height:35px;" src="http://wpa.qq.com/pa?p=2:2794614592:51" alt="点击咨询" title="点击咨询"/>
+            </a>
           <!-- <a-button class="detail-banner-part1-button2">立即购买</a-button> -->
         </div>
       </div>
