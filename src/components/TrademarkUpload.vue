@@ -57,8 +57,9 @@
           </a-col>
           <a-col :span="8">
             <a-form-item style="display:flex;" label="注册公告日期">
-              <!-- <a-date-picker :defaultValue="moment(getCurrentData(), 'YYYY-MM-DD')" v-decorator="['regDate',validatorRules.regDate]" /> -->
-              <a-input v-decorator="['regDate', validatorRules.regDate]" />
+              <!--<a-date-picker :defaultValue="moment(getCurrentData(), 'YYYY-MM-DD')" v-decorator="['regDate',validatorRules.regDate]" />-->
+               <!--<a-input v-decorator="['regDate', validatorRules.regDate]" />-->
+               <a-date-picker @change="handleDateChange" :defaultValue="moment(getCurrentData(), 'YYYY-MM-DD')" v-decorator="['regDate',validatorRules.regDate]" />
             </a-form-item>
           </a-col>
           <a-col :span="8">
@@ -130,6 +131,7 @@
 <script>
 // const _ = require('lodash/object');
 import UploadPic from "./UploadPic";
+import moment from "moment";
 import TradeMarkCategory from "./tradeMarkCategory/index";
 const columns = [
   { title: "商标注册号", dataIndex: "regNo", width: 80 },
@@ -201,7 +203,7 @@ export default {
         },
         regDate: {
           rules: [{ required: false }],
-          initialValue: "",
+          initialValue: moment(this.getCurrentData(), 'YYYY-MM-DD').format('YYYY-MM-DD'),
         },
         agency: {
           rules: [{ require: false }],
@@ -235,6 +237,7 @@ export default {
     this.getUploadData(1);
   },
   methods: {
+    moment,
     isOverdue() {
       //token是否过期
       const accessToken = getStorage("AccessToken");
@@ -252,7 +255,11 @@ export default {
         }
       });
     },
-    getCurrentData() {
+    handleDateChange(date,dateStr){
+       console.log(date,dateStr)
+       this.validatorRules.regDate.initialValue=dateStr
+    },
+    getCurrentData() {    
       return new Date().toLocaleDateString();
     },
     getUploadData(page) {
@@ -294,6 +301,7 @@ export default {
       this.tradeMarkForm.validateFields((err, value) => {
         if (!err) {
           const values = value;
+          values.regDate=value.regDate.format("YYYY-MM-DD")
           // values.regDate=(value.regDate).formart("YYYY-MM-DD")
           if (this.type === "add") {
             const url =
@@ -364,7 +372,7 @@ export default {
       // this.tradeMarkForm.setFieldsValue({['regNo']:record.regNo})
       this.validatorRules.regNo.initialValue = record.regNo;
       this.validatorRules.tmName.initialValue = record.tmName;
-      this.validatorRules.regDate.initialValue = record.regDate;
+      this.validatorRules.regDate.initialValue = moment(record.regDate,'YYYY-MM-DD');
       this.validatorRules.agency.initialValue = record.agency;
       this.validatorRules.currentStatus.initialValue = record.currentStatus;
       this.validatorRules.remark.initialValue = record.remark;
