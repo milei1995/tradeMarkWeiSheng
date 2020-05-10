@@ -1,23 +1,27 @@
 <template>
   <div class="list">
     <div class="list-banner">
-      <!-- <div class="banner-search">
-          <a-input  placeholder="请输入相关搜索内容"/>
-          <a-button @click='handleSearch'>搜索</a-button>
-       </div>-->
+      <div class="banner-search">
+        <a-input placeholder="请输入商标名搜索" v-model="searchParams.tmName" />
+        <a-input placeholder="请输入注册号搜索" v-model="searchParams.regNo" style="margin-left:25px;" />
+        <a-button @click="handleSearch" style="margin-left:15px;"> 搜索</a-button>
+      </div>
     </div>
     <div class="list-content">
       <div class="list-content-result">
         <div class="result-item" v-for="(item,index) in categoryList" :key="index">
           <div class="result-item-img">
-            <img :src="item.tmImg" @click="toDetail(item.regNo)"/>
+            <img :src="item.tmImg" @click="toDetail(item.regNo)" />
           </div>
           <div class="result-item-des">
-            <span class='result-item-des1'>类{{item.intCls}}</span>&nbsp;
-            <span class='result-item-des2'>{{item.tmName}}</span>&nbsp;
+            <span class="result-item-des1">类{{item.intCls}}</span>&nbsp;
+            <span class="result-item-des2">{{item.tmName}}</span>&nbsp;
             <a-button class="result-item-button" @click="toDetail(item.regNo,item.intCls)">认证</a-button>
           </div>
-          <div class="result-item-describe">价格:<span style='color:#DD5246;'>￥{{item.tmPrice}}</span>(元)</div>
+          <div class="result-item-describe">
+            价格:
+            <span style="color:#DD5246;">￥{{item.tmPrice}}</span>(元)
+          </div>
         </div>
       </div>
       <div class="list-page">
@@ -27,7 +31,7 @@
           :pageSize="20"
           :current="currentPage"
           :defaultCurrent="defaultCurrent"
-          @change='pageChange'
+          @change="pageChange"
         />
       </div>
     </div>
@@ -38,24 +42,21 @@
 // import {TradeMarkSearch} from '../../api/api'
 export default {
   name: "trademarkSelection",
-  components: {
-   
-  },
+  components: {},
   data() {
     return {
       searchTitle: "商标优选首页",
       searchTitleResult: "商标优选结果",
       categoryList: [],
+      searchParams:{},
       total: 0,
-      defaultCurrent:1,//默认页码
-      currentPage:1,//当前页码
+      defaultCurrent: 1, //默认页码
+      currentPage: 1 //当前页码
     };
   },
-  watch: {
-    
-  },
+  watch: {},
   mounted() {
-      this.getSelectedTradeMarkList(1)
+    this.getSelectedTradeMarkList(1);
   },
   methods: {
     getSelectedTradeMarkList(pageNum) {
@@ -63,7 +64,8 @@ export default {
       const url = "/api/trademark/main/carefullyChosenTrademarkAllList";
       const params = {
         page: pageNum,
-        pageSize: 20
+        pageSize: 20,
+        ...this.searchParams
       };
       this.$axios({
         method: "post",
@@ -81,16 +83,19 @@ export default {
           console.log(error);
         });
     },
-    pageChange(pageNumber){
-       console.log(pageNumber)
-       this.currentPage=pageNumber
-       this.getSelectedTradeMarkList(this.currentPage)
+    pageChange(pageNumber) {
+      console.log(pageNumber);
+      this.currentPage = pageNumber;
+      this.getSelectedTradeMarkList(this.currentPage);
     },
-    toDetail(regNo){
-      this.$router.push({path:'/tradeMarkSelectionDetail',query:{regNo:regNo}})
+    toDetail(regNo) {
+      this.$router.push({
+        path: "/tradeMarkSelectionDetail",
+        query: { regNo: regNo }
+      });
     },
-    handleSearch(){     
-      this.getSelectedTradeMarkList(this.currentPage)
+    handleSearch() {
+      this.getSelectedTradeMarkList(this.currentPage);
     }
   }
 };
@@ -110,15 +115,16 @@ export default {
   width: 100%;
   height: 350px;
   min-width: 1400px;
-  background: url("http://wssbw-images.oss-cn-hangzhou.aliyuncs.com/trademark/web/1180d04d-e0ef-4875-87eb-ef26cb89b2fe.png") no-repeat center;
+  background: url("http://wssbw-images.oss-cn-hangzhou.aliyuncs.com/trademark/web/1180d04d-e0ef-4875-87eb-ef26cb89b2fe.png")
+    no-repeat center;
   background-size: cover;
 }
-.banner-search{
+.banner-search {
   display: flex;
-  width:60%;
-  height:50px;
+  width: 60%;
+  height: 50px;
   line-height: 50px;
-  margin:2px auto 0px;
+  margin: 2px auto 0px;
   opacity: 0.9;
 }
 .list-banner-title {
@@ -179,19 +185,19 @@ export default {
   color: #ff6a00;
   border-radius: 5px; */
 }
-.result-item-des1{
-  width:50px;
+.result-item-des1 {
+  width: 50px;
   overflow: hidden;
-  font-size:13px;
+  font-size: 13px;
 }
-.result-item-des2{
-  width:70px;
-  font-size:13px;
+.result-item-des2 {
+  width: 70px;
+  font-size: 13px;
   overflow: hidden;
 }
 .result-item-button {
   width: 50px;
-  margin-top:5px;
+  margin-top: 5px;
   height: 22px;
   line-height: 22px;
   background: rgba(253, 114, 55, 1);

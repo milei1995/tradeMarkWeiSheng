@@ -19,7 +19,7 @@
             <span style="margin-left:15px;">注册号:&nbsp;&nbsp;{{tradeMarkContent.regNo}}</span>
           </div>
           <div class="detail-banner-part1-2-des3">
-            <div class="des3-1">服务商品:&nbsp;&nbsp;{{tradeMarkContent.serviceItems}}</div>
+            <div class="des3-1" sytle="margin-top:10px;">服务商品:&nbsp;&nbsp;{{tradeMarkContent.serviceItems}}</div>
             <div class="des3-2">价格:&nbsp;&nbsp;{{tradeMarkContent.tmPrice}}</div>
             <div class="des3-3">类似群组:&nbsp;&nbsp;{{tradeMarkContent.intGroup}}</div>
             <div class="des3-4">备注:&nbsp;&nbsp;{{tradeMarkContent.remark}}</div>
@@ -365,6 +365,8 @@ export default {
         }
         .detail-banner-part1-2-des3 {
           width: 100%;
+          padding-top:1px;
+          overflow: auto;
           height: 174px;
           background: rgba(255, 255, 255, 1);
           border: 1px solid rgba(232, 232, 232, 1);
@@ -382,7 +384,7 @@ export default {
             color: #fe6a0c;
             font-size: 14px;
             cursor: pointer;
-            top: 5px;
+            top: -5px;
             right: 10px;
           }
           .des3-1,
