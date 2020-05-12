@@ -102,8 +102,9 @@
           </a-col>
         </a-row>
         <a-row :gutter="24">
-          <a-col :span="10">
-            <a-form-item style="display:flex;" label="图片上传">
+          <a-col :span="10" style="position:relative">
+            <span style="position:absolute;color:red;font-size:18px;left:10px;top:10px;">*</span>
+            <a-form-item style="display:flex;margin-left:10px;" label="图片上传">
               <upload-pic
                 v-if="hackReset"
                 :type="'商标上传'"
@@ -299,10 +300,10 @@ export default {
     },
     handleOk() {
       this.tradeMarkForm.validateFields((err, value) => {
-        if (!err) {
+        if (!err && this.imgUrl!=='') {
           const values = value;
           values.regDate=value.regDate.format("YYYY-MM-DD")
-          // values.regDate=(value.regDate).formart("YYYY-MM-DD")
+          console.log(values)
           if (this.type === "add") {
             const url =
               "/api/trademark/carefullyChosenTrademark/addCarefullyChosenTrademark";
@@ -323,6 +324,9 @@ export default {
                 this.$message.success("添加成功");
                 this.getUploadData(1);
                 this.visible = false;
+              }
+              if(!res.data.success && res.data.code=='20201'){
+                this.$message.error(res.data.msg)
               }
             });
           }
@@ -352,6 +356,8 @@ export default {
               }
             });
           }
+        }else if(this.imgUrl==''){
+          this.$message.warning('请上传商标图片')
         }
       });
 
